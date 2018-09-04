@@ -1,5 +1,5 @@
 # UW Coursework
-This repository contains personal solutions to homeworks and exams taken at the University of Washington. Solutions are provided with no guarantees to their accuracy. Many of the LaTeX files may not compile properly as the dependencies have changed over time. 
+This repository contains personal solutions to homeworks and exams for courses taken at the University of Washington. Solutions are provided with no guarantees to their accuracy. Many of the LaTeX files may not compile properly as the dependencies have changed over time. 
 
 Any time MATLAB code was provided for an assignment, I ported it to Python (Numpy/Scipy). This may be of particular use for future students in courses where MATLAB is used frequently.
 
@@ -17,6 +17,6 @@ As I upload files I am going through them to standardize formatting and correct 
  * AMATH 586 (Spring 2018)
  
  ### Note on Academic Integrity
-Copying solutions from any source is not only detrimental to your own learning, but is plagarism. Don't do this. If you do end up looking up a solution, cite your source when writing up your assingment.
+Copying solutions from any source is not only detrimental to your own learning but is plagarism. Don't do this. If you do end up looking up a solution for an assignment, cite your source.
 
 I have provided these questions and solutions so in the hopes that they can be used for reference when preparing for exams, and as practice problems/additional problems for self study.
