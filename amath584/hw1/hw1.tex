@@ -1,0 +1,240 @@
+\documentclass[10pt]{article}
+\usepackage[T1]{fontenc}
+
+% Document Details
+\newcommand{\CLASS}{AMATH 584}
+\newcommand{\assigmentnum}{Assignment 1}
+
+\usepackage[margin = 1.15in, top = 1.25in, bottom = 1.in]{geometry}
+
+\input{../../TeX_headers/title.tex} % Title Styling
+\input{../../TeX_headers/sfftoc.tex} % General Styling
+\input{../../TeX_headers/styling.tex} % General Styling
+\input{../../TeX_headers/code.tex} % Code Display Setup
+\input{../../TeX_headers/math.tex} % Math shortcuts
+\input{../../TeX_headers/problem.tex} % Problem Environment
+
+
+\hypersetup{
+   colorlinks=true,       % false: boxed links; true: colored links
+   linkcolor=violet,          % color of internal links (change box color with linkbordercolor)
+   citecolor=green,        % color of links to bibliography
+   filecolor=magenta,      % color of file links
+   urlcolor=cyan           % color of external links
+}
+
+\usepackage{arydshln}
+
+\begin{document}
+\maketitle
+
+\begin{problem}[Exercise 1.1]
+Let \( B \) be a \( 4\times 4 \) matrix to which we apply the following operations:
+\begin{enumerate}[topsep=0pt,itemsep=-1ex,partopsep=1ex,parsep=1ex]
+	\item double column 1,
+	\item halve row 3,
+	\item add row 3 to to row 1,
+	\item interchange columns 1 and 4,
+	\item subtract row 2 from each of the other rows,
+	\item replace column 4 by column 3,
+	\item delete column 1 (so that the column dimension is reduced by 1).
+\end{enumerate}
+\begin{enumerate}
+	\item[(a)] Write the result as a product of eight matrices .
+	\item[(b)] Write it again as a product \( ABC \) (same \( B \)) of three matrices.
+\end{enumerate}
+\end{problem}
+
+\begin{solution}[Solution]
+\begin{enumerate}
+	\item[(a)] We have, \( O_5O_3 O_2 B O_1 O_4O_6 \) where,
+	\begin{align*}
+	O_1 = \left[\begin{array}{cccc}2&0&0&0 \\ 0&1&0&0 \\ 0&0&1&0 \\ 0&0&0&1\end{array}\right] &&
+	O_2 = \left[\begin{array}{cccc}1&0&0&0 \\ 0&1&0&0 \\ 0&0&1/2&0 \\ 0&0&0&1\end{array}\right] &&
+	O_3 = \left[\begin{array}{cccc}1&0&1&0 \\ 0&1&0&0 \\ 0&0&1&0 \\ 0&0&0&1\end{array}\right] &&
+	O_4 = \left[\begin{array}{cccc}0&0&0&1 \\ 0&1&0&0 \\ 0&0&1&0 \\ 1&0&0&0\end{array}\right] \\
+	O_5 = \left[\begin{array}{cccc}1&-1&0&0 \\ 0&1&0&0 \\ 1&-1&1&0 \\ 0&-1&0&1\end{array}\right] &&
+	O_6 = \left[\begin{array}{cccc}1&0&0&0 \\ 0&1&0&0 \\ 0&0&1&1 \\ 0&0&0&0\end{array}\right] &&
+	O_7 = \left[\begin{array}{ccc}0&0&0 \\ 1&0&0 \\ 0&1&0 \\ 0&0&1\end{array}\right]
+	\end{align*}
+	\item[(b)] We now simply the expression from (a) as, \( ABC\) where,
+	\begin{align*}
+	A = O_5O_3O_2= \left[\begin{array}{cccc}1&-1&1/2&0 \\ 0&1&0&0 \\ 0&-1&1/2&0 \\ 0&-1&0&1\end{array}\right] && 
+	C = O_1O_4O_6O_7 =\left[\begin{array}{cccc}0&0&0&0 \\ 0&1&0&0 \\ 0&0&1&1 \\ 0&0&0&0\end{array}\right]
+	\end{align*}
+\end{enumerate}
+	
+We first manually manipulate the inputed matrix. We then define the matrices listed above. Finally, all three methods are compared. 
+\lstinputlisting{hw1.py}
+
+Running the function for a few different values of \( B \) always returns \verb|True| indicating that the three methods are equivalent (at least for the tested matrices). A sample output is displayed below.
+\begin{lstlisting}
+>> exercise_1_1(sp.matrix(sp.random.rand(4,4)))
+>> [[ 0.         -0.07326807  0.33590766  0.33590766]
+[ 0.          0.91030668  0.63417526  0.63417526]
+[ 0.         -0.46052944 -0.4908797  -0.4908797 ]
+[ 0.         -0.28526664 -0.29515107 -0.29515107]]
+[[ 0.         -0.07326807  0.33590766  0.33590766]
+[ 0.          0.91030668  0.63417526  0.63417526]
+[ 0.         -0.46052944 -0.4908797  -0.4908797 ]
+[ 0.         -0.28526664 -0.29515107 -0.29515107]]
+[[ 0.         -0.07326807  0.33590766  0.33590766]
+[ 0.          0.91030668  0.63417526  0.63417526]
+[ 0.         -0.46052944 -0.4908797  -0.4908797 ]
+[ 0.         -0.28526664 -0.29515107 -0.29515107]]
+True
+\end{lstlisting}
+\end{solution}
+	
+\begin{problem}[Exercise 2.1]
+Show that if a matrix \( A \) is both triangular and unitary, then it is diagonal.
+\end{problem}
+
+\begin{solution}[Solution]
+Suppose a matrix \( A\in\CC^{m\times m} \), \( m\geq2 \), is both triangular and unitary. We have \( A^*A=I=AA^* \), so one of \( A \) or \( A^* \) is upper triangular. Thus, without loss of generality assume \( A \) is upper triangular. 
+
+Since \( A \) is upper triangular we have \( A_{ij}=0 \) for \( i>j \).
+
+Consider the product \( AA^*=I \). We then have,
+\[ 1= I_{mm} = \sum_{i=1}^{m}A_{mi}A^*_{im} = A_{mm}A^*_{mm} + \sum_{i=1}^{m-1}A_{mi}A^*_{im} = A_{mm}A^*_{mm} \]
+Note that this condition implies \( A_{mm} \neq 0 \).
+
+Now observe for any index \( 1\leq j\leq m-1 \),
+\[ 0 = I_{jm} = \sum_{i=1}^{m}A_{mi}A^*_{ij} = A_{mm}A^*_{mj} + \sum_{i=1}^{m-1}A_{mi}A^*_{ij} =  A_{mm}A^*_{mj}  \]
+Since \( A_{mm}\neq 0 \) we have \( A^*_{mj}=0 \). Therefore \( A_{jm}=\overline{A^*_{mj}}=0 \).
+
+This proves that the last column of \( A \) is zero, except the diagonal entry.
+
+Consider the \( k \)-th order leading principal sub matrix \( A_k \) formed by deleting the last \( m-k \) rows. That is the sub matrix with entries \( A_{ij} \) for \( 1\leq i,j\leq k \). This is displayed below as the top left corner of \( A \)
+
+\begin{align*} 
+    A  = 
+    \left[\begin{array}{ccc;{2pt/2pt}cc} 
+        A_{11} &\cdots & A_{1k} & \\
+        \vdots &  & \vdots & & \\ 
+        A_{k1} & \cdots & A_{kk} & & \\ 
+        \hdashline[2pt/2pt] \\
+        & & & & \\
+    \end{array}\right] 
+        && 
+        A_k = 
+        \left[\begin{array}{ccc} 
+        A_{11} &\cdots & A_{1k} \\ 
+        \vdots &  & \vdots  \\ 
+        A_{k1} & \cdots & A_{kk}  
+        \end{array}\right]
+\end{align*}
+
+Clearly \( A_k \) inherits (upper) triangular from \( A \) as \( A_{ij}=0 \) for \( i>j \). Moreover, considering block matrix multiplication we see \( A_kA_k^*= I_k \), where \( I_k \) is the identity matrix in \( \CC^{k\times k} \). That is, \( A_k \) is also unitary (in \( \CC^{k\times k} \)).
+
+Therefore, by the above result, \( A_{jk}=0 \) for any index \( 1\leq j \leq k-1 \). But \( k \) can be any index \( 1\leq k\leq m \) so we see that \( A_{jk}=0 \) for all \( j<k \). That is, \( A \) is lower triangular. By hypothesis \( A \) us upper triangular as well. This proves \( A \) is diagonal. \qed
+
+\end{solution}
+	
+\begin{problem}[Exercise 2.2]
+The Pythagorean theorem asserts that for a set of \( n \) orthogonal vectors \( \{x_i\} \),
+\[ \norm{\sum_{i=1}^{n}x_i}^2 = \sum_{i=1}^{n}\norm{x_i}^2 \]
+\begin{enumerate}
+	\item[(a)] Prove this in the case \( n=2 \) by explicit computation of \( \norm{x_1+x_2}^2 \).
+	\item[(a)] Show that this computation also establishes the general case, by induction
+\end{enumerate}
+\end{problem}
+
+\begin{solution}[Solution]
+We make the assumption that \( x_i\in\CC^m \) for \( m \in \ZZ \). Suppose the \( x_i \) are orthogonal. That is, \( x_i^*x_j = 0 \) for \( i\neq j \). We denote the \( k \)-th component of \( x_i \) by \( x_{ik} \).
+\begin{enumerate}
+	\item[(a)] By orthogonality we have, \( x_1^*x_2 = x_2^*x_1 = 0 \). Thus, 
+	\begin{align*}
+		\norm{x_1+x_2}^2=(x_1+x_2)^*(x_1+x_2) &= (x_1^*+x_2^*)(x_1+x_2) \\
+		&\hspace{-3em}=x_1^*x_1+x_1^*x_2+x_2^*x_1+x_2^*x_2 \\
+		&=\norm{x_1}^2+0+0+\norm{x_2}^2 = \norm{x_1}^2+\norm{x_2}^2 \tag*{\qed}
+	\end{align*}
+	
+	\item[(b)] Suppose \( \norm{\sum_{i=1}^{n-1}x_i}^2 = \sum_{i=1}^{n-1}\norm{x_i}^2 \) for some \( n \). Then, using the above result,
+	\[ \norm{\sum_{i=1}^{n}x_i}^2 = \norm{x_n+\sum_{i=1}^{n-1}x_i}^2 = \norm{x_n}^2+\norm{\sum_{i=1}^{n-1}x_i}^2 = \norm{x_n}^2+\sum_{i=1}^{n-1}\norm{x_i}^2 = \sum_{i=1}^{n}\norm{x_i}^2 \]
+	
+	Thus, using the result from (a) as the base step for induction, for all integer \( n\geq1 \), we have, \[ \norm{\sum_{i=1}^{n}x_i}^2 = \sum_{i=1}^{n}\norm{x_i}^2  \tag*{\qed}\]
+	
+\end{enumerate}
+\end{solution}
+	
+\begin{problem}[Exercise 2.3]
+Let \( A\in\CC^{m\times m } \) be hermitian. An eigenvector of \( A \) is a nonzero vector \( x\in\CC^m \) such that \( Ax=\lambda x \) for some \( \lambda\in\CC \), the corresponding eigenvalue.
+\begin{enumerate}
+	\item[(a)] Prove that all the eigenvalues of \( A \) are real.
+	\item[(b)] Prove that if \( x \) and \( y \) are eigenvectors corresponding to distinct eigenvalues, then \( x \) and \( y \) are orthogonal.
+\end{enumerate}
+\end{problem}
+
+\begin{solution}[Solution]
+Let \( A\in\CC^{m\times m} \) be hermitian. That is, \( A=A^* \).
+\begin{enumerate}
+\item[(a)] Suppose \( x \) is an eigenvector of \( A \) with corresponding eigenvalue \( \lambda \). Then \( Ax=\lambda x \). Recalling that for scalar \( c \), vectors \( u,v \) and matrices \( A,B \) that \( u^*cv = cu^*v \), that \( (cA)^* = \overline{c}A^* \), and that \( (AB)^* = B^*A^* \) we have the following chain of equalities,
+\[ \lambda\norm{x}^2 = \lambda x^*x = x^*\lambda x = x^*Ax = x^*A^*x = (x^*Ax)^* = (x^*\lambda x)^* = x^*\overline{\lambda}x = \overline{\lambda}x^*x= \overline{\lambda}\norm{x}^2 \]
+
+Since \( x \) is an eigenvector, \( x \) is nonzero. Thus, \( \norm{x}> 0 \). In particular, this means that \( \norm{x}^2\neq0 \). Thus \( \lambda = \overline{\lambda} \) proving \( \lambda \) is real. \qed
+
+
+\item[(b)] Suppose  \( y \) is an eigenvector of \( A \) with corresponding eigenvalue \( \gamma \neq \lambda \). Recall from (a) that \( \lambda = \overline{\lambda} \). This gives the following chain of equalities,
+\[ \gamma x^*y = x^*\gamma y = x^*Ay = x^*A^*y = (y^*Ax)^* = (y^*\lambda x)^* = x^*\overline{\lambda}y = x^*\lambda y = \lambda x^*y \]
+
+Therefore, \( \gamma x^*y = \lambda x^*y \) so, \[ 0 = \lambda (x^*y) - \gamma (x^*y)  = (\lambda-\gamma)(x^*y) \]
+
+However, since \( \lambda\neq \gamma \), then \( (\lambda-\gamma)\neq 0  \). This proves \( x^*y = 0 \). That is, that \( x \) and \( y \) are orthogonal. \qed
+\end{enumerate}
+\end{solution}
+	
+\begin{problem}[Exercise 3.2]
+Let \( \norm{\cdot} \) denote any norm on \( \CC^m \) and also the induced matrix norm on \( \CC^{m\times m} \). Show that \( \rho(A)\leq\norm{A} \), where \( \rho(A) \) is the spectral radius of \( A \), i.e., the largest absolute value \( |\lambda| \) of an eigenvalue \( \lambda \) of \( A \).
+\end{problem}
+
+\begin{solution}[Solution]
+Let \( \norm{\cdot} \) denote any norm on \( \CC^m \) and also the induced matrix norm on \( \CC^{m\times m} \). Denote the largest absolute value eigenvalue of \( A \) by \( \lambda \) and let \( x \) be the corresponding eigenvector. Then, by definition of supremum,
+\[ \rho(A) = |\lambda| = \dfrac{|\lambda|\norm{x}}{\norm{x}} = \dfrac{\norm{\lambda x}}{\norm{x}} = \dfrac{\norm{Ax}}{\norm{x}} \leq \sup_{z\neq0}\dfrac{\norm{Az}}{\norm{z}} = \norm{A} \tag*{\qed} \]
+\end{solution}
+	
+\begin{problem}[Exercise 3.3]
+Vector and matrix \( p \)-norms are related by various inequalities, often involving the dimensions \( m \) or \( n \). For each of the following, verify the inequality and give and example of a nonzero vector or matrix (for general \( m,n \)) for which equality is achieved. In this problem \( x \) is an \( m \)-vector and \( A \) is an \( m\times n \) matrix.
+\begin{enumerate}
+	\item[(a)] \( \norm{x}_\infty\leq\norm{x}_2 \),
+	\item[(b)] \( \norm{x}_2\leq\sqrt{m}\norm{x}_\infty \),
+	\item[(c)] \( \norm{A}_\infty\leq\sqrt{n}\norm{A}_2 \),
+	\item[(d)] \( \norm{A}_2\leq\sqrt{m}\norm{A}_\infty \),
+\end{enumerate}
+\end{problem}
+
+\begin{solution}[Solution]
+Let \( x\in\CC^m \). Clearly \( |x_i|\leq \max_{1\leq i\leq m}|x_i|=\norm{x}_\infty \) for all \( 1\leq i \leq m \).
+\begin{enumerate}
+	\item[(a)]  Let \( j \) be an index such that \( |x_j|=\norm{x}_\infty \). Then,
+	\[ \norm{x}_\infty = |x_j| = \left(|x_j|^2\right)^{1/2} \leq \left(|x_j|^2+\sum_{i\neq j}|x_i|^2\right)^{1/2} \leq \left(\sum_{i=1}^{m}|x_i|^2\right)^{1/2} = \norm{x}_2 \]
+	Equality is obtained when \( x \) has exactly one nonzero component \( x_i \), in which case \( \norm{x}_\infty = x_i = (|x_i|^2)^{1/2} = \norm{x}_2 \).
+	
+	\item[(b)] Similarly,
+	\begin{align*} \norm{x}_2 = \left(\sum_{i=1}^{m}|x_i|^2\right)^{1/2}  &\leq \left( \sum_{i=1}^{m} \left(\max_{1\leq i\leq m}|x_i|\right)^2 \right)^{1/2} \\ &= \left( m\left(\max_{1\leq i\leq m}|x_i|\right)^2 \right)^{1/2} = \sqrt{m}\max_{1\leq i\leq m}|x_i| = \sqrt{m}\norm{x}_\infty \end{align*}
+	Equality is obtained when all components of \( x \) are equal, in which case \( \norm{x}_2 = \left(\sum_{i=1}^{m}|x_i|^2\right)^{1/2} = \left(m|x_i|^2\right)^{1/2} = \sqrt{m}\norm{x}_\infty \).
+\end{enumerate}
+
+We now have \( \norm{x}_\infty\leq \norm{x}_2\leq \sqrt{m}\norm{x}_\infty \) for \( x\in \CC^m \). Let \( A\in\CC^{m\times n} \). Note that for any vector \( u\in\CC^n \), \( Au\in\CC^m \).
+
+\begin{enumerate}
+	\item[(c)] Denote the \( i \)-th row of \( A \) by \( a_i^* \) and define \( x_0 \in \CC^n \) to be the vector with all entries equal to 1. Then observe \( \norm{a_i^*}_1 = a_i \)
+	\[ \norm{A}_\infty = \sup_{u\neq0}\dfrac{\norm{Au}_\infty}{\norm{u}_\infty} \leq \sup_{u\neq0}\dfrac{\norm{Au}_2}{\norm{u}_\infty} \leq \sup_{u\neq0}\dfrac{\norm{Au}_2}{\norm{u}_2/\sqrt{n}} = \sqrt{n}\sup_{u\neq0}\dfrac{\norm{Au}_2}{\norm{u}_2} = \sqrt{n}\norm{A}_2 \]
+	Denote the vector with zeros in all components except for a 1 in the \( j \)-th component by \( e_j \). Denote the vector with all ones by \( 1 \).
+	
+	Now suppose \( e_j \) has length \( m \) and \( 1 \) has length \( n \). Let \( A=ae_j1^* \) for some scalar \( a \). Then \( A \) is dimension \( m\times n \) and looks like the zero matrix with the \( i \)-th row constant and equal to \( a \).
+	
+	Then clearly \( \norm{A}_\infty = n|a| \). Moreover, by our matrix norm rules for outer products, \( \norm{A}_2 = |a|\norm{e_j}_2\norm{1^*}_2 = |a|1\sqrt{n} = \sqrt{m}|n| = \norm{A}_\infty/\sqrt{n} \) so equality is obtained.	,
+	
+	
+	\item[(d)]
+	\[ \norm{A}_2 = \sup_{u\neq 0}\dfrac{\norm{Au}_2}{\norm{u}_2} = \leq \sup_{u\neq0}\dfrac{\sqrt{m}\norm{Au}_\infty}{\norm{u}_2} \leq  \sup_{u\neq0}\dfrac{\sqrt{m}\norm{Au}_\infty}{\norm{u}_\infty} = \sqrt{m}\sup_{u\neq0}\dfrac{\norm{Au}_\infty}{\norm{u}_\infty} = \sqrt{m}\norm{A}_\infty \]
+	Suppose \( e_j \) has length \( n \) and \( 1 \) has length \( m \). Let \( A=a1e_j^* \) for some scalar \( a \). Then \( A \) is dimension \( m\times n \) and looks like the zero matrix with the \( j \)-th column constant and equal to \( a \).
+	
+	Then clearly \( \norm{A}_\infty = |a| \). Moreover, by our matrix norm rules for outer products, \( \norm{A}_2 = |a|\norm{1}_2\norm{e_j^*}_2 = |a|\sqrt{m}1 = \sqrt{m}|a| = \sqrt{m}\norm{A}_\infty \), so equality is obtained.
+	
+	
+\end{enumerate}
+\end{solution}
+
+\end{document}
