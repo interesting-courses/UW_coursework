@@ -9,14 +9,14 @@ In order to compile the LaTeX files you will need to download the `TeX_headers` 
 
 ### Repository Contents
 
- * AMATH 514 (Winter 2018)
- * AMATH 561 (Autumn 2017)
- * AMATH 562 (Winter 2018)
- * AMATH 563 (Spring 2019)
- * AMATH 567 (Autumn 2017)
- * AMATH 584 (Autumn 2017)
- * AMATH 585 (Winter 2018)
- * AMATH 586 (Spring 2018)
+ -[ ] AMATH 514 (Winter 2018)
+ -[ ] AMATH 561 (Autumn 2017)
+ -[ ] AMATH 562 (Winter 2018)
+ -[ ] AMATH 563 (Spring 2019)
+ -[ ] AMATH 567 (Autumn 2017)
+ -[x] AMATH 584 (Autumn 2017)
+ -[ ] AMATH 585 (Winter 2018)
+ -[ ] AMATH 586 (Spring 2018)
  
  ### Note on Academic Integrity
 Copying solutions from any source is not only detrimental to your own learning but is plagarism. Don't do this. If you do end up looking up a solution for an assignment, cite your source.
