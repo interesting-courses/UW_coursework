@@ -1,0 +1,15 @@
+\usepackage{tocloft}
+\renewcommand{\cfttoctitlefont}{\Large\sffamily\bfseries}
+\renewcommand{\cftsecfont}{\normalfont\sffamily\bfseries}
+\renewcommand{\cftsubsecfont}{\normalfont\sffamily}
+\renewcommand{\cftsubsubsecfont}{\normalfont\sffamily}
+
+\makeatletter
+\let\oldl@section\l@section
+\def\l@section#1#2{\oldl@section{#1}{\sffamily\bfseries#2}}
+
+\let\oldl@subsection\l@subsection
+\def\l@subsection#1#2{\oldl@subsection{#1}{\sffamily#2}}
+
+\let\oldl@subsubsection\l@subsubsection
+\def\l@subsubsection#1#2{\oldl@subsubsection{#1}{\sffamily#2}}

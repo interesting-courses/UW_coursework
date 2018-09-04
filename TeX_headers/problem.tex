@@ -1,0 +1,29 @@
+% Problem
+\usepackage{mdframed}
+\usepackage{floatrow}
+
+\newenvironment{problem}[1][]
+{\begin{mdframed}[
+  frametitle={\sffamily #1},
+  linewidth=1,
+  topline=false,
+  bottomline=false,
+  rightline=false,
+  rightmargin=.5cm
+]}
+{\end{mdframed}}
+
+\newenvironment{solution}[1][]
+{\begin{mdframed}[
+  frametitle={\sffamily #1},
+  linecolor=gray!70,
+  linewidth=1,
+  topline=false,
+  bottomline=false,
+  rightline=false,
+  rightmargin=.5cm
+]}
+{\end{mdframed}}
+
+
+

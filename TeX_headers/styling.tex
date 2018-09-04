@@ -1,0 +1,55 @@
+
+
+\usepackage{enumitem}
+
+% Figures
+\usepackage{subcaption}
+
+% TikZ and Graphics
+\usepackage{tikz, pgfplots}
+\pgfplotsset{compat=1.12}
+\usetikzlibrary{patterns}
+\usepgfplotslibrary{fillbetween}
+
+\usepackage{pdfpages}
+\usepackage{adjustbox}
+
+\usepackage{lscape}
+\usepackage{titling}
+\usepackage[]{hyperref}
+
+
+% Header Styling
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+\lhead{\sffamily \CLASS}
+\rhead{\sffamily \textbf{\thepage}}
+\cfoot{}
+
+% Paragraph Styling
+\setlength{\columnsep}{1cm}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{5pt}
+\renewcommand{\baselinestretch}{1}
+
+% TOC Styling
+\usepackage{tocloft}
+\iffalse
+\renewcommand{\cftsecleader}{\cftdotfill{\cftdotsep}}
+
+\renewcommand\cftchapafterpnum{\vskip6pt}
+\renewcommand\cftsecafterpnum{\vskip10pt}
+\renewcommand\cftsubsecafterpnum{\vskip6pt}
+
+% Adjust sectional unit title fonts in ToC
+\renewcommand{\cftchapfont}{\sffamily}
+\renewcommand{\cftsecfont}{\bfseries\sffamily}
+\renewcommand{\cftsecnumwidth}{2em}
+\renewcommand{\cftsubsecfont}{\sffamily}
+\renewcommand{\cfttoctitlefont}{\hfill\bfseries\sffamily\MakeUppercase}
+\renewcommand{\cftaftertoctitle}{\hfill}
+
+\renewcommand{\cftchappagefont}{\sffamily}
+\renewcommand{\cftsecpagefont}{\bfseries\sffamily}
+\renewcommand{\cftsubsecpagefont}{\sffamily}
+\fi

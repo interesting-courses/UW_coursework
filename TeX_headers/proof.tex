@@ -1,0 +1,81 @@
+\newenvironment{algorithm}[1][\@nil]
+{\def\tmp{#1}%
+\begin{mdframed}[
+  frametitle={Algorithm. \ifx\tmp\@nnil  \else \normalfont (#1) \fi},
+  linecolor=green!70,
+  linewidth=1,
+  topline=false,
+  bottomline=false,
+  rightline=false,
+  rightmargin=.5cm
+]}
+{\end{mdframed}}
+
+\newenvironment{method}[1][\@nil]
+{
+\def\tmp{#1}%
+\begin{mdframed}[
+  frametitle={Method. \ifx\tmp\@nnil  \else \normalfont (#1) \fi},
+  linecolor=violet!70,
+  linewidth=1,
+  topline=false,
+  bottomline=false,
+  rightline=false,
+  rightmargin=.5cm
+]}
+{\end{mdframed}}
+
+\newenvironment{definition}[1][\@nil]
+{\def\tmp{#1}%
+\begin{mdframed}[
+  frametitle={Definition. \ifx\tmp\@nnil  \else \normalfont (#1) \fi},
+  linecolor=blue!70,
+  linewidth=1,
+  topline=false,
+  bottomline=false,
+  rightline=false,
+  rightmargin=.5cm
+]}
+{\end{mdframed}}
+
+\newenvironment{theorem}[1][\@nil]
+{\def\tmp{#1}%
+\begin{mdframed}[
+  frametitle={Theorem. \ifx\tmp\@nnil  \else \normalfont (#1) \fi},
+  linecolor=red!70,
+  linewidth=1,
+  topline=false,
+  bottomline=false,
+  rightline=false,
+  rightmargin=.5cm
+]}
+{\end{mdframed}}
+
+\newenvironment{lemma}[1][\@nil]
+{\def\tmp{#1}%
+\begin{mdframed}[
+  frametitle={Lemma. \ifx\tmp\@nnil  \else \normalfont (#1) \fi},
+  linecolor=red!70,
+  linewidth=1,
+  topline=false,
+  bottomline=false,
+  rightline=false,
+  rightmargin=.5cm
+]}
+{\end{mdframed}}
+
+\newenvironment{proof}[1][\@nil]
+{\def\tmp{#1}%
+\begin{mdframed}[
+  frametitle={Proof. \ifx\tmp\@nnil  \else \normalfont (#1) \fi},
+  linecolor=red!30,
+  linewidth=1,
+  topline=false,
+  bottomline=false,
+  rightline=false,
+  rightmargin=.5cm
+]}
+{\end{mdframed}}
+
+
+

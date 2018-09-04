@@ -1,0 +1,23 @@
+% Code Display Setup
+\usepackage{listings,lstautogobble}
+\usepackage{lipsum}
+\usepackage{courier}
+\usepackage{catchfilebetweentags}
+
+\lstset{
+	basicstyle=\small\ttfamily,
+	breaklines=true, 
+	frame = single,
+	rangeprefix=,
+	rangesuffix=,
+	includerangemarker=false,
+	autogobble = true
+}
+
+
+\usepackage{algorithmicx}
+\usepackage{algpseudocode}
+
+\newcommand{\To}{\textbf{to}~}
+\newcommand{\DownTo}{\textbf{downto}~}
+\renewcommand{\algorithmicdo}{\hspace{-.2em}\textbf{:}}
