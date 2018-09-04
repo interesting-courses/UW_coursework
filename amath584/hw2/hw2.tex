@@ -17,8 +17,8 @@
 \newcommand{\note}[1]{\textcolor{red}{\textbf{Note:} #1}}
 
 % overwrite old problem class to be able to add to ToC
-\let\savedprob=\problem%
-\def\problem[#1]{\pagebreak\phantomsection\addcontentsline{toc}{subsection}{#1}\savedprob[#1]\label{#1}}
+\let\savedprob=\problem
+\def\problem[#1]{\pagebreak\savedprob[#1]}
 
 \hypersetup{
    colorlinks=true,       % false: boxed links; true: colored links

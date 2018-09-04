@@ -14,6 +14,9 @@
 \input{../../TeX_headers/math.tex} % Math shortcuts
 \input{../../TeX_headers/problem.tex} % Problem Environment
 
+% overwrite old problem class to be able to add to ToC
+\let\savedprob=\problem
+\def\problem[#1]{\pagebreak\savedprob[#1]}
 
 \hypersetup{
    colorlinks=true,       % false: boxed links; true: colored links
