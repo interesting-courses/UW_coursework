@@ -1,7 +1,9 @@
 # UW Coursework
-This repository contains personal solutions to homeworks and exams taken at the University of Washington. Solutions are provided with no guarantees to their accuracy. Many of the LaTeX files may not compile properly as the dependencies have changed over time.
+This repository contains personal solutions to homeworks and exams taken at the University of Washington. Solutions are provided with no guarantees to their accuracy. Many of the LaTeX files may not compile properly as the dependencies have changed over time. 
 
-At the current time I have not corrected any of my solutions, even if there are known errors. This is on the todo list. Feel free to mark errors as issues in github.
+Any time MATLAB code was provided for an assignment, I ported it to Python (Numpy/Scipy). This may be of particular use for future students in these courses.
+
+At the current time I have not corrected any of my solutions, even if there are known errors. Feel free to mark errors as issues on github. I will ~ eventually ~ get around to fixing errors and making the TeX files more uniform.
 
 ### Repository Contents
 
