@@ -1,0 +1,301 @@
+\documentclass[10pt]{article}
+\usepackage[T1]{fontenc}
+
+% Document Details
+\newcommand{\CLASS}{AMATH 584}
+\newcommand{\assigmentnum}{Assignment 5}
+
+\usepackage[margin = 1.15in, top = 1.25in, bottom = 1.in]{geometry}
+
+\input{../../TeX_headers/title.tex} % Title Styling
+\input{../../TeX_headers/sfftoc.tex} % General Styling
+\input{../../TeX_headers/styling.tex} % General Styling
+\input{../../TeX_headers/code.tex} % Code Display Setup
+\input{../../TeX_headers/math.tex} % Math shortcuts
+\input{../../TeX_headers/problem.tex} % Problem Environment
+
+\newcommand{\note}[1]{\textcolor{red}{\textbf{Note:} #1}}
+
+\hypersetup{
+   colorlinks=true,       % false: boxed links; true: colored links
+   linkcolor=violet,          % color of internal links (change box color with linkbordercolor)
+   citecolor=green,        % color of links to bibliography
+   filecolor=magenta,      % color of file links
+   urlcolor=cyan           % color of external links
+}
+
+
+\begin{document}
+\maketitle
+
+\begin{problem}[Exercise 12.1]
+Suppose \( A \) is a \( 202\times 202 \) matrix with \( \norm{A}_2=100 \) and \( \norm{A}_F=101 \). Give the sharpest possible lower bound on the 2-norm condition number \( \kappa(A) \).
+\end{problem}
+
+\begin{solution}[Solution]
+Write the nonzero singular values of \( A \) in descending order as \( \sigma_1,\sigma_2, ..., \sigma_{202} \) so that \( \sigma_1\geq \sigma_2 \geq ...\geq \sigma_{202} \geq 0 \).
+
+Recall \( \norm{A}_2 = \sigma_1 \) and \( \norm{A}_F = \sqrt{\sigma_1^2+...+\sigma_{202}^2} \).
+
+Then \( \sigma_1 = 100 \) and \( 101^2 = \sigma_1^2 + ... + \sigma_m^2 = 100^2 + \sigma_2^2 + ... + \sigma_{202}^2 \).
+
+We have \( \kappa_2(A) = \sigma_1/\sigma_{202} = 100/\sigma_{202} \). Since singular values are non-negative, \( \kappa_2(A) \) is minimized when \( \sigma_{202} \) is maximized. Therefore, we require \( \sigma_2, ..., \sigma_{202} \) as large as possible while still satisfying the above conditions. % that \( \sigma_2\geq\sigma_3 \geq ... \geq \sigma_{202} \) and \( 101^2-100^2 = \sigma_2^2 + ... + \sigma_{202}^2 \).
+
+Obviously this means \( \sigma_2 = ... = \sigma_{202} \) so , \( 201 = 101^2-100^2 = \sigma_2^2+...+\sigma_{202}^2 = 201\sigma_{202}^2 \) and \( \sigma_{2} = ... = \sigma_{202} = 1 \). Therefore the sharpest lower bound for \( \kappa_2(A) \) given \( \norm{A}_2=100 \) and \( \norm{A}_F=101 \) is \( \kappa_2(A) = \sigma_1/\sigma_{202} = 100 \). This bound is attained for any matrix with \( \sigma_1=100 \) and \( \sigma_2=...=\sigma_{202}=1 \). Clearly many such matrices exist, for instance the diagonal matrix with \( 100 \) in first diagonal entry, and \( 1 \) in the rest of the diagonal entries. 
+
+This proves the lower bound \( \kappa_2(A) \geq 100 \) is sharp.
+
+%\textbf{the proof might be more clear if i did by contradicton assuming better bound}
+\end{solution}
+
+\begin{problem}[Exercise 2]
+What is the gap between \( 2 \) and the next larger double precision number?  What is the gap between \( 201 \) and the next larger double precision number?  How many IEEE double precision numbers are there between an adjacent pair of nonzero IEEE single precision numbers?
+\end{problem}
+
+\begin{solution}[Solution]
+For double precision floating points numbers we have 1 sign bit, 52 mantissa bits, and 11 exponent bits.
+
+So \( 2=+1.\underbrace{0\ldots0}_{52 \text{ zeros}} \times 2^1 \) and the next number is \( +1.\underbrace{0\ldots0}_{51 \text{ zeros}}1 \times 2^1\). So the gap is \( 2^{-52}\times 2^{1} = 2^{-51} \)
+
+Similarly, \( 201 = +1.1001001\underbrace{0\ldots0}_{45\text{ zeros}} \times 2^{7} \) and the next number is \( +1.1001001\underbrace{0\ldots0}_{44\text{ zeros}}1\times 2^{7} \) so the gap is \( 2^{-52}\times 2^{7} = 2^{-45} \).
+
+Single precision floating point numbers have 1 sign bit, 23 mantissa bits, and 8 exponent bits.
+
+This means double precision numbers have an additional 29 bits.  Each of these \( 29 \) bits could be zero or 1, as long as all aren't zero.
+So there are \( 2^{29}-1 \) numbers between consecutive single precision floating point numbers.
+\end{solution}
+
+
+\begin{problem}[Exercise 3]
+In the 1991 Gulf War, the Patriot missile defense system failed due to roundoff error.  
+The troubles stemmed from a computer that performed the tracking calculations with an internal
+clock whose integer values in tenths of a second were converted to seconds by multiplying by
+a 24-bit binary approximation to one tenth:
+\begin{equation}
+0.1_{10} \approx 0.00011001100110011001100_2 . \label{1}
+\end{equation}
+\begin{enumerate}
+    \item[(a)] Convert the binary number in (\ref{1}) to a fraction.  Call it \(x\).
+    \item[(b)] What is the absolute error in this number?  That is, what is the absolute value of the difference between \( x \) and \( \frac{1}{10} \)?
+    \item[(c)] What is the time error in seconds after 100 hours of operation (i.e., the value of \(| 360,000 - 3,600,000 x |\))?
+    \item[(d)] During the 1991 war, a Scud missile traveled at approximately Mach 5 (3750 mph).  Find the distance that a Scud missile would travel during the time error computed in (c).
+\end{enumerate}
+On February 25, 1991, a Patriot battery system, which was to protect the Dhahran Air Base, had
+been operating for over 100 consecutive hours.  The roundoff error caused the system not to 
+track an incoming Scud missile, which slipped through the defense system and detonated on US
+Army barracks, killing 28 American soldiers.
+\end{problem}
+
+\begin{solution}[Solution]
+{\color{red} I guess this calls for spending a couple billion more on defense.}
+\begin{enumerate}
+    \item[(a)] We convert \( 0.d_1d_2d_3d_4... \) to a fraction as \( d_1/2+d_2/2^2+d_3/3^2+... \). Thus,
+        \begin{align*}
+            x &= 0.00011001100110011001100_2 \\
+            &= \dfrac{1}{2^3}+\dfrac{1}{2^4}+\dfrac{1}{2^7}+\dfrac{1}{2^8}+\dfrac{1}{2^{11}}+\dfrac{1}{2^{12}}+\dfrac{1}{2^{15}}+\dfrac{1}{2^{16}}+\dfrac{1}{2^{19}}+\dfrac{1}{2^{20}} \\
+            &=\dfrac{209715}{2097152}
+        \end{align*}
+    \item[(b)] The absolute error in \( x \) and \( 1/10 \) is, 
+        \begin{align*}
+            \left|\dfrac{1}{10} - x\right| = \dfrac{1}{10485760}
+        \end{align*}
+    \item[(c)] Similarly the time error in seconds after 100 hours of operation is,
+        \begin{align*}
+            \left|360000-3600000x\right| = \dfrac{5625}{16384}[\text{s}] \approx 0.3433[\text{s}]
+        \end{align*}
+    \item[(d)] The distance an object moving 3750 mph travels during the time error computer above is, 
+        \begin{align*}
+            \left(\dfrac{5625}{16384}[\text{s}]\right)\left(3750 \dfrac{[\text{mi}]}{[\text{hr}]}\right)\left(\dfrac{1}{3600}\dfrac{[\text{s}]}{[\text{hr}]}\right) = \dfrac{46875}{131072}[\text{mi}] \approx 0.3576[\text{mi}]
+        \end{align*}
+\end{enumerate}
+\end{solution}
+
+\begin{problem}[Exercise 4]
+    \begin{enumerate}
+        \item[(a)] Determine the absolute and relative condition numbers for the problem of evaluating $f(x) = e^x$. Would you say that this problem is well-conditioned or ill-conditioned, say, for $x=-20$?
+        \item[(b)] The following Matlab code uses a Taylor series to approximate $e^x$:
+    \[ e^x = 1 + x + \frac{x^2}{2!} + \frac{x^3}{3!} + \ldots \]
+\begin{lstlisting}
+oldsum = 0;
+newsum = 1;                % First term in series.
+term = 1;
+n = 0;
+while newsum ~= oldsum     % Iterate until next term is negligible.
+  n = n + 1;
+  term = term * x/n;       % This is x^n / n!
+  oldsum = newsum;
+  newsum = newsum + term;
+end;
+\end{lstlisting}
+This code adds terms in the Taylor series until the next term is so small that adding it to the current sum makes no change in the floating point number that is stored.  The code works fine for $x > 0$.  Try it for a few positive values of $x$ and compare your results with {\tt exp(x)} computed in Matlab to convince yourself that the values are accurate. (Use {\tt format long e} to print out the values to 16 decimal places, or look at the difference between the value you computed and that returned by {\tt exp(x)}.) Now try the code for $x=-20$ and compare your result with that returned by {\tt exp(-20)}. You should see a large relative error.  Explain this inaccuracy using the fact that floating point arithmetic satisfies $x \oplus y = (x+y)(1 + \epsilon )$, $x \ominus y = (x-y)(1 + \epsilon )$, etc., where $| \epsilon |$ is less than or equal to the machine precision.  [Hint:  Look at the size of intermediate sums.]
+
+Would you say that this algorithm is stable but not backward stable, backward stable, or unstable (in a relative sense) when the input $x$ is negative?  Explain your answer.
+\item[(c)] How could you modify this code to work better for negative values of $x$.
+    \end{enumerate}
+\end{problem}
+
+\begin{solution}[Solution]
+\begin{enumerate}
+    \item[(a)] Since \( f(x) = e^x \) is differentiable we can calculate the absolute condition number as,
+        \begin{align*}
+            \hat{\kappa}(x) = \norm{J(x)} = f'(x) = e^x
+        \end{align*}
+        Similarly, we have relative condition number,
+        \begin{align*}
+            \kappa(x) = \dfrac{\norm{J(x)}}{\norm{f(x)}/\norm{x}} = \dfrac{e^x}{e^x/|x|} = |x|`
+        \end{align*}
+
+        So at \( x=-20 \) we have absolute condition number \( \hat{\kappa}(-20) = e^{-20} \approx 2.1\cdot 10^{-9}\) and relative condition number \( \kappa = 20 \). Since the relative condition number is on the order of \( 10^1 \) we say the problem of evaluating \( f(x) = e^x \) is well conditioned.
+
+
+    \item[(b)] We implement this in python as,
+        \begin{lstlisting}
+def exercise_4():
+    def taylor_exp(x):
+        oldsum=0
+        newsum=1
+        term=1
+        n=0
+        while newsum != oldsum:
+            n=n+1
+            term = term*x/n
+            oldsum=newsum
+            newsum=newsum+term
+        return newsum
+    for x in [1,5,10,20,-20]:
+        print([x,taylor_exp(x),np.exp(x),np.abs(np.exp(x)-taylor_exp(x))/np.exp(x)])
+        \end{lstlisting}
+
+        This gives output,
+        \begin{lstlisting}[basicstyle=\ttfamily\small]
+[1, 2.7182818284590455, 2.7182818284590451, 1.6337129034990842e-16]
+[5, 148.41315910257654, 148.4131591025766, 3.830079435309396e-16]
+[10, 22026.46579480671, 22026.465794806718, 3.3032796463874436e-16]
+[20, 485165195.4097902, 485165195.40979028, 1.2285432949295985e-16]
+[-20, 5.621884472130418e-09, 2.0611536224385579e-09, 1.7275426784924197]
+        \end{lstlisting}
+
+        So for positive numbers the difference the relative error is small (on the order of machine epsilon), however for \( x=-20 \) the relative error is quite large.
+
+        If \( x<0 \), then successive terms in the taylor expansion have different signs, so the terms ``cancel'' with each other giving a small final answer. However, the inaccuracies from adding and subtracting do not necessarily cancel. So in the end the absolute error of calculating \( e^x \) for negative \( x \) may not be much smaller than for positive \( x \), meaning the relative error is much larger. 
+
+
+        This hypothesis is supported by the fact that the absolute error between the actual and comped values of \( e^{-20} \) is in the magnitude of \( 10^{-9} \), roughly the same as the differences for \( e^{20} \), even though the relative error is far larger.
+
+        The algorithm is unstable since the problem is well conditioned, but the computed answer is nowhere near the exact answer, in a relative sense. This means we did not solve a nearby problem exactly, or nearly solve a nearby problem. 
+        
+
+
+    \item[(c)]
+        If \( x<0 \) We can simply compute \( e^{-x} \) and then return \( 1/e^{-x} \).
+
+        With \( x=-20 \) this give,
+        \begin{lstlisting}[basicstyle=\ttfamily\small]
+[-20, 2.0611536224385583e-09, 2.0611536224385579e-09, 4.1359030627651384e-25]
+        \end{lstlisting}
+
+        So the result is far better. This can easily be explained as follows. Suppose we compute \( e^{20}(1+\epsilon) \) since calculating positive exponents works fine. Then \( 1/(e^{20}(1+\epsilon)) = e^{-20}(1-\epsilon+\epsilon^2-...)(1+\epsilon_1) \approx e^{-20}(1+\mathcal{O}(\epsilon_{\text{mach}})) \). 
+
+\end{enumerate}
+\end{solution}
+
+\begin{problem}[Problem 5]
+    One can approximate the derivative of a function \( f(x) \) by
+\begin{equation}
+f' (x) \approx \frac{f(x+h)-f(x)}{h} . \label{2}
+\end{equation}
+Since, using Taylor's theorem with remainder,
+\[ f(x+h) = f(x) + h f' (x) + \frac{h^2}{2} f'' ( \xi ) ,~~~\xi \in [x, x+h] , \]
+the {\em truncation error} in approximation (\ref{2}) is $O(h)$:
+\[ \left| f'(x) - \frac{f(x+h)-f(x)}{h} \right| = \frac{h}{2} \left| f'' ( \xi ) \right| \]
+\begin{enumerate}
+    \item[(a)] Let $f(x) = \sin (x)$ and $x = \frac{\pi}{3}$.  Is the problem of computing $f' (x) = \cos (x)$ well-conditioned or ill-conditioned?
+    \item[(b)] Try using (\ref{2}) in Matlab to approximate $f'(x)$ where $f(x) = \sin (x)$ and $x = \pi / 3$. Take $h=1.e-1, 1.e-2, \ldots , 1.e-16$ and make a table of your results and the difference between the computed results and the true value of $f'(x)$, namely, $\cos ( \pi / 3 ) = 0.5$.
+    \item[(c)] Suppose the only rounding errors made are in rounding $f(x+h)$ and $f(x)$, so that the computed values are $f(x+h)( 1 + \epsilon_1 )$ and $f(x) ( 1 + \epsilon_2 )$ where $| \epsilon_1 |$ and $| \epsilon_2 |$ are both less than or equal to the machine precision.  By about how much would the computed difference quotient in (\ref{2}) differ from the exact difference quotient. Use this to explain your results in (b).
+
+    For $h = 1.e-16$, your computed result was probably $0$.  Can you explain this?
+\end{enumerate}
+\end{problem}
+
+\begin{solution}[Solution]
+\begin{enumerate}
+    \item[(a)] 
+       We use \( f=\cos(x) \) to denote the problem. The input is \( x=\pi /3 \). Since \( f \) is continuous,
+        \begin{align*}
+            \kappa(x) = \dfrac{\norm{J(x)}}{\norm{f(x)}/\norm{x}} = \dfrac{\norm{-\sin(x)}}{\norm{\cos(x)}/\norm{x}} = x|\tan(x)|
+        \end{align*}
+
+        Therefore, \( \kappa(\pi/3)= \pi/\sqrt{3} \), is on the order of \( 10^0 \), the problem is well conditioned.
+
+
+
+    \item[(b)]
+        We use the formula listed to calculate the derivative of \( \sin(x) \) at \( x=\pi/3 \) as,
+        \begin{lstlisting}
+def exercise_5_b():
+    x=np.pi/3
+    h=np.flip(np.logspace(-16,-1,16),0)
+    Df = (np.sin(x+h)-np.sin(x))/h
+    print(np.transpose([h,Df,0.5-Df]))
+
+exercise_5_b()
+        \end{lstlisting}
+
+        This gives output,
+        \begin{lstlisting}[basicstyle=\ttfamily\small]
+[[  1.0000000000000001e-01   4.5590188541076104e-01    4.4098114589238957e-02]
+ [  1.0000000000000000e-02   4.9566157577368708e-01    4.3384242263129202e-03]
+ [  1.0000000000000000e-03   4.9956690400076997e-01    4.3309599923002651e-04]
+ [  1.0000000000000000e-04   4.9995669789693054e-01    4.3302103069464692e-05]
+ [  1.0000000000000001e-05   4.9999566986702598e-01    4.3301329740175198e-06]
+ [  9.9999999999999995e-07   4.9999956697188708e-01    4.3302811292278420e-07]
+ [  9.9999999999999995e-08   4.9999995699323563e-01    4.3006764371966710e-08]
+ [  1.0000000000000000e-08   4.9999999696126451e-01    3.0387354854610749e-09]
+ [  1.0000000000000001e-09   5.0000004137018550e-01   -4.1370185499545187e-08]
+ [  1.0000000000000000e-10   5.0000004137018550e-01   -4.1370185499545187e-08]
+ [  9.9999999999999994e-12   5.0000004137018550e-01   -4.1370185499545187e-08]
+ [  9.9999999999999998e-13   5.0004445029117051e-01   -4.4450291170505807e-05]
+ [  1.0000000000000000e-13   4.9960036108132044e-01    3.9963891867955681e-04]
+ [  1.0000000000000000e-14   4.9960036108132044e-01    3.9963891867955681e-04]
+ [  1.0000000000000001e-15   5.5511151231257827e-01   -5.5111512312578270e-02]
+ [  9.9999999999999998e-17   0.0000000000000000e+00    5.0000000000000000e-01]]
+        \end{lstlisting}
+
+    \item[(c)] We  assume the only rounding errors are made in the rounding of \( f(x+h) \) and \( f(x) \). In particular, this means we make the assumption \( x \), \( x+h \), and \( h \) are floating point numbers, and that we can exactly evaluate the subtraction and division exactly,
+
+        With these assumptions in mind we calculate, 
+        \begin{align*}
+         \dfrac{f(x+h)(1+\epsilon_1)-f(x)(1+\epsilon_2)}{h} &= \dfrac{f(x+h) + f(x+h)\epsilon_1-(f(x)+f(x)\epsilon_2)}{h} \\
+            &= \dfrac{f(x+h) - f(x)}{h} + \dfrac{f(x+h)\epsilon_1-f(x)\epsilon_2}{h} 
+        \end{align*}
+        
+        Therefore, the difference between the exact difference quotient and the computer quotient is,
+        \begin{align*}
+            \dfrac{f(x+h)\epsilon_1-f(x)\epsilon_2}{h}
+        \end{align*}
+        where \( |\epsilon_1|, |\epsilon_2| \leq \epsilon_{\text{mach}} \).
+
+        In the worse case we have \( \epsilon_1 = \epsilon_{\text{mach}} \) and \( \epsilon_2 = -\epsilon_{\text{mach}} \) so the error is,
+        \begin{align*}
+            \epsilon_{\text{mach}} \dfrac{f(x+h)+f(x)}{h}
+        \end{align*}
+        Since \( f(x+h)\to f(x) \) as \( h\to 0 \) then the error goes to \( \epsilon_\text{mach} 2f(x)/h \), which blows up as \( h \) goes to zero.
+
+
+
+For larger \( h \) the exact difference quotient is a secant line between two ``not very near'' points \( x \) and \( x+h \), so it is not a very good approximation of the tangent at \( x \). As \( h\to 0 \), by definition, the exact difference quotient will go to the derivative. This explains the increase in accuracy as we start to decrease \( h \) from \( 1e-1 \) to about \( 1e-12 \).
+        
+        However, around this point our computed results become less accurate as \( h \) continues to decrease as the numerical error becomes dominant. In particular, the total error is like,
+        \begin{align*}
+            \dfrac{h}{2}|f''(\xi)| + \dfrac{\epsilon_{\text{mach}}2f(x)}{h}
+        \end{align*}
+
+        Which is minimized at a constant multiple of \( \sqrt{\epsilon_{\text{mach}}} \) which is what we observe.
+
+        Eventually, when \( h \) is on the order of magnitude of machine precision we have \( f(x+h) \) and \( f(x) \) round to the same floating point number, so that their difference is zero.
+
+\end{enumerate}
+\end{solution}
+
+
+\end{document}

@@ -1,0 +1,443 @@
+\documentclass[10pt]{article}
+\usepackage[T1]{fontenc}
+
+% Document Details
+\newcommand{\CLASS}{AMATH 584}
+\newcommand{\assigmentnum}{Assignment 4}
+
+\usepackage[margin = 1.15in, top = 1.25in, bottom = 1.in]{geometry}
+
+\input{../../TeX_headers/title.tex} % Title Styling
+\input{../../TeX_headers/sfftoc.tex} % General Styling
+\input{../../TeX_headers/styling.tex} % General Styling
+\input{../../TeX_headers/code.tex} % Code Display Setup
+\input{../../TeX_headers/math.tex} % Math shortcuts
+\input{../../TeX_headers/problem.tex} % Problem Environment
+
+\newcommand{\note}[1]{\textcolor{red}{\textbf{Note:} #1}}
+
+\hypersetup{
+   colorlinks=true,       % false: boxed links; true: colored links
+   linkcolor=violet,          % color of internal links (change box color with linkbordercolor)
+   citecolor=green,        % color of links to bibliography
+   filecolor=magenta,      % color of file links
+   urlcolor=cyan           % color of external links
+}
+
+
+\begin{document}
+\maketitle
+
+\begin{problem}[Exercise 9.2]
+In Experiment 2, the singular values of \( A \) match the diagonal elements of a QR factor \( R \) approximately. Consider now a very different example. Suppose \( Q=I \) and \( A=R \), the \( m\times m \) matrix (a Toeplitz matrix) with 1 on the main diagonal, 2 on the first superdiagonal, and 0 everywhere else.
+\begin{enumerate}
+    \item[(a)] What are the eigenvalues, determinant, and rank of \( A \)?
+    \item[(b)] What is \( A^{-1} \)?
+    \item[(c)] Give a nontrivial upper bound on \( \sigma_m \), the \( m \)-th singular value of \( A \). 
+\end{enumerate}
+\end{problem}
+
+\begin{solution}[Solution]
+\begin{enumerate}
+    \item[(a)] Recall that the eigenvalues of a triangular matrix are the diagonal entries and the determinant of any matrix is the product of the eigenvalues.
+        Then clearly all the eigenvalues are 1, and the determinant is 1. Since \( A \) has nonzero determinant \( A \) is full rank (rank \( m \)).
+    \item[(b)] 
+        
+        We have,
+        \begin{align*}
+            a_{ij} = 
+            \begin{cases}
+                0 & i>j \\
+                1 & i=j \\
+                2 & i=j-1 \\
+                0 & i<j-1
+            \end{cases}
+        \end{align*}
+        
+        Define,
+        \begin{align*}
+            b_{ij} =
+            \begin{cases}
+                0 & i>j \\
+                (-2)^{i-j} & i\leq j
+            \end{cases}
+        \end{align*}
+          
+        That is, \( B \) has 1 on the main diagonal, \( -2 \) on the fist superdiagonal, \( 4 \) on the second super diagonal, \( 8 \) on the 3rd superdiagonal, and so on. 
+
+        I claim that \( A^{-1}=B \). 
+
+        From above we see \( a_{ii}=1 \), \( a_{i,i+1}=2 \), and \( a_{ij}=0 \) for \( j\notin\{i,i+1\} \). Then we can write \( AB \) as,
+        \begin{align*}
+            (ab)_{ij} = \sum_{k=1}^{m}a_{ik}b_{kj} = a_{ii}b_{ij}+a_{i,i+1}b_{i+1,j}
+        \end{align*}
+
+        Suppose \( i<j \). Then,
+        \begin{align*}
+            (ab)_{ij} = 1\cdot(-2)^{i-j}+2\cdot (-2)^{i+1-j} = (-2)^{i-j}-(-2)^{i-j} = 0
+        \end{align*}
+        
+        Now suppose \( i=j \). Then,
+        \begin{align*}
+            (ab)_{ij} = a_{ii}b_{ii}+a_{i,i+1}b_{i+1,i} = 1\cdot 1+2\cdot 0 = 1
+        \end{align*}
+
+        Finally, suppose \( i>j \). Then,
+        \begin{align*}
+            (ab)_{ij} = 1\cdot0 + 2\cdot 0 = 0 
+        \end{align*}
+
+        That is, \( AB=I \) so \( A^{-1}=B \).
+
+   \item[(c)] Write the SVD of \( A \) as \( A=U\Sigma V^* \). Recall \( Av_m=\sigma_mu_m \) for the smallest singular value \( \sigma_m \) of \( A \). Then \( A^{-1}u_m = v_m/\sigma_m \).
+
+        Since \( U \) and \( V \) are orthonormal, \( \norm{u_m} = \norm{v_m}=1 \). Therefore,
+        \begin{align*}
+            \dfrac{1}{\sigma_m} = \left|\dfrac{1}{\sigma_m}\right|\norm{u_m}=\norm{\dfrac{1}{\sigma_m}u_m} = \norm{A^{0}u_m} \geq \norm{A^{-1}}\norm{u_m} = \norm{A^{-1}} 
+        \end{align*}
+        
+        Then, by definition of norm,
+        \begin{align*}
+            \norm{A^{-1}} &= \sup_{\norm{z}=1} \norm{A^{-1}z} \\
+            &\geq \norm{A^{-1} [0,...,0,1]^T} \\
+            &= \norm{[(-2)^{m-1},...,4,-2,1]^T} \\ 
+            &= \sqrt{\left((-2)^{m-1}\right)^2 + ... + (4)^2+(-2)^2+1^2 } \\
+            &\geq 2^{m-1}
+        \end{align*}
+
+        Therefore,
+        \begin{align*}
+            \sigma_m \leq 2^{1-m}
+        \end{align*}
+\end{enumerate}
+\end{solution}
+
+
+\begin{problem}[Exercise 10.1]
+Determine the (a) eigenvalues, (b) determinant, and (c) singular values of a Householder reflector. For the eigenvalues, give a geometric argument as well as an algebraic proof.
+\end{problem}
+
+\begin{solution}[Solution]
+    Let \( F=I-2(vv^*)/(v^*v)\in\CC^{n\times n} \) be a Householder reflector across a hyperplane \( H \).
+
+\begin{enumerate}
+    \item[(a)] If a vector lies in the \( n \) dimensional hyperplane \( H \) it will not be affected by \( F \). Therefore it is an eigenvector with eigenvalue 1. Similarly, if a vector is in the one dimensional vector space spanned by \( v \) it will become its negative. Therefore it is an eigenvector with eigenvalue \( -1 \). Since \( \operatorname{span}(v) \) and \( H \) have dimensions summing to \( n \), then these are all the eigenvectors/values.
+
+        Suppose \( \lambda \) is an eigenvalue of \( F \) with eigenvector \( x \). Write,
+        \begin{align*}
+            \lambda x = Fx=\left(I-2 \dfrac{vv^*}{v^*v}\right)x = x-2 \dfrac{v^*x}{vv^*} v
+        \end{align*}
+
+        So,
+        \begin{align*}
+            (1-\lambda)x=2 \dfrac{v^*x}{v^*v} v
+        \end{align*}
+
+        Suppose \( v^*x=0 \). Then \( \lambda = 0 \) and \( x \) is any vector orthogonal to \( v \).
+
+        Now suppose \( v^*x\neq 0 \). Then \( x \) is a constant multiple of \( v \). Rearrange to,
+        \begin{align*}
+            (1-\lambda)x=2 \dfrac{v^*v}{v^*v}x = 2x
+        \end{align*}
+        So \( \lambda=-1 \), and as stated above \( x \) is a constant multiple of \( v \). 
+
+        These correspond exactly with the geometric understanding above.
+
+    \item[(b)]
+        The determinant is equal to the product of the eigenvalues. As explained above, the eigenvalue \( 1 \) occurs only once (if \( x \) is a scalar multiple of \( v \)). Therefore \( \det(F)=-1 \).
+
+    \item[(c)]
+        Let \( x \) be any vector and define \( c=2(v^*x)/(v^*v) \).
+
+        Therefore,
+        \begin{align*}
+            \norm{Fx}^2 = \norm{\left(I-2\dfrac{vv^*}{v^*v}\right)x}^2 = \norm{x-cv}^2 = (x-cv)^*(x-cv) = x^*x-cx^*v-\overline{c}v^*x+\overline{c}cv^*v
+        \end{align*}
+
+        Recalling that \( v^*x=\overline{x^*v} \),
+        \begin{align*}
+            -cx^*v-\overline{c}v^*x+\overline{c}cv^*v = -2 \dfrac{(v^*x)(x^*v)}{v^*v}-2 \dfrac{(x^*v)(v^*x)}{v^*v}+4 \dfrac{(v^*x)(x^*v)}{v^*x} = 0
+        \end{align*}
+
+        Therefore, \( \norm{Fx}^2=\norm{x}^2 \). Since norms are positive, \( \norm{Fx}=\norm{x} \). This means \( F \) does not stretch any vectors (i.e. the image of a unit sphere is a unit sphere). This proves all singular values are 1.      
+
+\end{enumerate}
+
+\end{solution}
+
+
+\begin{problem}[Exercise 10.4]
+Consider the \( 2\times 2 \) orthogonal matrices
+\begin{align*}
+    F=\left[\begin{array}{cc}-c & s \\ s & c\end{array}\right], J=\left[\begin{array}{cc}c & s \\ -s & c\end{array}\right]
+\end{align*}
+where \( s=\sin\theta \) and \( c=\cos(\theta) \) for some \( \theta \). The first matrix has \( \det(F)=-1 \) and is a reflector. The special case of a Householder reflector in dimension 2. The second has \( \det(J)=1 \) and effects a rotation instead of a reflection. Such a matrix is called a Givens rotation.
+\begin{enumerate}
+    \item[(a)] Describe exactly what geometric effects left-multiplications by \( F \) and \( J \) have on the plane \( \RR^2 \).
+    \item[(b)] Describe an algorithm for QR factorization that is analogous to Algorithm 10.1 but based on Givens rotations instead of Householder reflections.
+\end{enumerate}
+\end{problem}
+
+\begin{solution}[Solution]
+    \begin{enumerate}
+    \item[(a)] 
+
+        Since \( \det(F)= -\cos^2(\theta)-\sin^2(\theta) = -1 \), it is a reflector. Clearly it is not the identity, so in \( \RR^2 \) it must reflect across a 1 dimensional vector space. Suppose \( v \) is in this vector space. Then \( Fv = v \) so \( v\in\ker(I-F) \).
+
+        Observe \( v=[\sin(\theta/2),\cos(\theta/2)]^* \) satisfies this condition. So \( F \) is a reflection across \( \pi/2-\theta/2 \).
+
+
+        Since \( \det(J) = \cos^2(\theta)\sin^2(\theta)=1 \), \( J \) is a rotator. Observe \( J[1,0]^* = [\cos(\theta),-\sin(\theta)]^* \). That is, \( J \) rotates \( [1,0]^* \) clockwise by \( \theta \) about the origin. Since rotators rotate all vectors by the same amount, left multiplication by \( J \) effects a rotation clockwise by \( \theta \) about the origin.
+        
+    \item[(b)] In QR factorization, the key is taking \( v\to\norm{v}e_1 \) during each step of the process. 
+        Rather than using a reflector, we could use a rotator to take \( v\to\norm{b}e_1 \).
+
+        However, we can only rotate in one planes. To use a single Givens rotation would require us to rewrite \( v \) with respect to another basis such that \( v \) and \( \norm{v}e_1 \) were in some plane spanned by 2 basis vectors. Rather than doing this, we can successively rotates on the planes spanned first by the \( k \) and \( (k-1) \) basis to eliminate an entry in the \( k \)-th component, then in the \( (k-1) \) and \( (k-2) \) dimensions to eliminate the \( (k-1) \)-th component, and so on.
+
+        Let \( a_k=v^{(0)}=[v_1, ...., v_k]^* \) be the \( m-k \) through \( m \) entries of the \( k-th  \) column of \( A \). 
+        
+        Define, 
+        \begin{align*}
+            \theta_{i+1}=\operatorname{atan2}(v^{(i)}_{k-i},v^{(i)}_{k-i-1})
+        \end{align*}
+        to be the angle from the positive \( x \) axis to the point \( [v^{(i)}_{k-i},v^{(i)}_{k-i-1}]^T \). 
+        Then observe,
+        \begin{align*}
+            J(\theta)\left[\begin{array}{c}v^{(i)}_{k-i-1}\\v^{(i)}_{k-i}\end{array}\right] i
+                = \left[\begin{array}{c}\cos(\theta)v^{(i)}_{k-i-1}+\sin(\theta)v^{(i)}_{k-i}\\ -\sin(\theta)v^{(i)}_{k-i-1}+\cos(\theta)v^{(i)}_{k-i}\end{array}\right]
+                = \left[\begin{array}{c}\cos(\theta)v^{(i)}_{k-i-1}+\sin(\theta)v^{(i)}_{k-i}\\ 0 \end{array}\right]
+        \end{align*} 
+
+        Define,
+        \begin{align*}
+            v^{(i+1)} = Q_{ki}v^{(i)}=\left[\begin{array}{ccc}I_{k-i-2} \\ & J(-\theta_i) \\ & & I_{i}\end{array}\right]v^{(i)} 
+                %= [v_1, ..., v_{k-2}, \cos(\theta) v_{k-1} + \sin(\theta)v_k,0]^*
+        \end{align*}
+        
+        Let \( Q_k=Q_{kk}...Q_{k2}Q_{k1} \) so that \( Q_kv = [x,0,...,0]^* \) for some entry \( x \).
+
+        Then define,
+        \begin{align*}
+            E_{k} = \left[\begin{array}{cc}I_{m-k}\\&Q_k\end{array}\right]
+        \end{align*}
+
+        Then apply \( E_{m-n+1}...E_{m-2}E_{m-1} A \) to get something upper triangular.
+
+
+        I wasn't sure about the correctness of the above algorithm so I I thought it wouldn't be that annoying to implement this in scipy to check myself. After spending too much time debugging indices (now I understand why matlab is 1 indexed) we have some working code:
+\begin{lstlisting}
+# returns Q,R
+def givens_qr(A):
+    np.set_printoptions(precision=5)
+    m,n=np.shape(A)
+    E=np.identity(m)
+    for i in range(m-1):
+        v=A[i:,i]
+        k=m-i
+        Qk=np.identity(k)
+        for j in range(1,k):
+            theta=np.arctan2(v[k-j],v[k-j-1])
+            Qj=np.identity(k)
+            Qj[k-j-1:k-j+1,k-j-1:k-j+1]=np.array([[sp.cos(theta),sp.sin(theta)],[-sp.sin(theta),sp.cos(theta)]])
+            v=Qj@v
+            Qk=Qj@Qk
+        
+        Ek=np.identity(m)
+        Ek[m-k:m,m-k:m]=Qk
+        
+        E=Ek@E
+        A=Ek@A
+
+    return(A,sp.transpose(E))
+\end{lstlisting}
+
+\end{enumerate}
+
+\end{solution}
+
+\begin{problem}[Exercise 11.3]
+Take \( m=50, n=12 \). Using MATLAB's {\tt linspace} function, define \( t \) to be the \( m \)-vector corresponding to linearly spaced grid points form 0 to 1. Using MATLAB's {\tt vander} and {\tt fliplr}, define \( A \) to be the \( m\times m \) matrix associated with least squares fitting on this grid by a polynomial of degree \( n-1 \). Take \( b \) to be the function \( \cos(4t) \) evaluated at the grid. Now, calculate and print (to sixteen-digit precision) the least square coefficient vector \( x \) by the following methods:
+\begin{enumerate}
+    \item[(a)] Formation and solution of the normal equations, using MATLAB's {\tt \textbackslash },
+    \item[(d)] QR factorization computed by MATLAB's {\tt qr}
+    \item[(e)] {\tt x = A\textbackslash b} in MATLAB
+    \item[(f)] SVD, using MATLAB's {\tt svd}
+    \item[(g)] The calculations above will produce four lists of twelve coefficients. In each list, shade with red pen the digits that appear to be wrong (affected by rounding error. Comment on what differences you observe. Do the normal equations exhibit instability? You do not have to explain your observations.
+\end{enumerate}
+\end{problem}
+
+\begin{solution}[Solution]
+We use the methods described in this chapter to solve a least squares solution in the listed ways. Instead of MATLAB we use the analogous NumPy functions.
+\begin{lstlisting}
+def exercise_11_3():
+    np.set_printoptions(precision=16)
+    m,n=50,12
+    
+    # choose 50 linearly npaced grid points on the interval [0,1]
+    ls=np.linspace(0,1,m)
+    
+    # evaluate 11th degree polynomial at grid points
+    A=np.array([[ls[i]**j for j in range(n)] for i in range(m)])
+
+    # evaluate function at gridpoints
+    b=np.transpose(np.cos(4*ls))
+    
+    # solve normal equation
+    At=np.transpose(A)
+    parta=np.linalg.solve(At@A,At@b)
+    
+    # QR then solve
+    Q,R=np.linalg.qr(A,mode='reduced')
+    partd=np.linalg.solve(R,np.transpose(Q)@b)[0]
+    
+    # solve least squares directly
+    parte=np.linalg.lstsq(A,b)[0]
+
+    # SVD then solve
+    U,s,Vh=np.linalg.svd(A,full_matrices=False)
+    w=np.linalg.lstsq(np.diag(s),np.transpose(U)@b)[0]
+    partf=np.transpose(Vh)@w
+    
+    print(np.transpose([parta,partd,parte,partf]))
+\end{lstlisting}
+
+This gives output:
+
+{\tt\scriptsize
+\begin{tabular}{rrrr}
+    \textrm{(a) normal equations} & \textrm{(d) QR factorization} & \textrm{(e) direct solve} & \textrm{(f) SVD factorization} \\
+    9.9999999818173035e-01 &  \phantom{-}1.0000000009965979e+00  &  1.0000000009965979e+00  & 1.0000000009965979e+00 \\
+    \color{red} 2.1259641665186701e-07 & -4.2274272260556245e-07  & -4.2274265177333348e-07 & -4.2274272837872218e-07 \\
+ -8.0000021885339176e+00 & -7.9999812356914406e+00  & -7.9999812356934301e+00 & -7.9999812356912292e+00 \\
+    \color{red} -4.1462123573614304e-05 & -3.1876317444057278e-04  & -3.1876314993206645e-04 & -3.1876317678825039e-04 \\
+  1.0667499807681406e+01 &  1.0669430795550085e+01  &  1.0669430795381054e+01 &  1.0669430795563699e+01 \\
+    \color{red} -5.8214001430143755e-03 & -1.3820286633722034e-02  & -1.3820285916466446e-02 & -1.3820286680574223e-02 \\
+    \color{blue} -5.6680433964156123e+00 & -5.6470756308378469e+00  & -5.6470756327989022e+00 & -5.6470756307355092e+00 \\
+    \color{red} -3.9601899719993561e-02 & -7.5316018359055548e-02  & -7.5316014841892986e-02 & -7.5316018505332760e-02 \\
+    \color{blue} 1.6541609690516932e+00 &  1.6936069567962235e+00  &  1.6936069526864230e+00 &  1.6936069569330794e+00 \\
+    \color{red} 3.3293694535084475e-02 &  6.0321134788960951e-03  &  6.0321164899116431e-03 &  6.0321133980698605e-03 \\
+    \color{blue} -3.8495713040492091e-01 & -3.7424170534789569e-01  & -3.7424170660312983e-01 & -3.7424170532064682e-01 \\
+    \color{blue} 8.9869175581991409e-02 &  8.8040576403572934e-02  &  8.8040576630669998e-02 &  8.8040576399611048e-02 
+\end{tabular}
+}
+\begin{enumerate}
+    \item[(g)] We shade with red entries which appear to be wrong, and with blue entries which differ from their analogous entries with other methods by more than a few decimal points. 
+
+        Note that the normal equations differ quite significantly from the other methods, displaying the numerical instability of the algorithm. None of the methods agreed entirely, but the other methods generally agreed to at least 10 decimal places. 
+\end{enumerate}
+
+\end{solution}
+
+\begin{problem}[Exercise]
+Consider the following least squares approach for ranking sports teams.  Suppose we have four
+college football teams, called simply T1, T2, T3, and T4.  These four teams play each other 
+with the following outcomes:
+%
+\begin{itemize}
+\item T1 beats T2 by 4 points:  21 to 17.
+\item T3 beats T1 by 9 points:  27 to 18.
+\item T1 beats T4 by 6 points:  16 to 10.
+\item T3 beats T4 by 3 points:  10 to 7.
+\item T2 beats T4 by 7 points:  17 to 10.
+\end{itemize}
+%
+To determine ranking points $r_1 , \ldots , r_4$ for each team, we do a least squares fit to the
+overdetermined linear system:
+\begin{eqnarray*}
+r_1 - r_2 & = & 4 , \\
+r_3 - r_1 & = & 9 , \\
+r_1 - r_4 & = & 6 , \\
+r_3 - r_4 & = & 3 , \\
+r_2 - r_4 & = & 7
+\end{eqnarray*}
+This system does not have a unique least squares solution, however.  
+%
+\begin{enumerate}
+\item[(a)] Show that if $( r_1 , \ldots , r_4 )^T$ solves the least squares problem above then so does the vector $( r_1 + c , \ldots , r_4 + c )^T$ for any constant $c$.
+\\%
+To make the solution unique, we can fix the total number of ranking points, say, at 20.  To do this, we add the following equation to those listed above:
+\[
+r_1 + r_2 + r_3 + r_4 = 20 .
+\]
+\item[(b)] Explain why the least squares solution to the six equations listed will satisfy this
+last equation exactly.
+\item[(c)] Use Matlab to determine the values $r_1$, $r_2$, $r_3$, $r_4$ that most closely
+satisfy these equations, and based on your results, rank the four teams.
+[This method of ranking sports teams is a simplification of one introduced by Ken Massey in 1997.
+It has evolved into a part of the famous BCS (Bowl Championship Series) model for ranking college
+football teams and is one factor in determining which teams play in bowl games.]
+\end{enumerate}
+
+\end{problem}
+
+
+\begin{solution}[Solution]
+\begin{enumerate}
+    \item[(a)] 
+     We write this system as \( Ar=b \) for,
+        \begin{align*}
+            A=\left[\begin{array}{cccc}1&-1&0&0\\-1&0&1&0\\1&0&0&-1\\0&0&1&-1\\0&1&0&-1\end{array}\right] && r=\left[\begin{array}{c}r_1\\r_2\\r_3\\r_4\end{array}\right] && b=\left[\begin{array}{c}4\\9\\6\\3\\7\end{array}\right]
+        \end{align*}
+
+       Let \( c \) be a constant and define \( s=(c,c,c,c) \). Observe \( s\in\operatorname{ker}(A) \). Let \( r=(r_1, ..., r_4)^T \) so that \(  (r_1+c, ..., r_4+c)^T  = r+s\). 
+
+        Then clearly,
+        \begin{align*}
+            \norm{b-Ar} = \norm{b-Ar-As} = \norm{b-A(r+s)}
+        \end{align*}
+        
+        This proves that if \( r \) is a least squares solution to the system \( Ar=b \), then \( r+s \) is also a solution. \qed
+        
+    \item[(b)] To make the solution unique we append the equation \( r_1+r_2+r_3+r_4=20 \) so that, 
+         \begin{align*}
+             A=\left[\begin{array}{cccc}1&-1&0&0\\-1&0&1&0\\1&0&0&-1\\0&0&1&-1\\0&1&0&-1\\1&1&1&1\end{array}\right] && r=\left[\begin{array}{c}r_1\\r_2\\r_3\\r_4\end{array}\right] && b=\left[\begin{array}{c}4\\9\\6\\3\\7\\20\end{array}\right]
+        \end{align*}
+
+        Denote the old system with 5 equations by \( A_0 \). From above, if \( (r_1, ..., r_4) \) is a solution then so is \( (r_1+c, ..., r_4+c) \). By appropriate choice of \( c \) we can find a least squares solution such that \( r_1+c+...+r_4+c = r_1+...+r_4+4c\) has any value. Moreover, this choice of \( c \) is uniquely determined by the value of the sum.
+        
+        Observe \( \norm{b-Ar}^2 = \norm{b-A_0r}^2 + (20-(r_1+r_2+r_3+r_4))^2 \). The first term is minimized for a least squares solution to \( A_0r=b \). The second term, \( (20-(r_1+...+r_4))^2 \), is non-negative. We have just argued that there is a least squares solution to \( A_0r=b \) such that \( r_1+...+r_4=20 \). Then the second term is zero and therefore minimal.
+
+        Any vector which is not a least squares solution will not minimize the first term, and any other least squares solution to \( A_0r=b \) will not minimize the second term. Finally, since the square function is strictly increasing, \( \norm{b-Ar} \) is minimized when \( \norm{b-Ar}^2 \) is minimized. Therefore, the least squares solution to \( Ar=b \) is the \textit{unique} least squares solution to \( A_0r=b \) which satisfies \( r_1+...+r_4=20 \).
+
+
+    \item[(c)]
+We solve using NumPy,
+\begin{lstlisting}
+def exercise_4_4():
+    A=np.array(
+            [[1,-1,0,0],
+             [-1,0,1,0],
+             [1,0,0,-1],
+             [0,0,1,-1],
+             [0,1,0,-1],
+             [1,1,1,1]]
+            )
+    b=np.transpose(np.array([[4,9,6,3,7,20]]))
+    At=np.transpose(A)
+    x=np.linalg.solve(At@A,At@b)
+    print(x)
+\end{lstlisting}
+
+        This gives solution for \( r \),
+\begin{lstlisting}
+[[ 5.25 ]
+ [ 4.625]
+ [ 9.125]
+ [ 1.   ]]
+\end{lstlisting}
+
+        That is,
+        \begin{align*}
+            r_1=5.25 && r_2=4.625 && r_3=9.125 && r_4=1 
+        \end{align*}
+
+        So the least squares fit with this method ranks the teams from best to worst as, \( T3, T1, T2, T4 \).
+
+        This corresponds at the very least roughly with our intuition, since team 3 never lost, teams 1 and 2 lost, but team 1 won more than team 2 (including a head to head win) and team 4 lost all their games).
+
+\end{enumerate}
+
+\end{solution}
+
+
+\end{document}
