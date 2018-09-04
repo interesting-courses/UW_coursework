@@ -8,15 +8,16 @@ As I upload files I am going through them to standardize formatting and correct 
 In order to compile the LaTeX files you will need to download the `TeX_headers` folder. I use XeLaTeX to generate the PDF files, but pdflatex may work.
 
 ### Repository Contents
-
- -[ ] AMATH 514 (Winter 2018)
- -[ ] AMATH 561 (Autumn 2017)
- -[ ] AMATH 562 (Winter 2018)
- -[ ] AMATH 563 (Spring 2019)
- -[ ] AMATH 567 (Autumn 2017)
- -[x] AMATH 584 (Autumn 2017)
- -[ ] AMATH 585 (Winter 2018)
- -[ ] AMATH 586 (Spring 2018)
+Course | Date Taken | Uploaded | Corrected 
+-|-|-|-
+AMATH 514 | Winter 2018 | | 
+AMATH 561 | Autumn 2017 | |
+AMATH 562 | Winter 2018 | |
+AMATH 563 | Spring 2019 | |
+AMATH 567 | Autumn 2017 | |
+AMATH 584 | Autumn 2017 | yes | yes
+AMATH 585 | Winter 2018 | |
+AMATH 586 | Spring 2018 | |
  
  ### Note on Academic Integrity
 Copying solutions from any source is not only detrimental to your own learning but is plagarism. Don't do this. If you do end up looking up a solution for an assignment, cite your source.
