@@ -1,0 +1,281 @@
+\documentclass[10pt]{article}
+\usepackage[T1]{fontenc}
+
+% Document Details
+\newcommand{\CLASS}{AMATH 585}
+\newcommand{\assigmentnum}{Assignment 4}
+
+\usepackage[margin = 1.15in, top = 1.25in, bottom = 1.in]{geometry}
+
+\input{../../TeX_headers/title.tex} % Title Styling
+\input{../../TeX_headers/sfftoc.tex} % General Styling
+\input{../../TeX_headers/styling.tex} % General Styling
+\input{../../TeX_headers/code.tex} % Code Display Setup
+\input{../../TeX_headers/math.tex} % Math shortcuts
+\input{../../TeX_headers/problem.tex} % Problem Environment
+
+\newcommand{\note}[1]{\textcolor{red}{\textbf{Note:} #1}}
+
+\hypersetup{
+   colorlinks=true,       % false: boxed links; true: colored links
+   linkcolor=violet,          % color of internal links (change box color with linkbordercolor)
+   citecolor=green,        % color of links to bibliography
+   filecolor=magenta,      % color of file links
+   urlcolor=cyan           % color of external links
+}
+
+
+\begin{document}
+\maketitle
+
+
+
+\begin{problem}[Problem 1 (finite elements)]
+Use the Galerkin finite element method with continuous piecewise linear basis functions to solve the problem
+\[ - \frac{d}{dx} \left( (1 + x^2 ) \frac{du}{dx} \right) = f(x) ,~~0 \leq x \leq 1, \]
+\[ u(0) = 0,~~u(1) = 0 .\]
+\begin{enumerate}[label=(\alph*)]
+	\item Derive the matrix equation that you will need to solve for this problem.
+	\item Write a code to solve this set of equations.  You can test your code on a problem where you know the solution by choosing a function \( u(x) \) that satisfies the boundary conditions and determining what \( f(x) \) must be in order for \( u(x) \) to satisfy the differential equation. Try \( u(x) = x(1-x) \).  Then \( f(x) = 2(3 x^2 -x + 1) \).
+	\item Try several different values for the mesh size g.  Based on your results, what would you say is the order of accuracy of the Galerkin method with continuous piecewise linear basis functions?
+	\item Now try a nonuniform mesh spacing, say, \( x_i = (i/(m+1) )^2 \), \( i=0,1, \ldots , m+1 \).  Do you see the same order of accuracy, if \( h \) is defined as the maximum mesh spacing, \( \max_i ( x_{i+1} - x_i ) \)?
+    \item Suppose the boundary conditions were \( u(0) = a \), \( u(1) = b \).  Show how you would represent the approximate solution \( \hat{u} (x) \) as a linear combination of hat functions and how the matrix equation in part (a) would change.
+\end{enumerate}
+\end{problem}
+
+\begin{solution}[Solution]
+
+\begin{enumerate}
+    \item[(a)]
+        Define,
+        \begin{align*}
+            \mathcal{L} = -\dfrac{d}{dx} \left( (1+x^2) \dfrac{d}{dx} \right)
+        \end{align*}
+        
+        We seek a solution to \( \mathcal{L}u = f \) subject to \( u(0) = u(1) = 0 \).
+
+        Define \( \langle\cdot,\cdot\rangle \) as \( \langle f,g\rangle = \int_{0}^{1}f(x)g(x)dx \).
+
+       Suppose \( u \) satisfies \( \mathcal{L}u = f \), \( u(0) = u(1) = 0 \). Then,
+        \begin{align*}
+            \langle \mathcal{L}u, \varphi \rangle &= \int_{0}^{1}\mathcal{L}u \varphi(x) dx
+            = \int_{0}^{1}f(x)\varphi(x) = \langle f,\varphi \rangle
+        \end{align*}
+        for all functions \( \varphi \).
+
+        First note that, integrating by parts we have,
+        \begin{align*}
+            \langle \mathcal{L}u,\varphi\rangle = \int_{0}^{1} - \dfrac{d}{dx} \left( (1+x^2) \dfrac{du}{dx} \right)\varphi(x)dx = \left[ - \left( (1+x^2) \dfrac{du}{dx} \right)\varphi(x) \right]_0^1 - \int_{0}^{1}(1+x^2) \dfrac{du}{dx} \varphi'(x) dx
+        \end{align*}
+        
+        Assuming \( du/dx \) is ``well behaved'' and \( \varphi(0) = \varphi(1) = 0 \), we can simplify the above expression to,
+        \begin{align*}
+            \langle \mathcal{L} u,\varphi \rangle  = -\int_{0}^{1}(1+x^2) u'(x)\varphi'(x) dx
+        \end{align*}
+        
+
+        For \( i=1,2,\ldots, m \) define
+        \begin{align*}
+            \varphi_i(x) = \begin{cases}
+                (x-x_{i-1})/(x_i-x_{i-1}) & x\in[x_{i-1},x_i] \\
+                (x_{i+1}-x)/(x_{i+1}-x_i) & x\in[x_i,x_{i+1}] \\
+                0 & \text{otherwise}
+            \end{cases}            
+        \end{align*}
+
+        Then \( \{ \varphi_i(x)\}_{i=1}^{m} \) form a basis for \( S = \langle\varphi : \varphi \text{ picewise linear continuous } \text{ with }\varphi(0) = \varphi(1) = 0  \} \).        
+
+        Suppose \( \hat{u}\in S \). Then, for some \( c_1, c_2, \ldots, c_n\) we can write,
+        \begin{align*}
+            \hat{u} = \sum_{i=1}^{m}\varphi_i(x)
+        \end{align*}
+        
+        Suppose \( \hat{u} \) satisfies,
+        \begin{align*}
+            \langle \mathcal{L} \hat{u}, \varphi_i \rangle = \langle f, \varphi_i \rangle, && \forall i=1,2,\ldots,m
+        \end{align*}
+        
+        Then, for any \( \varphi = \sum_{i=1}^{n}d_i \varphi_i \in S \), we have,
+        \begin{align*}
+            \langle \mathcal{L} \hat{u} - f, \varphi \rangle  = \langle \mathcal{L}\hat{u} -f , \sum_{i=1}^{n}d_i\varphi_i \rangle = 
+            \sum_{i=1}^{n}d_i\langle \mathcal{L} \hat{u} -f , \varphi_i\rangle = 0
+        \end{align*}
+        
+        This means for any \( \varphi\in S \) we will satisfy the weak form of our differential equation.
+
+        For each \( i=1,2,\ldots, n \) we have,
+        \begin{align*}
+            \langle \mathcal{L} \hat{u}, \varphi_i\rangle = -\int_{0}^{1}(1+x^2)\hat{u}'(x)\varphi_i'(x)dx
+        \end{align*}
+        
+        Since \( \hat{u} \) is a linear combination of \( n \) basis functions so is \( \hat{u}' \). This gives a linear system,
+        \begin{align*}
+            A\vec{c} = \vec{f}
+        \end{align*}
+        where \( c_i \) is the \( i \)-th coefficient of our decomposition of \( \hat{u} \), and \( f_i = \langle f, \varphi_i \rangle
+        \).
+
+
+        Writing out the matrix \( A \) we have,
+        \begin{align*}
+            a_{ij} &= \langle \mathcal{L}\varphi_j, \varphi_i\rangle 
+            = \int_{0}^{1}(1+x^2)\varphi_j'(x)\varphi_i'(x)dx 
+        \end{align*}
+        
+        Clearly \( \varphi_j'(x)\varphi_i'(x) = 0 \) if \( j\not\in\{ i-1, i, i+1\} \) so the matrix is tridiagonal. It is also clear that the matrix is symmetric.
+
+        Write,
+        \begin{align*}
+            P(x) := \int_{}^{}(1+x^2)dx = x+x^3/3
+        \end{align*}
+
+        Thus,       
+        \begin{align*}
+            a_{i,i}
+            &= \int_{x_{i-1}}^{x_i}\dfrac{1+x^2}{(x_{i}-x_{i-1})^2}  dx +  \int_{x_{i}}^{x_{i+1}} \dfrac{1+x^2}{(x_{i+1}-x_{i})^2} dx
+            = \dfrac{P(x_{i})-P(x_{i-1})}{(x_{i}-x_{i-1})^2} + \dfrac{P(x_{i+1})-P(x_{i})}{(x_{i+1}-x_i)^2}
+        \end{align*}
+        \begin{align*}
+            a_{i,i-1} %= int_{0}^{1}(1+x^2) \varphi_{i-1}(x)\varphi_i(x) dx 
+            = -\int_{x_{i-1}}^{x_i}\dfrac{1+x^2}{(x_{i}-x_{i-1})^2}  dx 
+            = -\dfrac{P(x_i)-P(x_{i-1})}{(x_i-x_{i-1})^2}
+%            = -\dfrac{x_i+x_i^3/3 - x_{i-1}-x_{i-1}^3/3}{(x_i-x_{i-1})^2}
+%            = -\dfrac{3h+(x_i^3-x_{i-1}^3)}{3h^2}
+        \end{align*}
+ 
+
+        Similarly, given \( f(x) = 2(3x^2-x+1) \), write,
+        \begin{align*}
+            F(x) := \int_{}^{}f(x)dx = 2x^3-x^2+2x  && G(x):=\int_{}^{}xf(x) dx = 3x^4/2 - 2x^3/3 + x^2 
+        \end{align*}
+ 
+        Now, for \( i=1, ..., m \), we compute,
+        \begin{align*}
+            \langle f,\varphi_i \rangle &= \int_{x_{i-1}}^{x_i} f(x) \dfrac{x-x_{i-1}}{x_i-x_{i-1}}dx + \int_{x_i}^{x_{i+1}} f(x) \dfrac{x_{i+1}-x}{x_{i+1}-x_i}dx
+            \\&= \dfrac{G(x_i)-G(x_{i-1})-x_{i-1}(F(x_i)-F(x_{i-1}))}{x_i-x_{i-1}} + \dfrac{x_{i+1}(F(x_{i+1})-F(x_{i})) -(G(x_{i+1})-G(x_i))}{x_{i+1}-x_i} 
+        \end{align*}
+
+        This is useful given a specific \( f \) on the right hand side (maybe we are solving for some physical system). However, if we would like to  solve \( \mathcal{L} u = f \) for arbitrary \( f \) then we should integrate numerically. Using the midpoint rule we have,
+        \begin{align*}
+            \langle f,\varphi_i\rangle 
+            &\approx (x_i-x_{i-1}) \dfrac{ f(x_{i-1/2})(x_{i-1/2}-x_{i-1}) }{x_i-x_{i-1}} + (x_{i+1}-x_{i}) \dfrac{f(x_{i+1/2})(x_{i+1}-x_{i+1/2})}{x_{i+1}-x_{i+1/2}} 
+            \\&= f(x_{i-1/2})(x_{i-1/2}-x_{i-1})+ f(x_{i+1/2})(x_{i+1}-x_{i+1/2})
+        \end{align*}
+
+        On a given interval the midpoint rule is \( \mathcal{O}(h^3) \) so the order of our error is unaffected.         
+
+        In the case of a uniform mesh these equations can be simplified some as \( x_{i+1}-x_{i} = h \) for all \( i \).
+
+    \item[(b)] 
+        We implement the finite element method in Python. Note that for the uniform grid, the difference between consecutive nodes is always \( h \) so it would be appropriate to replace any instance of the difference with \( h \). However, for convenience, so that the code is usable for non-uniform meshes we have not implemented it in this way. We also implement numerical integration using the midpoint rule, however we have tested it with the analytic solution described above and it works to the same level of accuracy. 
+        \lstinputlisting[linerange=\#<startTeX>-\#<endTeX>]{hw4_1.py}
+    \item[(c)]
+        We iterate over a few values of mesh size. The results are shown in Table~\ref{uniform}. Based on these results it appears that the accuracy is order \( h^2 \), where \( h \) where is the (maximum) mesh spacing.
+        \begin{table}[H]\centering
+            \begin{tabular}{|c|c|c|} \hline
+                \( \max_i\{x_{i+1}-x_i\} \) & \( L_2 \) norm of error & infinity norm of error \\ \hline \hline
+                \input{uniform.txt}
+            \end{tabular}
+            \caption{error vs. mesh size on uniform mesh (actual solution in blue)}
+            \label{uniform}
+        \end{table}
+
+        \begin{figure}[H]\centering
+            \foreach \m in {10,100,1000,10000}{
+            \begin{subfigure}{.235\textwidth}
+                \includegraphics[width=\textwidth]{img/1/uniform_\m.pdf}
+                \caption{\(m+1 = \m \)}
+            \end{subfigure}
+            }
+        \caption{Solution on uniform grid}
+        \label{uniformPlots}
+        \end{figure}
+       
+
+    \item[(d)] 
+        We iterate over a few values of mesh size using a non-uniform mesh. The results are shown in Table~\ref{uniform}. Based on these results it appears that the accuracy is order \( h^2 \), where \( h \) is the maximum mesh spacing.
+        \begin{table}[H]\centering
+            \begin{tabular}{|c|c|c|} \hline
+                \( \max_i\{x_{i+1}-x_i\} \) & \( L_2 \) norm of error & infinity norm of error \\ \hline \hline
+                \input{non-uniform.txt}
+            \end{tabular}
+            \caption{error vs. mesh size on non-uniform mesh (actual solution in blue)}
+            \label{nonuniform}
+        \end{table}
+
+        \begin{figure}[H]\centering
+            \foreach \m in {10,100,1000,10000}{
+            \begin{subfigure}{.235\textwidth}
+                \includegraphics[width=\textwidth]{img/1/non-uniform_\m.pdf}
+                \caption{\(m+1 = \m \)}
+            \end{subfigure}
+            }
+        \caption{Solution on non-uniform grid}
+        \label{nonuniformPlots}
+        \end{figure}
+     
+    \item[(e)]
+        The basis for \( S \) defined above is no longer a basis if we allow the functions in \( S \) to be nonzero at the endpoints.        
+        We must extend our original basis to a new basis. A simple way to do this would be to define,
+        \begin{align*}
+            \varphi_0 = \begin{cases}
+                (x_1-x)/x_1 & x\in[0,x_1] \\
+                0 & \text{otherwise}
+            \end{cases} &&
+            \varphi_{m+1} = \begin{cases}
+                (x-x_m)/(x_{m+1}-x_m) & x\in[x_{n},x_{n+1}]\\
+                0 & \text{otherwise}
+            \end{cases}            
+        \end{align*}
+
+        If \( u(0) = a \) and \( u(1) = b \) we can now write,
+        \begin{align*}
+            \hat{u} = \sum_{i=0}^{m+1} c_i\varphi_i(x)
+        \end{align*}
+        where \( c_0 = a \) and \( c_{m+1} = b \) are given/known.
+        
+        The first and last equations in the matrix then become,
+        \begin{align*}
+            a\langle \mathcal{L}\varphi_0, \varphi_1\rangle
+            + c_1\langle \mathcal{L}\varphi_1, \varphi_1\rangle
+            + c_2\langle \mathcal{L}\varphi_2, \varphi_1\rangle
+            &= \langle \mathcal{L}\hat{u},\varphi_1 \rangle = \langle f, \varphi_1 \rangle \\ 
+            c_{m-1}\langle \mathcal{L}\varphi_{m-1}\varphi_m \rangle
+            +c_{m}\langle \mathcal{L}\varphi_{m1}\varphi_m \rangle
+            +b\langle \mathcal{L}\varphi_{m+1}\varphi_m \rangle
+            &= \langle \mathcal{L}\hat{u},\varphi_m \rangle = \langle f, \varphi_m \rangle 
+        \end{align*}
+        
+        Then, we can leave \( A \) unchanged and we modify \( f \) by subtracting, \( a\langle \mathcal{L}\varphi_0, \varphi_1\rangle \) from the first row, and \( b\langle \mathcal{L}\varphi_{m+1}\varphi_m \rangle \) from the last row.
+
+        Explicitly we have,
+        \begin{align*}
+            a\langle \varphi_0, \varphi_1 \rangle 
+            &= a\int_{x_0}^{x_1} \dfrac{1+x^2}{(x_1-0)^2}dx = a\dfrac{P(x_1)-P(x_0)}{(x_1-x_0)^2} = a \dfrac{P(x_1)}{ x_1^2 }\\
+            b\langle \varphi_{m+1}, \varphi_m \rangle 
+            &= b \int_{x_m}^{x_{m+1}} \dfrac{1+x^2}{(1-x_m)^2}dx = b \dfrac{P(1)-P(x_m)}{(1-x_m)^2} = b \dfrac{4/3-P(x_m)}{(1-x_m)^2}
+        \end{align*}
+
+        
+
+\end{enumerate}
+
+\end{solution}
+
+\begin{problem}[Problem 1 (spectral methods, {\tt chebfun})]
+Download the package {\tt chebfun} from {\tt www.chebfun.org}. This package works with functions that are represented (to machine precision) as sums of Chebyshev polynomials. It can solve 2-point boundary value problems using spectral methods.  Use {\tt chebfun} to solve the same problem as in the previous exercise and check the \( L_2 \)-norm and the \( \infty \)-norm of the error. 
+\end{problem}
+
+\begin{solution}[Solution]
+
+We implement this in MATLAB ):
+
+\lstinputlisting[]{hw4_2.m}
+
+This gives errors  \( 3.3859\times 10^{-15} \) and \( 4.6952\times 10^{-15} \) for the \( L_2 \) and infinity norms respectively.
+
+Note that according to the Chebfun guide the norm function returns ``the square root of the integral of the square of the absolute value over the region of definition''. This is the \( L_2 \) norm we are interested in.
+
+\end{solution}
+
+\end{document}

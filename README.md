@@ -16,7 +16,7 @@ AMATH 562 | Winter 2018 | |
 AMATH 563 | Spring 2019 | |
 AMATH 567 | Autumn 2017 | |
 AMATH 584 | Autumn 2017 | yes | yes
-AMATH 585 | Winter 2018 | |
+AMATH 585 | Winter 2018 | yes |
 AMATH 586 | Spring 2018 | |
  
  ### Note on Academic Integrity
