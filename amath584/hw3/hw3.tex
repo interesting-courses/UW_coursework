@@ -217,9 +217,9 @@ for $j=1$ to $n$
 \end{problem}
 
 \begin{solution}[Solution]
-We first prove the following: \textit{If \( F \) is full rank, and \( FA \) is well defined, then \( FA \) and \( A \) have the same rank.}
+We first prove the following: \textit{If \( F \) is rank \( m \) then \( FA \) and \( A \) have the same rank.}
 
-Indeed, let \( F \) be a full rank matrix, and let \( A \) be a matrix such that \( FA \) is well defined. By the rank-nullity theorem,  \( \ker(F)=\{0\} \) That is, \( Fu=0 \Leftrightarrow u=0 \). 
+    Indeed, let \( F \) be a rank \( m \) matrix compatible with \( A \). By the rank-nullity theorem \( \dim(\ker(F)) + \operatorname{rank}(F) = \dim\operatorname{dom}(F) \) so \( \ker(F)=\{0\} \). That is, \( Fu=0 \Leftrightarrow u=0 \). 
 
 Then, 
 \begin{align*}
