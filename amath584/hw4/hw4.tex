@@ -144,7 +144,7 @@ Determine the (a) eigenvalues, (b) determinant, and (c) singular values of a Hou
         These correspond exactly with the geometric understanding above.
 
     \item[(b)]
-        The determinant is equal to the product of the eigenvalues. As explained above, the eigenvalue \( 1 \) occurs only once (if \( x \) is a scalar multiple of \( v \)). Therefore \( \det(F)=-1 \).
+        The determinant is equal to the product of the eigenvalues. As explained above, the eigenvalue \( -1 \) occurs only once (if \( x \) is a scalar multiple of \( v \)). Therefore \( \det(F)=-1 \).
 
     \item[(c)]
         Let \( x \) be any vector and define \( c=2(v^*x)/(v^*v) \).
@@ -169,7 +169,7 @@ Determine the (a) eigenvalues, (b) determinant, and (c) singular values of a Hou
 \begin{problem}[Exercise 10.4]
 Consider the \( 2\times 2 \) orthogonal matrices
 \begin{align*}
-    F=\left[\begin{array}{cc}-c & s \\ s & c\end{array}\right], J=\left[\begin{array}{cc}c & s \\ -s & c\end{array}\right]
+    F=\left[\begin{array}{cc}-c & s \\ s & c\end{array}\right], && J=\left[\begin{array}{cc}c & s \\ -s & c\end{array}\right]
 \end{align*}
 where \( s=\sin\theta \) and \( c=\cos(\theta) \) for some \( \theta \). The first matrix has \( \det(F)=-1 \) and is a reflector. The special case of a Householder reflector in dimension 2. The second has \( \det(J)=1 \) and effects a rotation instead of a reflection. Such a matrix is called a Givens rotation.
 \begin{enumerate}
@@ -223,8 +223,7 @@ where \( s=\sin\theta \) and \( c=\cos(\theta) \) for some \( \theta \). The fir
 
         Then apply \( E_{m-n+1}...E_{m-2}E_{m-1} A \) to get something upper triangular.
 
-
-        I wasn't sure about the correctness of the above algorithm so I I thought it wouldn't be that annoying to implement this in scipy to check myself. After spending too much time debugging indices (now I understand why matlab is 1 indexed) we have some working code:
+We can implement this algorithm in python as,
 \begin{lstlisting}
 # returns Q,R
 def givens_qr(A):

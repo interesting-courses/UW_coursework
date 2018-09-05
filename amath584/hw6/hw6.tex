@@ -227,7 +227,7 @@ We then rewrite \( U = DU' \) with unit lower triangular matrix \( U' = L^T \) a
     =L^T
 \end{align*}
 
-Then, \( A = LDL^T \). Now rewrite \( D \) as the product of two diagonal matrices,
+    Then, \( A = LDL^T \). Now rewrite \( D \) as the square of a diagonal matrix denoted \( \sqrt{D} \). In particular,
 \begin{align*}
     \sqrt{D} = \left[\begin{array}{rrr} \sqrt{4} && \\ & \sqrt{15/4} &\\ & & \sqrt{10/3}\end{array}\right]
 \end{align*}
@@ -265,7 +265,11 @@ Since \( A_{1:1,1:1} \) is nonsingular, the first pivot position is nonzero, so 
 
 Now, suppose \( A \) has an LU decomposition. Then \( 0\neq \det(A) = \det(L)\det(U) \). The determinant of a triangular matrix is the product of the diagonal entries so \( U \) has no zeros on the diagonals. Thus, \( \det(L_{1:k,1:k})\neq 0 \) and \( \det(U_{1:k,1:l})\neq 0 \) for all \( k \) with \( 1\leq k\leq m \).
 
-Observe \( A_{1:k,1:k} = L_{1:k,1:k} U_{1:k,1:k} \). So, \( \det(A_{1:k,1:k}) = \det(L_{1:k,1:k} U_{1:k,1:k}) = \det(L_{1:k,1:k})\det(U_{1:k,1:k})\neq 0 \). This proves \( A_{1:k,1:k} \) is nonsingular for \( 1\leq k\leq m \).
+Observe \( A_{1:k,1:k} = L_{1:k,1:k} U_{1:k,1:k} \). Therefore,
+    \begin{align*}
+        \det(A_{1:k,1:k}) = \det(L_{1:k,1:k} U_{1:k,1:k}) = \det(L_{1:k,1:k})\det(U_{1:k,1:k})\neq 0
+    \end{align*}
+This proves \( A_{1:k,1:k} \) is nonsingular for \( 1\leq k\leq m \).
 
 
 Gaussian elimination produces an \( L \) which is unit lower triangular. Thus,
