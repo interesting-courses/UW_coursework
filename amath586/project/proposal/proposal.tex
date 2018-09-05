@@ -1,0 +1,82 @@
+\documentclass[10pt]{article}
+\usepackage[T1]{fontenc}
+
+% Document Details
+\newcommand{\CLASS}{AMATH 586}
+\newcommand{\assigmentnum}{Numerical SDE Solvers}
+
+\usepackage[margin = 1.5in, top = 1in, bottom = 1in]{geometry}
+\input{../../import/title.tex} % Title Styling
+\input{../../import/styling.tex} % General Styling
+\input{../../import/code.tex} % Code Display Setup
+\input{../../import/math.tex} % Math shortcuts
+
+% Problem
+\newenvironment{problem}[1]{\vspace{2em}{\large\sffamily\textbf{#1}}\itshape\par}{}
+
+\begin{document}
+\maketitle
+
+\section{Introduction}
+
+A Stochastic Differential Equation (SDE) is an equation of the form,
+\begin{align}
+    X_{t+s} - X_{t} = \int_{t}^{t+s} \mu(X_u,u)\d u + \int_{t}^{t+s} \sigma(X_u,u) \d W_u \label{intform}
+\end{align}
+where \( W_u \) denotes a standard Brownian Motion \cite{lorig}. This is often written (less formally) in  differential form,
+\begin{align}
+    \d X_t =  \mu(X_t,t)\d t + \sigma(X_t,t)\d W_t \label{diffform}
+\end{align}
+
+Here we note that the term corresponding to \( \d t \) is deterministic. This means that if \( \sigma \equiv 0 \) Equation (\ref{intform}) is just a standard initial value problem with initial condition given by \( X_t \). Brownian motion is characterized by four properties,
+\begin{enumerate}[nolistsep]
+    \item \( W_0 = 0 \)
+    \item \( W_t \) is continuous almost surley
+    \item \( W_t \) has independent increments (i.e. \( (W_d-W_c) \perp (W_b-W_a) \)  if \( 0\leq a\leq b\leq c\leq d \))
+    \item \( W_t - W_s \sim \mN(0,t-s) \) for \( 0\leq s\leq t \)
+\end{enumerate}
+
+This suggests a straightforward way of solving an SDE using a generalization of the Forward Euler method for initial value problems. In particular, over a small time interval \( \d t \) we can make the approximation,
+\begin{align*}
+    \int_{t}^{t+\d t} \mu(X_t,t)\d u = \mu(X_t,t)\d t
+\end{align*}
+Similarly, we can make the approximation,
+\begin{align*}
+    \int_{t}^{t+\d t} \sigma(X_t,t)\d W_u = \sigma(X_t,t)\d W_t, && \d W_t \sim \mN(0,\d t)
+\end{align*}
+
+Therefore, in order to advance the solution of one trajectory from \( t \) to \( t+\d t \), we must sample a normal random variable with mean zero and variance \( \d t \) and then use (\ref{diffform}) to compute the change in \( X \) over this time interval. This method is referred to as the Euler-Maruyama Method \cite{sdes}.
+
+Clearly there are many trajectories of this equation as the \( \d W_t \) term is stochastic. This means that for any stepping method, such as the one describe above, many trajectories must be computed to have information on the statistics of the solution.
+This observation gives rise to the following definition of congergence.
+\begin{definition}
+A discrete time approximation \( X^{(\d t)} \) is said to converge strongly to the solution \( X_t \) at time \( T \) if,
+\begin{align*}
+    \lim_{\d t\to 0}\bE\left[\left| X_T - X_T^{(\d t)} \right|\right] = 0
+\end{align*}
+and is said to converge strongly with order \( m \) if,
+\begin{align*}
+    \bE\left[\left| X_T - X_T^{(\d t)} \right|\right] = \mO(\d t^m)
+\end{align*}
+\end{definition}
+
+It turns out that the strong order of the Euler-Maruyama method is 1/2 (compared to Forward Euler on deterministic IVPs which is first order).
+Higher order methods have been developed, including methods based on Runge-Kutta solvers for initial value problems.
+
+\section{Proposal}
+For this project I intend to provide a mix of theoretical results along with numerical evidence for such results. In partiular, I hope to present a proof that the Euler-Maruyama method has strong order 1/2 and verify this numerically on one or two SDEs.
+
+Time pending, I would also like to present at least one higher order method and the numerical results of this algorithm on the same SDEs as above.
+
+\begin{thebibliography}{9}
+\bibitem{lorig}
+  Matthew Lorig,
+  \textit{Introduction to Probability and Stochastic Processes},
+  Course Notes
+
+\bibitem{sdes}
+  Timothy Sauer,
+  \textit{Numerical Solution of Stochastic Differential Equations in Finance}, online PDF, \url{http://math.gmu.edu/~tsauer/pre/sde.pdf}
+
+\end{thebibliography}
+\end{document}

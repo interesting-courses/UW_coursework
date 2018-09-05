@@ -17,7 +17,7 @@ AMATH 563 | Spring 2019 | |
 AMATH 567 | Autumn 2017 | |
 AMATH 584 | Autumn 2017 | yes | yes
 AMATH 585 | Winter 2018 | yes |
-AMATH 586 | Spring 2018 | |
+AMATH 586 | Spring 2018 | yes (except midterm) |
  
  ### Note on Academic Integrity
 Copying solutions from any source is not only detrimental to your own learning but is plagarism. Don't do this. If you do end up looking up a solution for an assignment, cite your source.

@@ -1,0 +1,142 @@
+\documentclass[11pt]{article}
+\usepackage[T1]{fontenc}
+
+% Document Details
+\newcommand{\CLASS}{AMATH 586}
+\newcommand{\assigmentnum}{Numerical SDE Solvers}
+
+\usepackage[margin = 1.5in, top = 1.25in, bottom = 1.25in]{geometry}
+\input{../../../import/title.tex} % Title Styling
+\input{../../../import/styling.tex} % General Styling
+\input{../../../import/code.tex} % Code Display Setup
+\input{../../../import/math.tex} % Math shortcuts
+
+\newcommand{\indep}{\rotatebox[origin=c]{90}{$\models$}}
+
+%\usepackage{algorithm}
+%\usepackage[noend]{algpseudocode}
+
+% Problem
+\newenvironment{problem}[1]{\vspace{2em}{\large\sffamily\textbf{#1}}\itshape\par}{}
+
+
+
+\begin{document}
+\maketitle
+
+\section{Introduction}
+A Stochastic Differential Equation (SDE) is an equation of the form,
+\begin{align}
+    \d X_t =  \mu(X_t,t)\d t + \sigma(X_t,t)\d W_t \label{diffform}
+\end{align}
+where \( W_t \) denotes a standard Brownian Motion \cite{lorig}.
+
+A solution to (\ref{diffform}) is an stochastic process which satisfies (\ref{diffform}). In particular, a solution can be written in integral form as,
+\begin{align}
+    X_{T} - X_{0} = \int_{0}^{T} \mu(t,X_t)\d t + \int_{0}^{T} \sigma(t,X_t) \d W_t \label{intform}
+\end{align}
+
+\section{Brownian Motion / It\^o Processes}
+There are many characterizations of Brownian Motion. Perhaps the most standard is the following definition.
+\begin{definition}
+A Brownian Motion is a stochastic process \( W = (W_t)_{t\geq0} \) defined on some probability space \( (\Omega,\mF,\bP) \) satisfying,
+\begin{enumerate}[nolistsep]
+    \item \( W_0 = 0 \)
+    \item \( (W_d-W_c) \indep (W_b-W_a) \) for \( 0\leq a\leq b\leq c\leq d \))
+    \item \( (W_t - W_s) \sim \mN(0,t-s) \) for \( 0\leq s\leq t \)
+    \item the map \( t \to W_t \) is continuous almost surely
+\end{enumerate}
+\end{definition}
+
+An It\^o drift-diffusion process is a process of the form,
+\begin{align*}
+    X_T = X_t +  \int_t^T \mu(s,X_s)\d s + \int_t^T \sigma(s,X_s)\d W_s
+\end{align*}
+
+
+\section{Stochastic Calculus}
+We first introduce Riemann--Stieltjes integrals.
+
+\begin{definition}
+For real valued functions \( f \) and \( g \) the Riemann--Stieltjes integral is defined as,
+\begin{align*}
+    \int_{a}^{b} f(x) \d g(x) := \lim\limits_{\norm{\Pi}\to 0} \sum_{i=0}^{n-1} f(c_i)(g(x_{i+1}) - g(x_i))
+\end{align*}
+where \( \Pi = \{a=x_0<x_1 < \cdots < x_n = b\} \) is a partition of \( [a,b] \), \( \norm{\Pi} \) is the length of the largest subinterval, and \( c_i \) is any point in \( [x_i,x_{i+1}] \).
+\end{definition}
+
+We note that if \( g(x) = x \) the Riemann--Stieltjes integral is the standard Riemann integral and that if \( g \) is continuously differentiable,
+\begin{align*}
+    f(g(T)) - f(g(t)) = \int_t^T \d f(g(s)) = \int_t^T f'(g(s))g'(s) \d s
+\end{align*}
+
+Brownian motion and many processes involving Brownian motion are not differentiable. It\^o's Lemma gives us a way to compute the analogous result for a class of stochastic processes called It\^o (drift-diffussion) processes. For our purposes we can think of It\^o processes as processes with an integral with respect to \( t \) and an integral with respect to \( W_t \).
+
+\begin{align*}
+    \d f = \pp{f}{t}\d t + \pp{f}{x}\d x + \dfrac{1}{2} \pp[2]{f}{x}\d x^2 + \cdots
+\end{align*}
+
+We can replace \( \d x \) with \( \d X_t = \mu \d t + \sigma \d W_t \) and simplify using the heuristics,
+\begin{align}
+    \d t \d t = 0, && \d t \d W_t = 0, && \d W_t \d W_t = \d t \label{heuristics}
+\end{align}
+
+Thus,
+\begin{align*}
+    \d f &= \pp{f}{t}\d t + \pp{f}{x}(\mu \d t + \sigma \d W_t) + \dfrac{1}{2}\pp[2]{f}{x} ( \mu^2 \d t^2 + \mu\sigma \d t\d W_t + \sigma^2 \d W_t ) \\
+    &= \left( \pp{f}{t} + \mu \pp{f}{x} + \dfrac{\sigma^2}{2} \pp[2]{f}{x} \right)\d t + \sigma \pp{f}{x}\d W_t
+\end{align*}
+
+It\^o's Lemma can be generalized to functions and processes of higher dimension.
+\begin{lemma}[It\^o] For \( f:\bR^n\to\bR^n \) sufficiently differentiable and It\^o process \( X_t = [X_t^1, X_t^2, \ldots X_t^n]^T \),
+\begin{align}
+    \d f(X_t) = \sum_{i=1}^{n} \left[\pp{}{x_i}f(X_t)\right] \d X_t^i + \dfrac{1}{2} \sum_{i=1}^{n} \sum_{j=1}^{n}\left[ \pp{}{x_i} \pp{}{x_j} f(X_t) \right] \d [X^i,X^j]_t \label{itond}
+\end{align}
+\end{lemma}
+
+Similar to before, we compute \( \d[X^i,X^j]_t \) by expanding \( (\d X^i)(\d X^j) \) and using the heuristics in (\ref{heuristics}).
+
+Consider the special case when \( n=2 \), \( X_t^1 = t\), and \( X_t^2 = X_t \). Using our heuristics in (\ref{heuristics}) we have \( \d[X^1,X^2]_t = (\d t)(\d X_t) = 0 \) and \( \d[X^1,X^1] = (\d t)(\d t) = 0 \). Therefore, by (\ref{itond}),
+\begin{align}
+    \d f(t,X_t) &= \pp{}{t} f(t,X_t) + \pp{}{x} f(t,X_t) \d X_t + \dfrac{1}{2} \pp[2]{}{x}f(t,X_t) \d [X,X]_t
+    \\ &= \left( \pp{}{t} + \dfrac{1}{2}\pp[2]{}{x} \right)f(t,X_t)\d t + \pp{}{x} f(t,X_t) \d X_t \label{2dito}
+\end{align}
+
+\section{Example Processes}
+In this section we provide some results about a few important stochastic processes. Proofs of the results presented here are readily available on the internet.
+
+For constants \( \theta, \mu, \sigma \), an Ornstein--Uhlenbeck (OU) process satisfies,
+\begin{align}
+    \d X_t = \theta(\mu-X_t) \d t + \sigma \d W_t, && \theta > 0 \label{OUeqn}
+\end{align}
+
+We note that if \( X_t \) is away from \( \mu \) it will tend towards this value in expectation. Figure~\ref{OU_em} shows Euler--Maruyama method applied to (\ref{OUeqn}). As expected, the trajectories all end up ``centered'' about \( \mu \). More precisely, (\ref{OUeqn}) has solution,
+\begin{align*}
+    X_t = X_0 \exp(-\theta t) + \mu(1-\exp(-\theta t)) + \sigma \int_0^t \exp(-\theta(t-s))\d W_s
+\end{align*}
+
+The mean of \( X_t \) is,
+\begin{align*}
+    \bE[X_t] = (X_0 - \mu)\exp \left( -\theta t \right)+ \mu
+\end{align*}
+Likewise, the variance of \( X_t \) is,
+\begin{align*}
+    \bE\left[(X_t-\bE[X_t])^2\right] = \dfrac{\sigma^2}{2\theta}(1-\exp(-2\theta t))
+\end{align*}
+
+
+For constants \( \mu \) and \( \sigma \) a Geometric Brownian Motion satisfies,
+\begin{align}
+    \d X_t = \mu X_t \d t + \sigma X_t \d W_t, && t\in[0,T] \label{GBMeqn}
+\end{align}
+
+The solution to (\ref{GBMeqn}) is,
+\begin{align*}
+    X_t = X_0 \exp\left( \left( \mu - \dfrac{\sigma^2}{2} \right)t + W_t \right)
+\end{align*}
+
+\bibliography{../project}{}
+\bibliographystyle{amsplain}
+
+
+\end{document}
