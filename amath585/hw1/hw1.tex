@@ -374,7 +374,7 @@ leave the equation in the form above.]
             \dfrac{1}{2h}[u_{m+2} - u_{m}] = 0
         \end{align*}
         
-        Then \( u_{m+1} = u_{m-1} \). We substitute this into our equation above giving,
+        Then \( u_{m+2} = u_{m} \). We substitute this into our equation above giving,
         \begin{align*}
             f(x_{m+1}) &= \dfrac{1}{h^2}[(1+(x_{m+1}-\tfrac{h}{2})^2)u_{m} - 2(1+x_{m+1}^2+(\tfrac{h}{2})^2)u_{m+1} + (1+(x_{m+1}+\tfrac{h}{2})^2)u_{m+2}    ] \\ 
             &= \dfrac{1}{h^2}[(1+(x_{m+1}-\tfrac{h}{2})^2)u_{m} - 2(1+x_{m+1}^2+(\tfrac{h}{2})^2)u_{m+1} + (1+(x_{m+1}+\tfrac{h}{2})^2)u_{m}    ] \\ 
@@ -411,7 +411,7 @@ for m in [10,100,1000,10000]:
 
         \begin{table}[H]\centering\tt
             \begin{tabular}{|r|l|} \hline 
-                \( h \) & \( \sqrt{h}\norm{u-u(x)} \) \\ \hline
+                \( h \) & \( \norm{u-u(x)}_\infty \) \\ \hline
                 0.1 & 0.0306517881736 \\
                 0.01 & 0.000279761901621 \\
                 0.001 & 2.75753842277e-06 \\
@@ -421,7 +421,7 @@ for m in [10,100,1000,10000]:
             \label{fdqerror}
         \end{table}
 
-        As expected, since all of our difference quotients (except the endpoint) locally have error order \( h^2 \), the total error seems to be order \( h^2 \). That is, for every order of magnitude decrease in \( h \), the error decreases by 2 orders of magnitude.
+        As expected, since all of our difference quotients locally have error order \( h^2 \), the total error is order \( h^2 \). That is, for every order of magnitude decrease in \( h \), the error decreases by 2 orders of magnitude.
 
 \end{enumerate}
 \end{solution}
