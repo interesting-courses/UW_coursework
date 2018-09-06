@@ -28,7 +28,7 @@
 \begin{document}
 \maketitle
 
-\begin{problem}[Exercise 1]
+\begin{problem}[Problem 1]
 Use MATLAB to evaluate the second order accurate approximation 
 \[ u'' (x) \approx \frac{u(x+h) + u(x-h) - 2 u(x)}{h^2} \] 
     for \(u(x) = \sin x\) and \(x = \pi / 6\).  Try \(h = 10^{-1} , 10^{-2} , \ldots , 10^{-16}\), and make a table of values of \(h\), the computed finite difference quotient, and the error.  Explain your results.
@@ -119,7 +119,7 @@ There are a few errors with value about equal to \( \sin(\pi/6) \), correspondin
 \end{solution}
 
 
-\begin{problem}[Exercise 2]
+\begin{problem}[Problem 2]
 Use the formula in the previous exercise with \(h=0.2\), \(h=0.1\), and \(h=0.05\) to approximate \(u'' (x)\), where \(u(x) = \sin x\) and \(x = \pi / 6\).  Use one step of Richardson extrapolation, combining the results from \(h=0.2\) and \(h=0.1\), to obtain a higher order accurate approximation.  Do the same with the results from \(h=0.1\) and \(h=0.05\).  Finally do a second step of Richardson extrapolation, combining the two previously extrapolated values, to obtain a still higher order accurate approximation.  Make a table of the computed results and their errors.  What do you think is the order of accuracy after one step of Richardson extrapolation?  How about after two?
 \end{problem}
 

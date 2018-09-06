@@ -145,15 +145,17 @@ The leading order term will be \( n \). We therefore do not count the divisions 
 In the first line we have one matrix vector product.
 
 In the second line we have two inner products, one vector add, and on scalar multiply.
+However, one inner product was computed earlier, so we can skip this if we store it in memory.
 
 In the third line one vector add, and on scalar multiply.
 
-In the fourth line we have two inner products, one vector add, and one scalar multiply.
+In the fourth line we have two inner product, one vector add, and one scalar multiply. 
+However, again one inner product was computed earlier.
 
-In total we have, one matrix vector product, four inner products, three vector additions, three scalar multiplies.
+In total we have, one matrix vector product, two inner products, three vector additions, three scalar multiplies.
 This gives,
 \begin{align*}
-    \Theta (9n + 4(2n) + 3(n) + 3(n)) = \Theta(23n) \text{ operations}
+    \Theta (9n + 2(2n) + 3(n) + 3(n)) = \Theta(19n) \text{ operations}
 \end{align*}
 
     \item
@@ -195,14 +197,14 @@ This gives,
             \Theta( 16n + 4(n/4) + 0 + 16n ) = \Theta( 33n ) \text{ operations}
         \end{align*}
 
-        Suppose we make \( k \) steps until we can solve the final system easily (in \( \mathcal{O} (1) \). At each successive grid level the size of the matrices decreases by a factor of two. Then the algorithm takes,
+        Suppose we make \( k \) steps until we can solve the final system easily (in \( \mathcal{O} (1) \). At each successive grid level the size of the matrices decreases by a factor of two for each dimension for a total factor of 4. Then the algorithm takes,
         \begin{align*}
-            \sum_{k=0}^{n} \left( \dfrac{1}{2} \right)^k \Theta(33 n) \text{ operations}
+            \sum_{k=0}^{n} \left( \dfrac{1}{4} \right)^k \Theta(33 n) \text{ operations}
         \end{align*}
         
         In the limit \( k\to \infty \) we have,
         \begin{align*}
-            2 \Theta(33 n) = \Theta(66n) \text{ operations}
+            (4/3) \Theta(33 n) = \Theta(44n) \text{ operations}
         \end{align*}
         
         

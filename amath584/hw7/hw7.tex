@@ -471,7 +471,7 @@ We have,
 
 Since \( R \) is upper triangular and \( r_{jj} > 0 \) this is a Cholesky decomposition. 
 
-Obviously \( A^*A = (A^*A)^* \) and for \( u\neq 0 \), \( u^*(A^*A)u = (u^*A^*)(Au) = (Au)^*(Au) = \norm{Au}^2 > 0 \). Thus \( A^*A \) is Hermetian positive definite and therefore has a unique Cholesky decomposition. This proves \( R=U \). \qed
+Obviously \( A^*A = (A^*A)^* \) and for \( u\neq 0 \), \( u^*(A^*A)u = (u^*A^*)(Au) = (Au)^*(Au) = \norm{Au}^2 > 0 \). Thus \( A^*A \) is Hermitian positive definite and therefore has a unique Cholesky decomposition. This proves \( R=U \). \qed
 \end{solution}
 
 \begin{problem}[Exercise 24.1]
@@ -504,7 +504,7 @@ These are mostly trivial proofs, so I do not restate the above equivalences in e
     \item[(c)] True. If \( A \) is real then \( p_A(z) \) has real coefficients. Therefore, by the fundamental theorem of algebra, if \( \lambda \) is a root of \( p_A \), then so is \( \overline{\lambda} \).
     \item[(d)] True. \( Av = \lambda v \Longleftrightarrow  \lambda^{-1}A^{-1}Av = \lambda^{-1}A^{-1} \lambda v \Longleftrightarrow \lambda^{-1}v = \lambda^{-1}\lambda A^{-1} v \Longleftrightarrow A^{-1} v = \lambda^{-1}v \) 
     \item[(e)] False. Consider \( A=[[0,1],[0,0]] \) with \( p_A(z) = z^2 \) so all eigenvalues are zero. However, clearly \( A\neq 0 \). 
-    \item[(f)] True. A Hermetian matrix is unitary diagonalizable as \( A=Q\Lambda Q^* \). Let \( S \) be the diagonal matrix with \( S_{i,i} = \operatorname{sign}(\Lambda_{i,i}) \). Then \( A= (SQ) (S\Lambda) Q^* = (SQ)|\Lambda|Q^* \) is an SVD of \( A \). This proves the singular values of \( A \) are the absolute values of the eigenvalues of \( A \).
+    \item[(f)] True. A Hermitian matrix is unitary diagonalizable as \( A=Q\Lambda Q^* \). Let \( S \) be the diagonal matrix with \( S_{i,i} = \operatorname{sign}(\Lambda_{i,i}) \). Then \( A= (SQ) (S\Lambda) Q^* = (SQ)|\Lambda|Q^* \) is an SVD of \( A \). This proves the singular values of \( A \) are the absolute values of the eigenvalues of \( A \).
     \item[(g)] True. All eigenvalues of \( A \) equal means \( A=\lambda I \). If \( A \) is unitarily diagonalizable, then there is some \( D \), diagonal, and \( Q \), unitary, such that \( D=QAQ^*  = Q(\lambda I)Q^* = \lambda QQ^* = \lambda I = A \).  
 \end{enumerate}
 
@@ -528,7 +528,7 @@ Here is Gerschgorin's theorem, which holds for any \( m\times m \) matrix \( A \
             \mathcal{D}(8,1) && \mathcal{D}(4,1+|\epsilon|) && \mathcal{D}(1,|\epsilon|)    
         \end{align*}
 
-        Since \( A \) is symmetric (and therefore Hermetian), we know all eigenvalues are real. We therefore take the part of the real axis contained in the above disks. This corresponds to the closed intervals,
+        Since \( A \) is symmetric (and therefore Hermitian), we know all eigenvalues are real. We therefore take the part of the real axis contained in the above disks. This corresponds to the closed intervals,
         \begin{align*}
             [7,9] && [3-|\epsilon|,5+|\epsilon|] && [1-|\epsilon|,1+|\epsilon|]
         \end{align*}
