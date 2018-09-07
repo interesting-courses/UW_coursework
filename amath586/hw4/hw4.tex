@@ -128,12 +128,15 @@ Do this in two ways:
     %For convenience write \( a = 2k/h^2(\cos(h\xi)-1) \).
     Note that \( \sqrt{a^2+1} > 1 \) so that if \( a < 0 \), \( a/2 - \sqrt{a^2+1} < -1 \).
 
-    Suppose \( k = \alpha h^2 \) for some \( \alpha > 0 \). Then \( a = 2\alpha(\cos(h\xi)-1) \). Clearly for sufficiently small \( h \) and any real \( \xi \) we have \( \cos(h\xi) \to 1^- \) so \( a<0 \). Thus,
+    Suppose \( k = \alpha h^2 \) for some \( \alpha > 0 \). Then \( a = 2\alpha(\cos(h\xi)-1) \). 
+    Thus,
     \begin{align*}
         |g(\xi)| = \left|\alpha(\cos(h\xi)-1) - \sqrt{2^2\alpha^2 (\cos(h\xi)-1)^2+1}\right| > 1
     \end{align*}
 
-    Therefore there are values of \( \xi \) for which \( |g(\xi)| > 1 \). This proves the method is not stable when \( k = \alpha h^2 \) as \( h\to 0 \). \qed
+    The quantity under the square root is positive and greater than 1. Note that \( \cos( h \xi) - 1 \) is negative and for certain values of \( \xi \) is larger than \( \cO(k) \). Therefore \( |g(\xi)| > 1+ \cO(k) \) for some \( \xi \).`
+
+    This proves the method is not stable when \( k = \alpha h^2 \) as \( h\to 0 \). \qed
 
     \item
     If we take \( k = \alpha h^3 \) then \( a = h\alpha(\cos(h\xi)-1) \). Again as \( h\to 0 \) we have \( a < 0 \).

@@ -17,11 +17,11 @@ AMATH 563 | Spring 2019 | |
 AMATH 567 | Autumn 2017 | |
 AMATH 584 | Autumn 2017 | yes | yes
 AMATH 585 | Winter 2018 | yes | yes
-AMATH 586 | Spring 2018 | yes (except midterm) |
+AMATH 586 | Spring 2018 | yes (except midterm) | yes
  
 ### Note on Academic Integrity
 Copying solutions from any source is not only detrimental to your own learning but is plagiarism. Don't do this. If you do end up looking up a solution for an assignment, cite your source.
 
 I have provided these questions and solutions so in the hopes that they can be used for reference when preparing for exams, as practice problems/additional problems for self study, and so that the LaTeX sources are available.
 
-If you would like the problem statements without the solutions, an easy way to do this would be to redefine the `solution` environment and then recompile the document. Alternatively you could use regex or context free grammars to try to delete my solutions.
+If you would like the problem statements without the solutions, an easy way to do this would be to redefine the `solution` environment and then recompile the document. Alternatively you could use regex or context free grammars to delete all the `solution` environments.
