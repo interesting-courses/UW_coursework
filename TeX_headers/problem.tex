@@ -1,30 +1,15 @@
 % Problem
-\usepackage{mdframed}
-\usepackage{floatrow}
-
 \newenvironment{problem}[1][]
 {\pagebreak
-\begin{mdframed}[
-  frametitle={\sffamily #1},
-  linewidth=1,
-  topline=false,
-  bottomline=false,
-  rightline=false,
-  rightmargin=.5cm
-]}
-{\end{mdframed}}
+\noindent\rule{\textwidth}{1pt}\vspace{0.25em}
+{\sffamily \textbf{#1}}
+\par
+}
+{\par\vspace{-0.5em}\noindent\rule{\textwidth}{1pt}}
 
 \newenvironment{solution}[1][]
-{\begin{mdframed}[
-  frametitle={\sffamily #1},
-  linecolor=gray!70,
-  linewidth=1,
-  topline=false,
-  bottomline=false,
-  rightline=false,
-  rightmargin=.5cm
-]}
-{\end{mdframed}}
-
-
+{{\sffamily \textbf{#1}}
+\par
+}
+{}
 
