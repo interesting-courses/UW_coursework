@@ -19,7 +19,7 @@ AMATH 584 | Autumn 2017 | yes | yes
 AMATH 585 | Winter 2018 | yes | yes
 AMATH 586 | Spring 2018 | yes (except midterm) | yes
  
-1. I have no intention of updating this content. As a result the TeX files will not compile in their current state. However, I have compiled them myself and uploaded PDFs. I have also included all of my python examples and code.
+1. I have no intention of updating the reports for this calss. However, my python examples and code are in working condition. Note that my tensorflow was a GPU version, so its possible that some stuff may not work properly. However, most of the code is just numpy/scipy. 
 
 ### Note on Academic Integrity
 Copying solutions from any source is not only detrimental to your own learning but is plagiarism. Don't do this. If you do end up looking up a solution for an assignment, cite your source.
