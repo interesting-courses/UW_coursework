@@ -1,0 +1,1 @@
+Note that the contents of this class are a bit disorganized. However, I used python for this class, and so there are a lot of code examples of these methods. In particular, the `modules` folder contains a small library of useful functions.

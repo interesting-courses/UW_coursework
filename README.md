@@ -13,12 +13,14 @@ Course | Date Taken | Uploaded | Corrected
 AMATH 514 | Winter 2018 | | 
 AMATH 561 | Autumn 2017 | yes (except ch1/2) | yes
 AMATH 562 | Winter 2018 | yes (except ch6) | yes (except ch10)
-AMATH 563 | Spring 2019 | |
+AMATH 563 | Spring 2019 | yes | no<sup>1</sup>
 AMATH 567 | Autumn 2017 | |
 AMATH 584 | Autumn 2017 | yes | yes
 AMATH 585 | Winter 2018 | yes | yes
 AMATH 586 | Spring 2018 | yes (except midterm) | yes
  
+1. I have no intention of updating this content. As a result the TeX files will not compile in their current state. However, I have compiled them myself and uploaded PDFs. I have also included all of my python examples and code.
+
 ### Note on Academic Integrity
 Copying solutions from any source is not only detrimental to your own learning but is plagiarism. Don't do this. If you do end up looking up a solution for an assignment, cite your source.
 

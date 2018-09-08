@@ -1,0 +1,170 @@
+\documentclass[10pt]{article}
+\usepackage[T1]{fontenc}
+
+% Document Details
+\newcommand{\CLASS}{AMATH 563}
+\newcommand{\assigmentnum}{Nueral Networks}
+
+\usepackage[margin = 1in, left=0.75in,right=0.75in]{geometry}
+\input{../../import/title.tex} % Title Styling
+\input{../../import/styling.tex} % General Styling
+\input{../../import/code.tex} % Code Display Setup
+\input{../../import/math.tex} % Math shortcuts
+
+\usepackage{dblfloatfix}    % To enable figures at the bottom of page
+
+% Problem
+\newenvironment{problem}[1]{\vspace{2em}{\large\sffamily\textbf{#1}}\itshape\par}{}
+
+\usepackage{nameref}
+\newcommand{\vln}{\rotatebox{90}{--}}
+
+\begin{document}
+
+\twocolumn[{%
+\begin{@twocolumnfalse}
+\maketitle
+\vspace{2em}
+\begin{abstract}
+We outline a sparse regression framework for finding a model given some data. This framework is implemented in Python and applied to two data sets. These examples demonstrate the difficulty of applying these methods to systems with limited data but yield results which encourage furture work.
+%This report is bullshit, these methods are bullshit, my models are bullshit, nothing works, and nothing is grounded in any sort of understanding of what is going on.
+
+\end{abstract}
+\vspace{4em}
+%\tableofcontents
+%\vspace{3em}Supports Unicode characters.
+Supports logging of session commands.
+Optional timeout command parameter to prevent runaway Octave sessions.
+API Reference
+Documentation for the functions included in Oct2Py.
+
+Installation
+How to install Oct2Py.
+
+Examples
+Introductory examples.
+
+Type Conversions
+Oct2Py data type conversions.
+
+Information
+Other information about Oct2Py.
+
+Back to top
+© Copyright 2011 - 2017, Oct2Py contributors.
+Created using Sphinx 1.5.2.
+U·ni·code
+An international encoding standard for use with different languages and scripts, by which each letter, digit, or symbol is assigned a unique numeric value that applies across different platforms and programs.
+
+\pagebreak\end{@twocolumnfalse}
+}]
+
+\section{Introduction and Overview}
+
+\section{Theoretical Background}
+
+\subsection{Neural Network Basics}
+
+Start with input \( X_0 \) and target \( X_N \). Each later is of the form,
+\begin{align*}
+    X_j = f_j(W_j X_{j-1} + b_j), && j=1,\ldots, N
+\end{align*}
+where the ``activation'' function \( f_j:\RR\to\RR \) is applied componentwise.
+
+Note that \( W_j \) can be of any shape compatible with \( X_{j-1} \) with the constraint that \( W_{N-1} \) must also give something of the dimension of \( X_N \).
+
+Want to train
+
+given data and loss function
+
+find \( W_j \) and \( b_j \)  which optimize loss over given data.
+
+validate against other data
+
+\subsection{Optimizers}
+this is big
+
+
+
+
+\section{Algorithm Implementation and Development}
+
+Generate solution to PDE at fixed time intervals
+
+train network to find next step given current position
+
+
+
+
+
+\subsection{????}
+Lorenz Equation
+\begin{align*}
+    x_t &= \sigma(y-x) \\
+    y_t &= x (\rho-z)-y \\
+    z_t &= x y-\beta z
+\end{align*}
+
+\iffalse
+\begin{align*}
+    \pp{}{t} \left[\begin{array}{c}x\\y\\z\end{array}\right]
+    =
+    \left[\begin{array}{c}
+        \sigma(y-x) \\
+        x (\rho-z)-y \\
+        x y-\beta z
+    \end{array}\right]
+\end{align*}
+\fi
+
+Kuramoto-Sivashinsky equation
+periodic BC
+\begin{align*}
+    u_t = -u \cdot u_x - u_{xx} - u_{xxxx}
+\end{align*}
+
+Lambda Omega reaction-diffusion
+\iffalse
+\begin{align*}
+\pp{}{t} \left[\begin{array}{c}u \\ v\end{array}\right]
+=
+\left[\begin{array}{cc}
+    \lambda(s) & -\omega(s) \\
+    \omega(s) & \lambda(s)
+\end{array}\right]
+\left[\begin{array}{c}u \\ v\end{array}\right]
++
+\left[\begin{array}{cc}d_1 \\ & d_2 \end{array}\right]
+\nabla^2
+\left[\begin{array}{c}u \\ v\end{array}\right]
+\end{align*}
+\fi
+\begin{align*}
+    u_t &= \lambda(s) u - \omega(s) v + d_1(u_{xx}+u_{yy}) \\
+    v_t &= \omega(s) u + \lambda(s) v + d_2(v_{xx}+v_{yy})
+\end{align*}
+\begin{align*}
+    s^2 = u^2 + v^2, &&
+    \lambda(s) = 1-s^2, &&
+    \omega(s) = -\beta s^2
+\end{align*}
+\section{Computational Results}
+
+
+\section{Summary and Conclusions}
+
+\pagebreak
+\bibliographystyle{plain}
+\bibliography{hw2}
+
+\onecolumn
+\section{Appendix A}
+\label{AppendixA}
+%\lstinputlisting[linerange=\#<start:make_tuples>-\#<end:make_tuples>]{../modules/data_driven_modeling/__init__.py}
+
+\pagebreak
+\section{Appendix B}
+%\lstinputlisting[linerange=\#<start>-\#<end>]{hw1_a.py}
+%\lstinputlisting[linerange=\#<start>-\#<end>]{hw1_b.py}
+
+\end{document}
