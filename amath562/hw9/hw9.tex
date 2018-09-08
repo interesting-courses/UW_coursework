@@ -1,0 +1,542 @@
+\documentclass[10pt]{article}
+\usepackage[T1]{fontenc}
+
+% Document Details
+\newcommand{\CLASS}{AMATH 562}
+\newcommand{\assigmentnum}{Assignment 9}
+
+\usepackage[margin = 1.15in, top = 1.25in, bottom = 1.in]{geometry}
+
+\input{../../TeX_headers/title.tex} % Title Styling
+\input{../../TeX_headers/sfftoc.tex} % General Styling
+\input{../../TeX_headers/styling.tex} % General Styling
+\input{../../TeX_headers/code.tex} % Code Display Setup
+\input{../../TeX_headers/math.tex} % Math shortcuts
+\input{../../TeX_headers/problem.tex} % Problem Environment
+
+\newcommand{\note}[1]{\textcolor{red}{\textbf{Note:} #1}}
+
+\hypersetup{
+   colorlinks=true,       % false: boxed links; true: colored links
+   linkcolor=violet,          % color of internal links (change box color with linkbordercolor)
+   citecolor=green,        % color of links to bibliography
+   filecolor=magenta,      % color of file links
+   urlcolor=cyan           % color of external links
+}
+
+
+\begin{document}
+\maketitle
+
+\begin{problem}[Exercise 9.1]
+\end{problem}
+
+\begin{solution}[Solution]
+\end{solution}
+
+
+
+\begin{problem}[Exercise 9.2]
+Let \( X \) be a solution to the following SDE
+\begin{align*}
+    \d X_t = \kappa(\theta - X_t)\d t + \delta \sqrt{X_t} \d W_t
+\end{align*}
+Define
+\begin{align*}
+    u(t,x) = \EE \left[ \exp \left( -\int_{t}^{T}X_s\d s \right) \Bigg| X_t = x \right]
+\end{align*}
+
+    Derive a PDE for the function \( u \). To solve the PDE for \( u \), try a solution of the form
+    \begin{align*}
+        u(t,x) = \exp(-xA(t)-B(t)),
+    \end{align*}
+    where \( A \) and \( B \) are deterministic functions of \( t \). Show that \( A \) and \( B \) must satisfy a pair of coupled ODEs (with appropriate terminal conditions at time \( T \)). Bonus question: solve the ODEs (it may be helpful to note that one of the ODEs is a Riccati equation).
+\end{problem}
+
+
+\begin{solution}[Solution (direct)]
+    First observe that \( u(t,X_t) \) is not a martingale as,
+\begin{align*}
+    \EE[u(t,X_t) | \cF_s] 
+    &= \EE \left[ \EE \left[ \exp \left( -\int_t^T X_z\d z \right) \bigg| \cF_t \right] \bigg| \cF_s \right]
+    \\&= \EE \left[ \exp \left( -\int_t^T X_z\d z \right) \bigg| \cF_s \right]
+    \\&\neq \EE \left[ \exp \left( -\int_s^T X_z\d z \right) \bigg| \cF_s \right]
+    \\&= u(s,X_s)
+\end{align*}
+
+Define,
+\begin{align*}
+    M_t &= \exp \left( -\int_0^t X_z\d z \right) u(t,X_t)
+    = \EE \left[ \exp \left( -\int_0^T X_z\d z \right) \bigg| \cF_t \right]
+\end{align*}
+    where we have used the fact that \( \exp(-\int_0^t X_z\d z) \in \cF_t \).
+
+Clearly,
+\begin{align*}
+    \EE[M_t|\cF_s] 
+    &= \EE \left[ \EE \left[ \exp \left( -\int_0^T X_z\d z \right) \bigg| \cF_t \right] \bigg|\cF_s \right]
+    = \EE \left[ \exp \left( -\int_0^T X_z\d z \right) \bigg| \cF_s \right]
+    = M_s
+\end{align*}
+
+    Therefore \( M_t \) is a martingale.
+
+    Note that,
+    \begin{align*}
+        \d u(t,X_t) &= \partial_t u(t,X_t) \d t + \partial_x u(t,X_t) \d X_t + \frac{1}{2} \partial_x^2 u(t,X_t) \d[X,X]_t 
+        \\&= \left(\partial_t + \mu(t,X_t) \partial_x + \frac{1}{2}\sigma^2(t,X_t) \partial_x^2 \right) u(t,X_t) \d t + \sigma(t,X_t) \partial_x u(t,X_t)\d W_t
+    \end{align*}
+    
+    Write \( v(t,X_t) = \exp(-\int_0^t X_z\d z) \). This does not depend on \( X_t \) so,
+    \begin{align*}
+        \d v(t,X_t) &= 
+        \partial_t v(t,X_t) \d t + \partial_x v(t,X_t) \d X_t + \frac{1}{2} \partial_x^2 v(t,X_t) \d[X,X]_t
+        \\&= -X_t v(t,X_t) \d t
+    \end{align*}
+
+    We supress the arguments to \( u,v,\mu,\sigma \) and compute,
+\begin{align*}
+    \d M_t &= u(t,X_t) \d v(t,X_t) + v(t,X_t) \d u(t,X_t) + \d[u,v]_t 
+    \\&= u(-X_t v)\d t + v \left( \partial_t + \mu \partial_x + \frac{1}{2}\sigma^2\partial_x^2 \right) u \d t + \left( \cdots \right)\d W_t 
+    \\&= \left( \partial_t + \frac{1}{2}\sigma^2\partial_x^2 + \mu \partial_x - X_t \right)u \d t + \left( \cdots \right)\d W_t
+\end{align*}
+
+    Since \( M_t \) is a martingale, the \( \d t \) term must be zero. Moreover, \( v \) is always positive. Therefore,
+    \begin{align*}
+        \left[ \left( \partial_t + \frac{1}{2}\sigma^2(t,x) \partial_x^2 + \mu(t,x) \partial_x - x \right)u(t,x) \right]_{t=t,x=X_t} = 0
+    \end{align*}
+    
+    The boundary condition is obtained by,
+    \begin{align*}
+        u(T,X_T) = \EE \left[ \exp \left( -\int_T^T X_z\d z \right) \bigg| \cF_T \right] = 1
+    \end{align*}
+    
+    The rest of the solution is included below.
+\end{solution}
+
+
+
+\begin{solution}[Solution]
+With \( \gamma(u,x) = x \), \( \phi(x) = 1 \), \( g(u,x) = 0 \) this is a subcase of an example in the notes. We then know \( u(t,x) \) solves,
+\begin{align*}
+    (\partial_t + \mathcal{A})u + g = 0, && u(T,\cdot) = \phi, && \mathcal{A} = \frac{1}{2} \sigma^2 \partial_x^2 + \mu \partial_x-\gamma = 0
+\end{align*}
+
+Assume \( u \) has the form,
+\begin{align*}
+    u(t,x) = \exp \left( -x A(t) - B(t) \right)
+\end{align*}
+
+First compute,
+\begin{align*}
+    \partial_t u = (-xA'-B')u &&
+    \partial_x u = -A u &&
+    \partial_x^2 u = A^2 u
+\end{align*}
+
+This gives,
+\begin{align*}
+    0 &= \left[\partial_t + \frac{1}{2} \delta^2 x \partial_x^2 + \kappa(\theta-x) \partial_x - x \right] u  \\
+    &= \left[ - xA'-B' + \frac{1}{2} \delta^2 x A^2 + \kappa(\theta-x) (-A) - x \right] u \\
+    &=  \left[\left(-A'+\dfrac{1}{2}\delta^2A^2 + \kappa A - 1\right) x + \left( -B' - \kappa\theta A \right) \right] u
+\end{align*}
+
+Observe \( u(t,x) > 0 \) for all \( t,x \). Therefore we require the bracketed term above to be zero for all \( x, t \). Setting the coefficients of the \( x \) terms and constant terms to zero gives a coupled pair of ODEs,
+\begin{align*}
+    \begin{cases}
+        -A'(t)+\frac{1}{2}\delta^2A^2(t) + \kappa A(t) - 1 = 0 \\
+        -B'(t) - \kappa\theta A(t)  = 0
+    \end{cases}
+\end{align*}
+
+We have,
+\begin{align*}
+    1 = \varphi(x) = u(T,x) = \exp \left( -xA(T) - B(T) \right)
+\end{align*}
+
+This gives terminal condition,
+\begin{align*}
+    A(T) = 0 &&  B(T) = 0
+\end{align*}
+
+
+We solve this in Mathematica without boundary conditions using,
+\begin{lstlisting}
+DSolve[{-D[A[t],t]+1/2 \[Delta]^2 A[t]^2+\[Kappa] A[t] - 1 ==0 , -D[B[t],t]-\[Kappa] \[Theta] A[t]==0},{A,B},t]
+\end{lstlisting}
+
+This gives solution,
+\begin{align*}
+    A(t) = \frac{\sqrt{-2 \delta ^2-\kappa ^2} \tan \left(\frac{1}{2} \left(2 c_1 \sqrt{-2 \delta ^2-\kappa ^2}+t \sqrt{-2 \delta ^2-\kappa ^2}\right)\right)-\kappa }{\delta ^2} \\
+    B(t) = \frac{\theta  \kappa  \left(2 \log \left(\cos \left(c_1 \sqrt{-2 \delta ^2-\kappa ^2}+\frac{1}{2} t \sqrt{-2 \delta ^2-\kappa ^2}\right)\right)+\kappa  t\right)}{\delta ^2}+c_2
+\end{align*}
+where,
+\begin{align*}
+    c_1 = \dfrac{1}{2\sqrt{-2\delta^2-\kappa^2}} \left[ 2\arctan\left(\dfrac{\kappa}{\sqrt{-2\delta^2-\kappa}} \right) - T\sqrt{-2\delta^2-\kappa^2} \right] \\
+    c_2 =  -\frac{\theta  \kappa  \left(2 \log \left(\cos \left(c_1 \sqrt{-2 \delta ^2-\kappa ^2}+\frac{1}{2} T \sqrt{-2 \delta ^2-\kappa ^2}\right)\right)+\kappa  T\right)}{\delta ^2}
+\end{align*}
+\end{solution}
+
+
+\begin{problem}[Exercise 9.3]
+For \( i=1,2, \ldots, d \) let \( X^{(i)} \) satisfy,
+    \begin{align*}
+        \d X_t^{(i)} = -\dfrac{b}{2} X_t^{(i)} \d t + \dfrac{1}{2}\sigma\d W_t^{(i)}
+    \end{align*}
+    where \( (W_t^{(i)})_{i=1}^{d} \) are independent Brownian motions. Define
+    \begin{align*}
+        R_t := \sum_{i=1}^{d} \left(X_t^{(i)}\right)^2, && B_t := \sum_{i=1}^{d} \int_{0}^{t} \dfrac{1}{\sqrt{R_s}}X_s^{(i)} \d W_s^{(i)}
+    \end{align*}
+    Show that \( B \) is a Brownian motion. Derive an SDE for \( R \) that involves only \( \d t \) and \( \d B_t \) terms (i.e., no \( \d W_t^{(i)} \) terms should appear).
+\end{problem}
+
+\begin{solution}[Solution]
+We use the  L\'evy characterization of Brownian motion. In particular, we must show \( B \) is a martingale, \( B \) has continuous sample paths, and \( B_0 = 0 \) with \( [B,B]_t = t \) for all \( t\geq 0 \).
+
+Write,
+\begin{align*}
+    \d B_t = \d \left[ \sum_{i=1}^{d} \int_{0}^{t} \dfrac{1}{\sqrt{R_s}}X_s^{(i)} \d W_s^{(i)} \right] = \sum_{i=1}^{d} \dfrac{1}{\sqrt{R_t}}X_t^{(i)} \d W_t^{(i)}
+\end{align*}
+
+
+As \( B_t \) is an It\^o integral it is a martingale with respect to a filtration \( \mathbb{F} = ( \mathcal{F_t} )_{t\geq 0} \) for \( W_t^{(i)} \).
+
+Similarly, \( B_t \) has continuous sample paths as \( W_t^{(i)} \) have continuous sample paths.
+
+Clearly \( B_0 = 0 \) as \( W_0^{(i)} = 0 \).
+
+Now, 
+\begin{align*}
+    (\d B_t)(\d B_t) &= \dfrac{1}{R_t} \sum_{i=1}^{d}\sum_{j=1}^{d}X_t^{(i)}X_t^{(j)} \d W_t^{(i)} \d W_t^{(j)} \\
+    &= \dfrac{1}{R_t} \left( \sum_{j=1}^{d} \left(X_t^{(i)} \d W_t^{(i)}\right)^2  + 2\sum_{i=1}^{d}\sum_{j=1}^{i} X_t^{(i)}X_t^{(j)} \d W_t^{(i)} \d W_t^{(j)} \right) 
+\end{align*}
+
+Using the heuristic, \( \d W_t^{(i)} \d W_t^{(j)} = \delta_{ij} \d t \) and the definition of \( R_t \) we have,
+\begin{align*}
+    \d[B,B]_t = \dfrac{1}{R_t} \sum_{i=1}^{d} \left( X_t^{(i)} \right)^2 \d t = \d t
+\end{align*}
+
+Therefore, \( [B,B]_t = t \).
+
+This proves \( B \) is a Brownian motion. \qed
+
+Compute, using It\^o's formula,
+\begin{align*}
+    \d R_t 
+    = \d \left[ \sum_{i=1}^{d} \left( X_t^{(i)} \right)^2 \right]
+    = \sum_{i=1}^{d} 2 X_t^{(i)} \d X_t^{(i)} + \frac{1}{2} 2 \d [X^{(i)},X^{(i)}] _t 
+    = \sum_{i=1}^{d} 2X_t^{(i)} \d X_t^{(i)} + \d[X^{(i)},X^{(i)}]_t
+\end{align*}
+
+Using our heuristics we have,
+\begin{align*}
+    \d[X^{(i)},X^{(i)}]_t = \left( \d X_t^{(i)} \right) \left(\d X_t^{(i)} \right) 
+    = \left( -\dfrac{b}{2} X_t^{(i)} \d t + \dfrac{1}{2}\sigma \d W_t^{(i)} \right)^2 
+    = \dfrac{\sigma^2}{4} \d t
+\end{align*}
+
+Now, 
+\begin{align*}
+    \sum_{i=1}^{d} 2X_t^{(i)} \d X_t^{(i)} + \d[X^{(i)},X^{(i)}]_t 
+    &= \sum_{i=1}^{d} 2X_t^{(i)} \left( -\dfrac{b}{2} X_t^{(i)}\d t + \dfrac{1}{2} \sigma \d W_t^{(i)} \right) + \dfrac{\sigma^2}{4}\d t
+ %   \\&= \sum_{i=1}^{d} 2X_t^{(i)} \left( -\dfrac{b}{2} X_t^{(i)}\d t + \dfrac{1}{2} \sigma \d W_t^{(i)} + \dfrac{\sigma^2}{4}\d t \right) 
+    \\&= \sum_{i=1}^{d} \left( \dfrac{\sigma^2}{4} - b \left(X_t^{(i)}\right)^2\right)\d t + \sigma \sqrt{R_t} \dfrac{1}{\sqrt{R_t}}X_t^{(i)} \d W_t^{(i)} 
+\end{align*}
+
+Therefore, simplifying slightly we have,
+\begin{align*}
+    \d R_t = (d\sigma^2/4-b R_t) \d t + \sigma \sqrt{R_t} \d B_t
+\end{align*}
+\end{solution}
+
+\begin{problem}[Exercise 9.4]
+\end{problem}
+
+\begin{solution}[Solution]
+\end{solution}
+
+
+\begin{problem}[Exercise 9.5]
+    Consider a diffusion \( X = (X_t)_{t\geq 0} \) that lives on a finite interval \( (l,r) \), \( 0 < l < r < \infty \) and satisfies the SDE
+    \begin{align*}
+        \d X_t = \mu X_t\d t + \sigma X_t \d W_t
+    \end{align*}
+    One can easily check that the endpoints \( l \) and \( r \) are regular (you do not have to prove it here). Assume both endpoints are killing. Find the transition density \( \Gamma(t,x ;T,y) \) of \( X \).
+\end{problem}
+
+\begin{solution}[Solution]
+We have, \( \Gamma(\cdot, \cdot; T,y) \) satisfies,
+\begin{align*}
+    (\partial_t + \mathcal{A}(t)) \Gamma(\cdot, t; T,y) = 0 && \Gamma(T, \cdot ;T,y) = \delta_y
+\end{align*}
+where the infinitesimal generator \( \mathcal{A} \) is,
+\begin{align*}
+    \mathcal{A}  = \mu x \partial_x + \dfrac{1}{2}\sigma^2 x^2 \partial_x^2
+\end{align*}
+
+We seek a spectral representation for \( \mathcal{A} \). That is, a basis \( \{\Psi_n\}_{n\geq 0} \) for such that \( \mathcal{A} \Psi_n  = \lambda_n \Psi_n \).
+
+Since the endpoints are killing we also require,
+\begin{align*}
+    \Psi_n(l) = 0, && \Psi_n(r) = 0
+\end{align*}
+
+We make a change of variables. Let \( z = \log(x) \). Then,
+\begin{align*}
+    \partial_x = \dfrac{1}{x}\partial_z, && \partial_x^2 = -\dfrac{1}{x^2}\partial_z + \dfrac{1}{x}\partial_z^2 
+\end{align*}
+
+
+Then, in terms of \( z \) we have generator,
+\begin{align*}
+    \mathcal{A}_z = \left( \mu - \dfrac{\sigma^2}{2} \right) \partial_z + \dfrac{1}{2} \sigma^2 \partial_z^2
+\end{align*}
+
+
+This equation is very similar to a damped harmonic oscillator. We therefore guess that the eigenfunctions have the form,
+\begin{align*}
+    \psi_n(z) = \exp(\gamma_n z) \left[ A \sin \left( \dfrac{n\pi (z-\log(l)}{\log(r)-\log(l)} \right) + B \cos \left( \dfrac{n\pi (z-\log(l)}{\log(r)-\log(l)} \right) \right]
+\end{align*}
+
+In order to satisfy the boundary conditions listed above we need \( B = 0 \). The constant \( A \) will be determined by the normalization of \( \psi_n \), so we will leave it off until the end.
+
+For convenience, write,
+\begin{align*}
+    \psi = \psi_n, && \gamma = \gamma_n, && k = \dfrac{n\pi}{\log(l/r)}, && \cos(z') = \cos(k(z-\log l))
+\end{align*}
+
+We then have,
+\begin{align*}
+    \partial_z \psi(z) &= \gamma \psi + \exp(\gamma z) k \cos(z') \\
+    \partial_z^2 \psi(z) &= \gamma^2 \psi + \gamma \exp(\gamma z) k \cos(z'))
+    + \gamma \exp(\gamma z) k \cos(z') - k^2\psi
+    \\&= \gamma^2 \psi + 2 \gamma \exp(\gamma z) k \cos(z') - k^2\psi
+\end{align*}
+
+We seek \( \gamma \) such that \( \mathcal{A}_z \psi = \lambda \psi \) for some constant \( \lambda \). That is, in our expression of \( \mathcal{A}_z\psi \) we require the terms not containing a \( \psi \) be zero.
+Thus,
+\begin{align*}
+    0 &= \left( \mu - \dfrac{\sigma^2}{2} \right) \exp(\gamma z) k \cos(z') + \left( \dfrac{\sigma^2}{2} \right)2\gamma\exp(\gamma z) k \cos(z') 
+    \\&= \left[ \left( \mu - \dfrac{\sigma^2}{2} \right) + \sigma^2 \gamma \right]\exp(\gamma z)\cos(z')
+\end{align*}
+
+Suppose \( k\neq 0 \) (i.e. that the solution is non-trivial). Since \( \exp(\gamma z) \) and \( \cos(z')\neq 0 \) we have,
+\begin{align*}
+    0 = \left( \mu - \dfrac{\sigma^2}{2} \right) + \sigma^2\gamma
+\end{align*}
+
+Solving for \( \gamma \) we have,
+\begin{align*}
+    \gamma = \dfrac{1}{2} - \dfrac{\mu}{\sigma^2}
+\end{align*}
+
+The eigenvalues are,
+\begin{align*}
+    \lambda_n
+    = \left( \mu - \dfrac{\sigma^2}{2} \right)\gamma + \left( \dfrac{\sigma^2}{2} \right) \left( \gamma^2 - k^2 \right) = -\dfrac{\sigma^2}{2}[k^2+\gamma^2]
+\end{align*}
+\iffalse
+=-\frac{\pi ^2 n^2 \sigma ^2}{2 (\log (l)-\log (r))^2}-\frac{\left(\sigma ^2-2 \mu \right)^2}{8 \sigma ^2}
+    = - \dfrac{\sigma^2}{2}[k^2+\gamma^2]
+\fi
+
+Transforming back to \( x \) we have, \( \hat{\Psi}_n(x) = \psi_n(\log(x))  \) satisfies,
+\begin{align*}
+    \mathcal{A} \hat{\Psi}_n(x) = \lambda_n \hat{\Psi}_n(x), && \mathcal{A}  = \mu x \partial_x + \dfrac{1}{2}\sigma^2 x^2 \partial_x^2
+\end{align*}
+
+Define,
+\begin{align*}
+    m(y) = \dfrac{2}{\sigma^2 y^2} \exp \left( \int\d y \dfrac{2 \mu y}{\sigma^2y^2}\right) 
+    = \dfrac{2}{\sigma^2y^2}\exp \left( \dfrac{2\mu}{\sigma^2} \log(y) \right) 
+    = \dfrac{2}{\sigma^2} y^{2\mu/\sigma^2-2}
+    = \dfrac{2}{\sigma^2} y^{-2\gamma-1}
+\end{align*}
+
+It is clear that the \( \hat{\Psi}_n \) are orthogonal (properties of sines). We compute,
+\begin{align*}
+    \langle \hat{\Psi}_n(x), \hat{\Psi}_n(x) \rangle_m 
+    = \int_{l}^{r}\Psi_n(x)^2 m(x) \d x 
+    = \log(r/l) / \sigma^2
+\end{align*}
+
+We then satisfy \( \langle \Psi_k ,\Psi_l \rangle_m = \delta_{kl} \) by defining,
+\begin{align*}
+    \Psi_n(x) = \dfrac{ \hat{\Psi}_n(x) }{\sqrt{\langle \Psi_n(x), \Psi_n(x) \rangle_m}}
+\end{align*}
+
+Explicitly,
+\begin{align*}
+    \Psi_n(x) = \dfrac{\sigma}{\sqrt{\log(r/l)}}x^{\gamma}\sin(k(z-\log l)) 
+    = \dfrac{\sigma}{\sqrt{\log(r/l)}}x^{1/2 - \mu/\sigma^2} \sin \left( n\pi \dfrac{\log(x/l)}{\log(r/l)} \right)
+\end{align*}
+
+
+Finally,
+\begin{align*}
+    \Gamma(t,x;T,y) &= m(y) \sum_{n} \exp((T-t) \lambda_n) \Psi_n(x)\Psi_n(y) 
+\end{align*}
+
+Explicitly,
+\begin{align*}
+    \Gamma(t,x;T,y) &= \dfrac{2}{\log(r/l)} \left( \dfrac{x}{y} \right)^{1/2-\mu/\sigma^2}y^{-1} \sum_{n} \exp((T-t) \lambda_n) \sin \left( n\pi \dfrac{\log(x/l)}{\log(r/l)} \right) \sin \left( n\pi \dfrac{\log(y/l)}{\log(r/l)} \right)
+\end{align*}
+
+Since the \( \Psi_n \) are normalized then \( \Gamma \) is normalized.
+
+We verify in Mathematica that \( \Gamma \) satisfies both the KFE and KBE.
+\end{solution}
+
+\begin{problem}[Exercise 9.6]
+    Consider a two-dimensional diffusion processes \( X = (X_t)_{t\geq 0} \) and \( Y = (Y_t)_{t\geq 0} \) that satisfy the SDEs
+    \begin{align*}
+        \d X_t = \d W_t^1 && \d Y_t = \d W_t^2
+    \end{align*}
+    where \( W_t^1 \) and \( W_t^2 \) are two independent Brownian motions. Define a function \( u \) as follows
+    \begin{align*}
+        u(x,y) = \EE \left[ \phi(X_\tau) | X_t = x, Y_t = y \right], && \tau = \inf\{ s\geq t:Y_s = a \}
+    \end{align*}
+   
+    \begin{enumerate}
+        \item State a PDE and boundary conditions satisfied by the function \( u \).
+        \item Let us define the Fourier transform and and inverse Fourier transform, respectively, as follows
+            \begin{align*}
+                \text{Fourier Transform:} && \hat{f}(\omega):= \int_{}^{}e^{-i\omega x}f(x) \d x \\
+                \text{Inverse Transform:} && f(x):= \dfrac{1}{2\pi}\int_{}^{}e^{i\omega x}\hat{f}(\omega) \d \omega 
+            \end{align*}
+        Use Fourier transforms and a conditioning argument to derive an expression for \( u(x,y) \) as an inverse Fourier transform. Use this result to derive an explicit form for \( \PP(X_\tau \in \d z |X_t=x,Y_t=y) \)(i.e., an expression involving no integrals).
+    \item Show the expression you derived in part 2 for \( u(x,y) \) satisfies the PDE and BCs you stated in part 1.
+    \end{enumerate} 
+\end{problem}
+
+\begin{solution}[Solution]
+\begin{enumerate}
+    \item 
+        Since there are no \( \d t \) terms in either Brownian motion, and since the coefficient in both of the \( \d W_t \) term is \( 1 \) we have, generator,
+        \begin{align*}
+            \mathcal{A} = \dfrac{1}{2}\partial_x^2 + \dfrac{1}{2}\partial_y^2
+        \end{align*}
+        
+        The PDE satisfied by \( u \) is,
+        \begin{align*}
+            \mathcal{A} u = \left(\dfrac{1}{2} \partial_x^2 + \dfrac{1}{2}\partial_y^2\right) u = 0 && 
+            \Longleftrightarrow
+            && \left(\partial_{x}^2 + \partial_{y}^2\right) u = 0
+        \end{align*}
+
+        If \( y=a \) then \( \tau = t \) so \( X_\tau = x \). We therefore have boundary condition,
+        \begin{align*}
+            u(x,a) = \phi(x)
+        \end{align*}
+        
+
+    \item 
+        Given starting position \( (x,y) \) at time \( t \), and time \( \tau \), from the notes we know \( X_\tau \) is normally distributed with mean \( x \) and variance \( \tau - t \) by the independent increments property of Brownian motion. We know the characteristic function of a normally distributed random variable with distribution \( \mathcal{N}(\mu,\sigma^2) \) is \( e^{i\omega x - \sigma^2 \omega^2/2} \). Therefore, 
+        \begin{align*}
+            \EE \left[ e^{i\omega X_\tau} \Big| \tau,X_t = x, Y_t = y \right] = e^{i\omega x - (\tau - t) \omega^2 /2}
+        \end{align*}
+        
+        Thus, using iterated conditioning,
+        \begin{align*}
+            \EE \left[ e^{i\omega X_\tau} | X_t = x, Y_t = y \right]
+            &= \EE \left[ \EE[ e^{i\omega X_\tau} | \tau, X_t = x, Y_t = y] | X_t = x, Y_t = y \right] 
+            \\&= \EE \left[ e^{i\omega x - (\tau-t)\omega^2/2} | X_t = x, Y_t = y \right]
+            \\&= e^{i\omega x}\EE \left[ e^{- (\tau-t)\omega^2/2} | X_t = x, Y_t = y \right]
+        \end{align*}
+        
+        We have previously shown that the first hitting time of a Brownian motion \( \tau_m \) satisfies,
+        \begin{align*}
+            \EE\left[ e^{-\lambda \tau_m}\right] = e^{-|m|\sqrt{2 \lambda}}
+        \end{align*}
+        where \( \tau_m = \inf\{t\geq 0 : W_t = m\} \) and \( W_0 = 0 \). 
+
+        Since we start at position \( y \) at time \( t \) (rather that position \( 0 \) and time \( 0 \) as above), we know that,
+        \begin{align*}
+            \EE\left[ e^{-(\omega^2/2)(\tau-t)} | X_t=x, Y_t = y\right] = e^{-|a-y||\omega|} 
+        \end{align*}
+        
+        Therefore,
+        \begin{align*}
+            \EE \left[ e^{i\omega X_\tau} | X_t = x, Y_t = y \right] = e^{-|a-y||\omega|}
+        \end{align*}
+        
+        Write,
+        \begin{align*}
+            \phi(x) = \dfrac{1}{2\pi} \int_\RR e^{i\omega x}\hat{\phi}(\omega) \d \omega
+        \end{align*}
+        
+        Then,
+        \begin{align*}
+            u(x,y) = \EE[ \phi(X_\tau) | X_t = x, Y_t = y ] 
+            &= \EE \left[ \dfrac{1}{2\pi}\int_\RR e^{i\omega X_\tau} \hat{\phi}(\omega) \d \omega \Big| X_t = x, Y_t = y\right] 
+        \end{align*}
+
+        Now, bringing the expectation through the integral, and applying the above result,
+        \begin{align*}
+            \EE \left[ \dfrac{1}{2\pi}\int_\RR e^{i\omega X_\tau} \hat{\phi}(\omega) \d \omega \Big| X_t = x, Y_t = y\right] 
+            &= \dfrac{1}{2\pi} \int_\RR \hat{\phi}(\omega) \EE \left[ e^{i\omega X_\tau} | X_t =x, Y_t =y  \right] \d\omega
+            \\&= \dfrac{1}{2\pi} \int_\RR \hat{\phi}(\omega) e^{-|a-y||\omega|} e^{i\omega x} \d\omega
+        \end{align*}
+        
+
+        First recall, \( \EE[\phi(X)] = \int \phi(x)f_X(x)\d x \) and \( \PP(X\in\d z) = f_X(z) \d z \). Then, taking \( \phi(x) =  \mathbbm{1}_{\{ x\in \d z \}} \) means \( \EE[\phi(X)] = f_X(z)\d z = \PP(X\in\d z) \). Therefore,
+        \begin{align*}
+            u(x,y) = \EE[\mathbbm{1}_{\{X_\tau\in \d z\}} | X_t = x, Y_t =y] = \PP( X_\tau \in \d z | X_t = x, Y_t = y) 
+        \end{align*}
+        
+        In this case, 
+        \begin{align*}
+            \hat{\phi}(\omega) =  \int_\RR e^{-i\omega x} \mathbbm{1}_{\{x\in\d z\}} \d x = e^{-i\omega z} \d z
+        \end{align*}
+
+        Thus, computing this integral by splitting it at \( 0 \),
+        \begin{align*}
+            u(x,y) &= \dfrac{1}{2\pi} \int_\RR e^{-i\omega z}\d z e^{-|a-y||\omega|}e^{i\omega x}\d \omega 
+%            \\&= \dfrac{1}{2\pi} \int_{-\infty}^{0} e^{(-iz+|a-y|-ix)\omega}\d \omega + \dfrac{1}{2\pi} \int_{0}^{\infty} e^{(-iz-|a-y|-ix)\omega} \d \omega
+            \\&= \dfrac{1}{2\pi} \left [\dfrac{2|a-y|}{(a-y)^2 + (x-z)^2}\right]\d z
+            \\&= \dfrac{1}{\pi} \left[ \dfrac{|y-a|}{(y-a)^2+(x-z)^2} \right]\d z
+        \end{align*}
+
+    \item 
+        First observe,
+        \begin{align*}
+            u(x,a) = \dfrac{1}{2\pi}\int_{\RR} \hat{\phi}(\omega)e^{-|a-a|}|\omega| e^{i\omega x} \d \omega
+            = \dfrac{1}{2\pi} \int_{\RR} \hat{\phi}(\omega) e^{i\omega x} \d \omega = \phi(x)
+        \end{align*}
+      
+ 
+        Define,
+        \begin{align*}
+             c= \begin{cases}
+                1 & y \geq a \\
+                -1 & y<a
+             \end{cases}
+        \end{align*}
+        
+        Now observe,
+        \begin{align*}
+            \partial_x^2 u(x,y) 
+            = \dfrac{1}{2\pi} \int_{\RR} \hat{\phi}(\omega) e^{-c(y-a)|\omega|} \partial_x^2 e^{i\omega x} \d \omega 
+            = \dfrac{(i^2\omega^2)}{2\pi} \int_{\RR} \hat{\phi}(\omega) e^{-c(y-a)|\omega|} e^{i\omega x} \d \omega  
+        \end{align*}
+       
+        Then,
+        \begin{align*}
+            \partial_y^2 u(x,y)
+            = \dfrac{1}{2\pi} \int_{\RR} \hat{\phi}(\omega) \partial_y^2 e^{-c(y-a)|\omega|} e^{i\omega x} \d \omega 
+            = \dfrac{c^2\omega^2}{2\pi} \int_{\RR} \hat{\phi}(\omega) e^{-c(y-a)|\omega|} e^{i\omega x} \d \omega 
+        \end{align*}
+
+        Thus, since \( i^2 = -1  \) and \( c^2 = 1 \),
+        \begin{align*}
+            (\partial_x^2+\partial_y^2)u(x,y) = 0
+        \end{align*}
+        Note there is probably some issue with the partial derivative with respect to \( y \) at \( y=a \), since \( |y-a| \) is not differentiable at this point.
+
+        Therefore \( u(x,y) = \EE[\phi(X_\tau) | X_t = x, Y_t = y] \) satisfies the PDE from 1.
+\end{enumerate}
+
+\end{solution}
+
+
+\end{document}

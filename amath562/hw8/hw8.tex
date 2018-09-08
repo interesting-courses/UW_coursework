@@ -1,0 +1,233 @@
+\documentclass[10pt]{article}
+\usepackage[T1]{fontenc}
+
+% Document Details
+\newcommand{\CLASS}{AMATH 562}
+\newcommand{\assigmentnum}{Assignment 8}
+
+\usepackage[margin = 1.15in, top = 1.25in, bottom = 1.in]{geometry}
+
+\input{../../TeX_headers/title.tex} % Title Styling
+\input{../../TeX_headers/sfftoc.tex} % General Styling
+\input{../../TeX_headers/styling.tex} % General Styling
+\input{../../TeX_headers/code.tex} % Code Display Setup
+\input{../../TeX_headers/math.tex} % Math shortcuts
+\input{../../TeX_headers/problem.tex} % Problem Environment
+
+\newcommand{\note}[1]{\textcolor{red}{\textbf{Note:} #1}}
+
+\hypersetup{
+   colorlinks=true,       % false: boxed links; true: colored links
+   linkcolor=violet,          % color of internal links (change box color with linkbordercolor)
+   citecolor=green,        % color of links to bibliography
+   filecolor=magenta,      % color of file links
+   urlcolor=cyan           % color of external links
+}
+
+
+\begin{document}
+\maketitle
+
+\begin{problem}[Exercise 8.1]
+    Compute \( \d(W_t^4) \). Write \( W_T^4 \) as an integral with respect to \( W \) plus an integral with respect to \( t \). Use this representation of \( W_T^4 \) to show that \( \EE W_T^4 = 3T^2 \). Compute \( \EE W_T^6 \) using the same technique.
+\end{problem}
+
+\begin{solution}[Solution]
+Write \( f(x) = x^4 \) so that \( f(W_t) = W_t^4 \). Then, \( f'(x) = 4x^3 \) and \( f''(x) = 12x^2 \). Therefore, It\^o's formula gives,
+\begin{align*}
+    \d W_t^4 &= f'(W_t)\d W_t + \frac{1}{2}f''(W_t) \d[W,W]_t 
+    = 4W_t^3 \d W_t + \frac{12}{2} W_t^2 \d[W,W]_t 
+\end{align*}
+
+Thus, writing \( \d[W,W]_t = \d t \) we have,
+\begin{align*}
+    \d W_t^4 = 4W_t^3 \d W_t + 6W_t^2 \d t
+\end{align*}
+    
+Thus, since \( W_0 = 0 \),
+\begin{align*}
+    W_T^4 = W_T^4 - W_0^4 = 4\int_{0}^{T} W_t^3\d W_t + 6 \int_{0}^{T}W_t^2 \d t
+\end{align*}
+
+Recall It\^o integrals are martingales so that,
+\begin{align*}
+    \EE \left[ \int_{0}^{T}W_t^3\d W_t \right] = 0
+    %\EE \left[ \EE \left[ \int_{0}^{T}W_t^3 \d W_t \Bigg| \mathcal{F}_T \right] \right] = \EE \left[ \int_{0}^{0}W_t^3 \d W_t \right] = 0
+\end{align*}
+
+Note also that since \( \EE \left[ W_t^2 \right] = t \),
+\begin{align*}
+    \EE \left[ \int_{0}^{T}W_t^2 \d t \right] = \int_{0}^{T}\EE \left[ W_t^2 \right]\d t = \int_{0}^{T} t \d t = \dfrac{T^2}{2}
+\end{align*}
+
+Therefore,
+\begin{align*}
+    \EE \left[ W_T^4 \right] &= 4\EE \left[ \int_{0}^{T}W_t^3 \d W_t \right] + 6 \EE \left[ \int_{0}^{T}W_t^2 \d t \right] = 6\dfrac{T^2}{2} = 3 T^2
+\end{align*}
+
+Similarly, we have,
+\begin{align*}
+    W_T^6 = 6\int_{0}^{T} W_t^5 \d W_t + \dfrac{6\cdot 5}{2}\int_{0}^{T} W_t^4 \d t 
+    %= 30 \int_{0}^{T} \dfrac{t^3}{3} \d t = 30 \dfrac{T^4}{12} = \dfrac{5}{2}T^4 
+\end{align*}
+
+Therefore, since \( \EE \left[ W_t^4 \right] = 3t^2 \),
+\begin{align*}
+    \EE\left[W_T^6\right] = 6 \EE\left[\int_{0}^{T} W_t^5 \d W_t\right] + 15 \EE\left[\int_{0}^{T} W_t^4 \d t \right] = 15 \int_{0}^{T} \EE \left[ W_t^4 \right] \d t = 15 \int_{0}^{T} 3t^2 \d t = 15T^3 
+\end{align*}
+\end{solution}
+
+\begin{problem}[Exercise 8.2]
+Find an explicit expression for \( Y_T \) where,
+\begin{align*}
+    \d Y_t = r \d t + \alpha Y_t \d W_t
+\end{align*}
+
+    Hint: Multiply the above equation by \( F_t := \exp(- \alpha W_t + \frac{1}{2} \alpha^2t) \).
+
+\end{problem}
+
+
+\begin{solution}[Solution]
+Let \( f(x,y) = \exp(-\alpha x + \frac{1}{2} \lambda^2 y) \) so that,
+\begin{align*}
+    f_x(W_t,t) = -\alpha F_t && f_y(W_t,t) = \frac{\alpha^2}{2} F_t && f_{xx}(W_t,t) =  \alpha^2 F_t
+\end{align*}
+
+Then \( F_t = f(W_t,t) \), so by It\^o's formula and the heuristic \( (\d W_t)^2 =\d t, (\d t)^2 = \d t \d W_t = 0 \),
+\begin{align*}
+    \d F_t = \d f(W_t,t) &= f_y(W_t,t) \d t +  f_x(W_t,t) \d W_t + \frac{1}{2} f_{xx}(W_t,t) (\d W_t)^2 
+    \\&= \frac{\alpha^2}{2}  F_t \d t -\alpha F_t \d W_t + \frac{\alpha^2}{2} F_t \d t
+    \\&= \alpha^2 F_t \d t- \alpha F_t \d W_t
+\end{align*}
+
+
+Using our heuristics we have,
+\begin{align*}
+    \d[F,Y]_t = (\d F_t)(\d Y_t) = \left( \alpha^2 F_t \d t - \alpha F_t \d W_t \right) \left( r \d t + \alpha Y_t \d W_t \right)
+    = -\alpha^2 F_tY_t (\d W_t)^2 
+    = -\alpha^2 F_tY_t \d t
+\end{align*}
+
+
+By the product rule we have,
+\begin{align*}
+    \d (F_tY_t) &=  F_t \d Y_t + Y_t \d F_t + \d[F,Y]_t
+    \\&= F_t (r\d t+\alpha Y_t \d W_t) + Y_t (\alpha^2 F_t \d t-\alpha F_t \d W_t) - \alpha^2 F_t Y_t \d t
+    \\&= r F_t \d t 
+\end{align*}
+
+In integral form,
+\begin{align*}
+    F_t Y_t - F_0Y_0 = \int_{0}^{t}r F_s \d s = \int_{0}^{t} r e^{-\alpha W_s + \frac{1}{2} \alpha^2 s} \d s
+\end{align*}
+
+We can add \( F_0Y_0 = Y_0 \) and divide by \( F_t \) yielding,
+\begin{align*}
+    Y_t = Y_0 + r e^{\alpha W_t - \frac{1}{2}\alpha^2 t} \int_{0}^{t} e^{-\alpha W_s + \frac{1}{2} \alpha^2 s} \d s
+\end{align*}
+\end{solution}
+
+\begin{problem}[Exercise 8.3]
+Suppose \( X \), \( \Delta \), and \( \Pi \) are given by,
+\begin{align*}
+    \d X_t = \sigma X_t \d W_t, 
+    && \Delta_t = \pp{f}{x} (t,X_t),
+    && \Pi_t = X_t \Delta_t
+\end{align*}
+where \( f \) is some smooth function. Show that if \( f \) satisfies,
+\begin{align*}
+    \left( \pp{}{t} + \dfrac{1}{2}\sigma^2x^2 \pp[2]{}{x} \right) f(t,x) = 0
+\end{align*}
+    for all \( (t,x) \), then \( \Pi \) is a martingale with respect to a filtration \( \mathcal{F}_t \) for \( W \).
+\end{problem}
+
+
+\begin{solution}[Solution]
+We have,
+\begin{align*}
+    \pp{}{x} \left( \pp{}{t} + \dfrac{1}{2}\sigma^2x^2 \pp[2]{}{x}\right)  
+    = \dfrac{\partial^2}{\partial x\partial t} + \dfrac{1}{2}\sigma^2 \left[ x^2 \pp[3]{}{x} + 2x \pp[2]{}{x} \right]
+\end{align*}
+
+Thus, using the condition for \( f \) we have,
+\begin{align*}
+    \dfrac{\partial^2 f}{\partial x\partial t} + \dfrac{1}{2}\sigma^2 X_t^2 \pp[3]{f}{x} = - \sigma^2 X_t \pp[2]{f}{x}
+\end{align*}
+
+Using our heuristics we have,
+\begin{align*}
+    \d[X,X] = \sigma^2 X_t^2 (\d W_t)^2 = \sigma^2 X_t^2 \d t
+\end{align*}
+
+Similarly, 
+\begin{align*}
+    \d[X,t] = \d[t,X] = \d[t,t] = 0
+\end{align*}
+
+Therefore, by It\^o's formula,
+\begin{align*}
+%    \d \Delta_t &=  F_x(t,X_t) \d t + F_t(t,X_t) \d X_t + \dfrac{1}{2} F_{xx}(t,X_t) \d [X,X]
+    \d \Delta_t &= \dfrac{\partial^2 f}{\partial x\partial t}(t,X_t) \d t + \pp[2]{f}{x}(t,X_t) \d X_t + \dfrac{1}{2} \d[X,X]
+    \\&=  \dfrac{\partial^2 f}{\partial x\partial t}(t,X_t) \d t + \sigma X_t \pp[2]{f}{x}(t,X_t) \d W_t + \dfrac{1}{2}\sigma^2X_t^2 \pp[3]{f}{x}(t,X_t) \d t
+    \\&= -\sigma^2 X_t \pp[2]{f}{x}(t,X_t) \d t + \sigma X_t \pp[2]{f}{x}(t,X_t)\d W_t 
+\end{align*}
+
+Therefore,
+\begin{align*}
+    \d[X,\Delta]_t = (\d X_t)(\d \Delta_t) 
+    = \sigma^2 X_t^2 \dfrac{\partial^2f}{\partial x^2}(t,X_t) (\d W_t)^2 
+    = \sigma^2 X_t^2 \dfrac{\partial^2f}{\partial x^2}(t,X_t) \d t
+\end{align*}
+
+
+Finally, we have,
+\begin{align*}
+    \d \Pi_t &= \d(X_t \Delta _t) = X_t \d\Delta _t + \Delta_t \d X_t + \d[X,\Delta]_t \\
+    &= X_t \left( -\sigma^2 X_t \pp[2]{f}{x}(t,X_t) \d t + \sigma X_t \pp[2]{f}{x}(t,X_t)\d W_t \right) 
+    + \sigma X_t \pp{f}{x}(t,X_t) \d W_t 
+    + \sigma^2 X_t^2 \pp[2]{f}{x} \d t 
+    \\&= \sigma X_t \left( X_t \pp[2]{f}{x}(t,X_t) + \pp{f}{x}(t,X_t)\right) \d W_t
+\end{align*}
+
+Since there is no \( \d t \) dependence this is an It\^o integral and therefore a martingale with respect to a filtration for \( W \). (there are probably some technical assumptions we need about \( X \) and \( f \), but in class we never dealt with these)\qed
+
+\end{solution}
+
+\begin{problem}[Exercise 8.4]
+Suppose \( X \) is given by,
+\begin{align*}
+    \d X_t = \mu(t,X_t)dt + \sigma(t,X_t) \d W_t
+\end{align*}
+For any smooth function \( f \) define,
+\begin{align*}
+    M_t^f:= f(t,X_t) - f(0,X_0) - \int_{0}^{t} \left( \pp{}{s} + \mu(s,X_s)\pp{}{x} + \dfrac{1}{2}\sigma^2(s,X_s) \pp[2]{}{x} \right) f(s,X_s)ds
+\end{align*}
+    Show that \( M^f \) is a martingale with respect to a filtration \( \mathcal{F}_t \) for \( W \).
+\end{problem}
+
+
+\begin{solution}[Solution]
+We first compute,
+\begin{align*}
+    \d[X,X]_t = (\d X_t)(\d X_t) = \sigma^2(t,X_t) (\d W_t)^2 = \sigma^2(t,X_t)\d t
+\end{align*}
+
+We then have,
+\begin{align*}
+    \d f(t,X_t) &= \pp{f}{t}(t,X_t) \d t + \pp{f}{x}(t,X_t) \d X_t + \dfrac{1}{2}\pp[2]{f}{x}\d[X,X]_t 
+    \\&= \pp{f}{t}(t,X_t) \d t + \pp{f}{x}(t,X_t)  [\mu(t,X_t)\d t +  \sigma(t,X_t)\d W_t] + \dfrac{1}{2}\sigma^2(t,X_t) \pp[2]{f}{x} \d t 
+    \\&= \left( \pp{}{t} + \mu(t,X_t) \pp{}{x} + \dfrac{1}{2}\sigma^2(t,X_t) \pp[2]{}{x} \right) f(t,X_t) \d t + \sigma(t,X_t) \pp{f}{x} \d W_t 
+\end{align*}
+
+Finally, since \( f(0,X_0) \) is a constant,
+\begin{align*}
+    \d M_t^f &= \d f(t,X_t) - \left( \pp{}{t} + \mu(t,X_t)\pp{}{x} + \dfrac{1}{2}\sigma^2(t,X_t) \pp[2]{}{x} \right) f(t,X_t) \d t \\
+    &= \sigma(t,X_t) \pp{f}{x} \d W_t 
+\end{align*}
+
+Since there is no \( \d t \) dependence this an It\^o integral and therefore a martingale with respect to a filtration for \( W \). \qed
+\end{solution}
+
+
+\end{document}

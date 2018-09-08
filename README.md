@@ -11,8 +11,8 @@ In order to compile the LaTeX files you will need to download the `TeX_headers` 
 Course | Date Taken | Uploaded | Corrected 
 -|-|-|-
 AMATH 514 | Winter 2018 | | 
-AMATH 561 | Autumn 2017 | |
-AMATH 562 | Winter 2018 | |
+AMATH 561 | Autumn 2017 | yes (except ch1/2) | yes
+AMATH 562 | Winter 2018 | yes (except ch6) | yes (except ch10)
 AMATH 563 | Spring 2019 | |
 AMATH 567 | Autumn 2017 | |
 AMATH 584 | Autumn 2017 | yes | yes

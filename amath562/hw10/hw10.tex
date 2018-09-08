@@ -1,0 +1,418 @@
+\documentclass[10pt]{article}
+\usepackage[T1]{fontenc}
+
+% Document Details
+\newcommand{\CLASS}{AMATH 562}
+\newcommand{\assigmentnum}{Assignment 10}
+
+\usepackage[margin = 1.15in, top = 1.25in, bottom = 1.in]{geometry}
+
+\input{../../TeX_headers/title.tex} % Title Styling
+\input{../../TeX_headers/sfftoc.tex} % General Styling
+\input{../../TeX_headers/styling.tex} % General Styling
+\input{../../TeX_headers/code.tex} % Code Display Setup
+\input{../../TeX_headers/math.tex} % Math shortcuts
+\input{../../TeX_headers/problem.tex} % Problem Environment
+
+\newcommand{\note}[1]{\textcolor{red}{\textbf{Note:} #1}}
+
+\hypersetup{
+   colorlinks=true,       % false: boxed links; true: colored links
+   linkcolor=violet,          % color of internal links (change box color with linkbordercolor)
+   citecolor=green,        % color of links to bibliography
+   filecolor=magenta,      % color of file links
+   urlcolor=cyan           % color of external links
+}
+
+
+\begin{document}
+\maketitle
+
+\begin{problem}[Exercise 10.1]
+    Let \( P=(P_t)_{t\geq 0} \) be a Poisson process with intensity \( \lambda \).
+    \begin{enumerate}[label=(\alph*)]
+        \item What is the L\'evy Measure \( \nu \) of \( P \).
+        \item Let \( \d X_t = \d P_t \). Define \( u(x,t):=\EE \left[ \varphi(X_T) | X_t = x \right] \). Find \( u(t,x) \) and verify it solves the Kolmogorov Backward equation.
+    \end{enumerate}
+\end{problem}
+
+\begin{solution}[Solution]
+\begin{enumerate}[label=(\alph*)]
+    \item 
+        %If \( 1\notin U \), since \( \Delta P_t \in \{0,1\} \), then \( \nu(U) = 0 \). Assume \( 1\in U \). We then have,
+        We have,
+        \begin{align*}
+            \nu(U) = \EE \left[ N(1,U) \right] 
+            = \EE \left[ \sum_{0\leq s\leq 1} \mathbbm{1}_{\Delta P_s \in U} \right]
+            = \EE \left[ \sum_{i=1}^{P_1} \mathbbm{1}_{1\in U} \right]
+            = \EE \left[ P_1 \right] \mathbbm{1}_{1\in U}
+            = \lambda \mathbbm{1}_{1\in U}
+        \end{align*}
+       
+
+    \item Integrating \( \d X_t = \d P_t \) from \( 0 \) to \( t \) gives, \( X_t - X_0 = P_t - P_0 \). Since \( P_0 = 0 \) we have,
+        \begin{align*}
+            X_t = X_0 + P_t
+        \end{align*}
+
+        First observe,
+        \begin{align*}
+            \PP (X_T = k | X_t = x)
+            =\PP (X_0 + P_T = k | X_0 + P_t = x)
+            =\PP (P_T = k - X_0 | P_t = x - X_0)
+        \end{align*}
+    
+        Since \( P \) has independent increments, and since \( P \) is Markov,
+        \begin{align*}
+            \PP (P_T = k - X_0 | P_t = x - X_0)
+            =\PP (P_{T-t} = k - x)
+            = \dfrac{(\lambda(T-t))^{k-x}}{(k-x)!}e^{-\lambda (T-t)}
+        \end{align*} 
+        
+        Thus,
+        \begin{align*}
+            u(t,x) = \EE \left[ \varphi(X_T) | X_t = x \right]
+            = \sum_{k=x}^{\infty} \varphi(k) \PP (X_T = k | X_t = x)
+            = \sum_{k=x}^{\infty} \varphi(k) \dfrac{(\lambda(T-t))^{k-x}}{(k-x)!}e^{-\lambda (T-t)}
+        \end{align*}
+        
+        Reindexing with \( n= k-x \),
+        \begin{align*}
+            u(t,x)  
+            = e^{-\lambda (T-t)} \sum_{k=x}^{\infty} \varphi(k) \dfrac{(\lambda(T-t))^{k-x}}{(k-x)!}
+            = e^{-\lambda (T-t)} \sum_{n=0}^{\infty} \varphi(n+x) \dfrac{(\lambda(T-t))^{n}}{n!}
+        \end{align*}
+        
+
+        We now compute the generator \( \mathcal{A} (t) \) for \( P \). By definition,
+        \begin{align*}
+            \mathcal{A} (t) \varphi(x) 
+            = \lim_{s\to t^+} \dfrac{1}{s-t} \left[ \mathcal{P}(t,s) \varphi(x) - \varphi(x)  \right]
+            = \lim_{s\to t^+} \dfrac{1}{s-t} \left[ \EE \left[ \varphi(X_s) | X_t=x \right] - \varphi(x)  \right]
+        \end{align*}
+       
+        In a small interval \( \d t \) the probability \( X_{t+\d t} = X_t + 1 \) is \( \lambda \d t \) and probability \( X_{t+\d t} = X_t \) is \( (1-\lambda)\d t \). Therefore,
+        \begin{align*}
+            \mathcal{A} (t) \varphi(x) = \dfrac{1}{\d t} \left[\varphi(x+1) \lambda + \varphi(x) (1-\lambda) - \varphi(x) \right]
+            = \lambda(\varphi(x+1) - \varphi(x))
+        \end{align*}
+        
+    
+        Since the \( t \)-derivative of the \( n=0 \) term is zero,
+        \begin{align*}
+            \sum_{n=0}^{\infty} \varphi(n+x) \partial_t \left[ \dfrac{(\lambda(T-t))^n}{n!} \right]
+            &= \sum_{n=1}^{\infty} \varphi(n+x) \partial_t \left[ \dfrac{(\lambda(T-t))^n}{n!} \right]
+            \\&= \sum_{n=1}^{\infty} \varphi(n+x) (n)(-\lambda)\dfrac{(\lambda(T-t))^{n-1}}{n!}
+            \\&= -\lambda\sum_{n=1}^{\infty} \varphi(n+x) \dfrac{(\lambda(T-t))^{n-1}}{(n-1)!}
+        \end{align*}
+        
+        Observe, by the chain rule and assuming we can bring a derivative through a sum,
+        \begin{align*}
+            \partial_t u(t,x) 
+            &= \left[ \partial_t e^{-\lambda(T-t)} \right] \sum_{n=0}^{\infty} \varphi(n+x) \dfrac{(\lambda(T-t))^n}{n!} 
+            + e^{-\lambda(T-t)} \sum_{n=0}^{\infty} \varphi(n+x) \partial_t \left[ \dfrac{(\lambda(T-t))^n}{n!} \right]
+            \\&= \lambda e^{-\lambda(T-t)} \sum_{n=0}^{\infty} \varphi(n+x) \dfrac{(\lambda(T-t))^n}{n!} 
+            - \lambda e^{-\lambda(T-t)} \sum_{n=1}^{\infty} \varphi(n+x) \dfrac{(\lambda(T-t))^{n-1}}{(n-1)!} 
+            \\&= \lambda e^{-\lambda(T-t)} \sum_{n=0}^{\infty} \varphi(n+x) \dfrac{(\lambda(T-t))^n}{n!} 
+            - \lambda e^{-\lambda(T-t)} \sum_{n=m}^{\infty} \varphi(m+1+x) \dfrac{(\lambda(T-t))^{m}}{m!}
+            \\&= \lambda(u(t,x) - u(t,x+1))
+        \end{align*}
+        
+        Therefore the KBE is satisfied as
+        \begin{align*}
+            [\partial_t+\mathcal{A}] u(t,x)
+            = \lambda(u(t,x) - u(t,x+1)) - \lambda(u(t,x+1)-u(t,x)) = 0,
+            && 
+            u(T,x) = \varphi(x) 
+        \end{align*}
+         
+\end{enumerate}
+\end{solution}
+
+\begin{problem}[Exercise 10.2]
+
+\end{problem}
+
+\begin{solution}[Solution]
+    
+\end{solution}
+
+
+
+\begin{problem}[Exercise 10.3]
+    Let \( X = (X_t)_{t\geq 0} \) be a process defined by,
+    \begin{align*}
+        \d X_t &= \mu_t X_t \d t + \sigma_t X_t \d W_t + \int_{\RR} \left( e^{\gamma_t(z)}-1 \right)X_{t^-} \tilde{N}(\d t, \d z) \\
+        \d Y_t &= b_t Y_t \d t + a_t Y_t \d W_t + \int_{\RR} \left( e^{g_t(z)}-1 \right)Y_{t^-}\tilde{N}(\d t,\d z)
+    \end{align*} 
+    where \( W \) is a one-dimensional Brownian motion, \( \tilde{N} \) is a one-dimensional compensated Poisson random measure on \( \RR \), and \( \mu,b,\sigma,a,\gamma, g\) are \( \mathbb{F} \)-adapted stochastic processes.
+    \begin{enumerate}[label=(\alph*)]
+        \item Define \( Z_t:=X_t/Y_t \). Compute the differential \( \d Z_t \). Your answer should not involve \( X_t \) or \( Y_t \).
+        \item Find \( \mu_t \) so that \( Z \) is a martingale.
+    \end{enumerate}
+\end{problem}
+
+
+\begin{solution}[Solution]
+\begin{enumerate}[label=(\alph*)]
+    \item Define \( f(x,y) = x/y \). Then \( Z_t = f(X_t,Y_t) \).
+
+        We have,
+        \begin{align*}
+            [(e^{\gamma_t(z)}-1)X_t; (e^{g_t(z)}-1)Y_t] \cdot \nabla f(X_{t^-},Y_{t^-}) 
+            = (e^{\gamma_t(z)}-1) X_{t^-} f_x(X_{t^-},Y_{t^-}) + (e^{g_t(z)}-1)Y_{t^-} f_y(X_{t^-},Y_{t^-})
+        \end{align*}
+
+        We use It\^o's formula to compute,
+        \begin{align*}
+            \d Z_t = \d f(X_t,Y_t)
+            &= \left( \mu_t X_t f_x + b_tY_t f_y
+            + \frac{1}{2} \left( (\sigma_t X_t)^2 f_{xx} + 2(\sigma_t X_t)(a_tY_) f_{xy} + (a_tY_t)^2f_{yy} \right) \right) \d t
+            \\& \hspace{1.5em}+ \left( \sigma_t X_t f_x + a_t Y_t f_y \right) \d W_t
+            \\& \hspace{2em}+ \int_{\RR} \left( f \left(X_{t^-}+(e^{\gamma_t(z)}-1)X_{t^-},Y_{t^-} + (e^{g_t(z)}-1)Y_{t^-} \right)  - f(X_{t^-},Y_{t^-}) \right) \tilde{N}(\d t,\d z)
+            \\& \hspace{2.5em}+ \int_{\RR} \Big( f \left(X_{t^-}+(e^{\gamma_t(z)}-1)X_{t^-},Y_{t^-} + (e^{g_t(z)}-1)Y_{t^-} \right)  - f(X_{t^-},Y_{t^-}) 
+            \\&  \hspace{6em} - (e^{\gamma_t(z)}-1) X_{t^-} f_x(X_{t^-},Y_{t^-}) - (e^{g_t(z)}-1)Y_{t^-} f_y(X_{t^-},Y_{t^-}) \Big) \nu(\d z) \d t
+        \end{align*}
+       
+
+        Now, using \( f_x = 1/y, f_y = -x/y^2, f_{xy} = -1/y^2, f_{xx} = 0, f_{yy} = 2x/y^3 \) we have,
+        \begin{align*}
+             \mu_t X_t f_x + b_tY_t f_y %\right) \d t
+            = \mu_t X_t \left( \dfrac{1}{Y_t} \right) + b_t Y_t \left( \dfrac{-X_t}{Y_t^2} \right)
+            = \mu_t Z_t - b_t Z_t
+        \end{align*}
+        \begin{align*}
+            (\sigma_t X_t)^2 f_{xx} + 2(\sigma_t X_t)(a_tY_t) f_{xy} +  (a_tY_t)^2 f_{yy} 
+            = 2(\sigma_t X_t)(a_tY_t) \left( \dfrac{-1}{Y_t^2} \right) + a_t^2 Y_t^2 \left( \dfrac{2X_t}{Y_t^3} \right)
+            %= a_t^2 \dfrac{X_t}{Y_t} \d t
+            = -2\sigma_ta_tZ_t + 2a_t^2 Z_t 
+        \end{align*}
+        \begin{align*}
+            \sigma_t X_t f_x + a_t Y_t f_y 
+            = \sigma_t X_t \left( \dfrac{1}{Y_t} \right) + a_t Y_t \left( \dfrac{-X_t}{Y_t^2} \right)
+            = \sigma_t Z_t - a_t Z_t 
+        \end{align*}
+        \begin{align*}
+             f \left(X_{t^-}+(e^{\gamma_t(z)}-1)X_{t^-},Y_{t^-} + (e^{g_t(z)}-1)Y_{t^-} \right)  - f(X_{t^-},Y_{t^-}) 
+            =  \dfrac{e^{\gamma_t(z)}}{e^{g_t(z)}} Z_{t^-} - Z_{t^-}
+        \end{align*}
+        \begin{align*}    
+            & \phantom{{}={}}(e^{\gamma_t(z)}-1) X_{t^-} f_x(X_{t^-},Y_{t^-}) + (e^{g_t(z)}-1)Y_{t^-} f_y(X_{t^-},Y_{t^-})
+            \\&= (e^{\gamma_t(z)}-1) X_{t^-} \left( \dfrac{1}{Y_{t^-}} \right)
+            + (e^{g_t(z)}-1) Y_{t^-} \left( \dfrac{-X_{t^-}}{Y_{t^-}^2} \right)
+            \\&= (e^{\gamma_t(z)}-1) Z_{t^-} - (e^{g_t(z)}-1)Z_{t^-}
+        \end{align*}
+       
+        Inserting these evaluated expressions into the original expression for \( \d Z_t \) gives,
+        \begin{align*}
+            \d Z_t &= \left( \mu_t - b_t - \sigma_t a_t + a_t^2 \right)Z_t \d t
+            + \left( \sigma_t - a_t \right) Z_t \d W_t
+            \\& \hspace{2em}+ \int_{\RR} \left( \dfrac{e^{\gamma_t(z)}}{e^{g_t(z)}}-1 \right)Z_{t^-} \tilde{N}(\d t, \d z)
+            \\& \hspace{3em}+ \int_{\RR} \left( \dfrac{e^{\gamma_t(z)}}{e^{g_t(z)}} - e^{\gamma_t(z)}+e^{g_t(z)}-1 \right)Z_{t^-} \nu(\d z)\d t
+        \end{align*}
+        
+    \item 
+        We need the \( \d t \) term to be zero. Therefore pick,
+        \begin{align*}
+            \mu_t = b_t + \sigma_t a_t - a_t^2
+            -\int_{\RR} \left( \dfrac{e^{\gamma_t(z)}}{e^{g_t(z)}} - e^{\gamma_t(z)}+e^{g_t(z)}-1 \right) \nu(\d z)\d t
+        \end{align*}
+\end{enumerate}
+\end{solution}
+
+\begin{problem}[Exercise 10.4]
+    Let \( \eta = (\eta_t)_{t\geq 0} \) be a one-dimensional L\'evy Process and define \( X = (X_t)_{t\geq 0} \) by
+    \begin{align*}
+        \d X_t = \kappa(\theta - X_t)\d t + \d \eta_t
+    \end{align*}
+    
+    \begin{enumerate}[label=(\alph*)]
+        \item Find \( X_t \) explicitly as a function of \( \eta \).
+        \item Assume \( \eta_t = \sigma  W_t + \int_\RR z \tilde{N}(t,\d z) \). Compute \( m(t):= \EE X_t \) and \( c(t,s):= \EE(X_t-m(t))(X_s-m(s)) \).
+    \end{enumerate}
+\end{problem}
+
+\begin{solution}[Solution]
+\begin{enumerate}[label=(\alph*)]
+    \item 
+        Let \( Y_t = X_t - \theta \) and \( Z_t = e^{\kappa t}Y_t = f(t,Y_t)  \), where \( f(t,y) = e^{\kappa t}y \).
+
+        Then,
+        \begin{align*}
+            \d Y_t = \d X_t = -\kappa Y_t \d t + \d \eta_t
+        \end{align*}
+
+        Recall the product rule (which applies to L\'evy It\^o processes),
+        \begin{align*}
+            \d(U_tV_t) = U_{t^-}\d V_t + V_{t^-}\d U_t + \d[U,V]_t
+        \end{align*}
+        
+
+        Therefore,
+        \begin{align*}
+            \d Z_t 
+            = \d (e^{\kappa t} Y_t) 
+            = e^{\kappa t^-}\d Y_t + Y_{t^-} \d e^{\kappa t} + \d[e^{\kappa t},Y]_t 
+        \end{align*}
+      
+
+        % Since \( e^{\kappa t} \) is has a continuous derivative then, \( [e^{\kappa t},Y]_t = 0 \) \textbf{VERIFY THIS IS TRUE!!!!}. Therefire,
+
+        Using our heuristics we have \( \d (e^{\kappa t}) \d Y_t = 0 \). Therefore, since \( t^- \) and \( t \) can be ``treated the same'' on \( \d t \) terms which are continuous,
+        \begin{align*}
+            \d Z_t = e^{\kappa t^-} \d Y_t + \kappa e^{\kappa t} Y_{t^-} 
+            = e^{\kappa t^-} \d \eta_t
+        \end{align*}
+        
+        Integrating we have,
+        \begin{align*}
+            Z_t = Z_0 + \int_{0}^{t} e^{\kappa s} \d \eta_s
+        \end{align*}
+
+        Therefore, since \( Y_t = e^{-\kappa t}Z_t \), \( Z_0 = Y_0 \) so,
+        \begin{align*}
+            Y_t 
+            = e^{-\kappa t} \left( Y_0 + \int_{0}^{t} e^{\kappa s} \d \eta_s \right)
+        \end{align*}
+        
+        Finally, since \( X_t = \theta + Y_t \), \( Y_0 = X_0 - \theta \) so,
+        \begin{align*}
+            X_t = \theta + e^{-\kappa t} \left( X_0 - \theta + \int_{0}^{t} e^{\kappa s} \d \eta_s \right)
+            = \theta + e^{-\kappa t}(X_0 - \theta) + \int_{0}^{t} e^{\kappa(s-t)} \d \eta_s
+        \end{align*}
+        
+        
+    \item
+        We have,
+        \begin{align*}
+            \d \eta_t = \sigma \d W_t + \int_{\RR} z \tilde{N}(\d t, \d z)
+        \end{align*}
+       
+        Observe, that since integrals with respect to \( \d W_t \) and \( \int_{\RR} \tilde{N}(\d t, \d z) \) are martingales so,
+        \begin{align*}
+            \EE \left[ \int_{0}^{t} e^{\kappa(s-t)} \d \eta_s \right]
+            = \EE \left[ \int_{0}^{t} e^{\kappa(s-t)} \sigma \d W_t + \int_{0}^{t} e^{\kappa(s-t)} \int_{\RR} z \tilde{N}(\d t, \d z) \right] = 0
+        \end{align*}
+        
+        Therefore,
+        \begin{align*}
+            m(t) = \EE \left[ X_t \right]
+            = \EE \left[ \theta + e^{-\kappa t}(X_0 - \theta) + \int_{0}^{t} e^{\kappa(s-t)} \d \eta_s \right]
+            = \theta + e^{-\kappa t}(X_0 - \theta)
+        \end{align*}
+        
+
+        Clearly,
+        \begin{align*}
+            X_t - m(t) = \int_{0}^{t}e^{\kappa(u-t)} \d \eta_u
+        \end{align*}
+
+        \iffalse
+        Observe,
+        \begin{align*}
+            \EE[\d\eta_u \d\eta_v]
+            &= \EE \left[ \sigma^2 \d W_u \d W_v + \d W_u \int_{\RR} z \tilde{N}(\d v, \d z) + \d W_v \int_{\RR} y \tilde{N} (\d u, \d y) + \iint_{\RR^2} y z \tilde{N}(\d u, \d u) \tilde{N} (\d v, \d z)  \right]
+            \\&= \EE \left[ \sigma^2 \d W_u \d W_v \right] + \EE\left[\int_{\RR} z \d W_u \tilde{N}(\d v, \d z) \right] 
+            \\& \hspace{5em} + \EE\left [ \int_{\RR} y \d W_v \tilde{N} (\d u, \d y)\right] + \EE \left[\iint_{\RR^2} y z \tilde{N}(\d u, \d y) \tilde{N} (\d v, \d z)  \right]
+            \\&= \sigma^2 \delta_{u,v} \d u + 0 + 0 + \iint_{\RR^2}\delta_{u,v} \delta(z-y) N(\d u, \d z)\d y
+        \end{align*}
+        \fi
+
+        Without loss of generality assume \( t\geq s \). Then, using the independent increments property to write the expectation of a product as the product of expectations,
+        \begin{align*}
+            \EE \left[ \left( X_t - m(t) \right) \left( X_s-m(s) \right) \right]
+            &= \EE \left[ \left( \int_{0}^{t} e^{\kappa(u-t)} \d \eta_u \right) \left( \int_{0}^{s}e^{\kappa(v-s)}\d \eta_v \right) \right]
+            \\&= \EE \left[ \left( \int_{0}^{s} e^{\kappa(u-t)} \d \eta_u + \int_{s}^{t} e^{\kappa(u-t)} \d \eta_u\right) \left( \int_{0}^{s}e^{\kappa(v-s)}\d \eta_v \right) \right]
+            \\&= \EE \left[ e^{-\kappa(t+s)} \left(\int_{0}^{s} e^{\kappa u} \d \eta_u \right)^2 + e^{-\kappa(t+s)}\left( \int_{s}^{t} e^{\kappa u} \d \eta_u\right) \left( \int_{0}^{s}e^{\kappa v}\d \eta_v \right) \right] 
+            \\&= e^{-\kappa(t+s)}\EE \left[ \left(\int_{0}^{s} e^{\kappa u} \d \eta_u \right)^2 \right] + e^{-\kappa(t+s)} \EE \left[ \int_{s}^{t} e^{\kappa u} \d \eta_u\right] \EE\left[ \int_{0}^{s}e^{\kappa v}\d \eta_v \right] 
+        \end{align*}
+        
+        We now note that, L\'evy processes without a \( \d t \) term are martingales so that,
+        \begin{align*}
+            \EE \left[ \int_{0}^{s} e^{\kappa u} \d \eta_u \right]
+            = \EE \left[ \int_{0}^{s} e^{\kappa u} \left(\sigma \d W_u + \int_\RR z \tilde{N}(\d u, \d z) \right) \right] 
+            = 0
+        \end{align*}
+        
+        Define,
+        \begin{align*}
+            Z_s = \int_{0}^{s} e^{\kappa u} \d \eta_u
+        \end{align*}
+
+        Then,
+        \begin{align*}
+            \d Z_s = e^{\kappa s} \d \eta_s 
+            = \sigma e^{\kappa s} \d W_s + \int_{\RR} e^{\kappa s} z \tilde{N}(\d s,\d z)
+        \end{align*}
+        
+        
+        Using It\^o's isometry we have,
+        \begin{align*}
+            \EE \left[ \left( \int_{0}^{s} e^{\kappa u} \d \eta_u \right)^2 \right]
+            = \EE \left[ \int_{0}^{s} \left(\sigma^2 e^{2\kappa u} + \int_\RR e^{2\kappa u}z^2 \nu(\d z) \right)\d u \right]
+            = \EE\left[ \left(\sigma^2 + \int_\RR z^2 \nu(\d z) \right) \dfrac{e^{2\kappa s}-1}{2\kappa} \right] 
+        \end{align*}
+
+        Therefore, 
+        \begin{align*}
+            c(t,s) 
+            = e^{-\kappa(t+s)}\dfrac{e^{2\kappa s}-1}{2\kappa} \left(\sigma^2 + \int_\RR z^2 \nu(\d z) \right)
+            = \dfrac{e^{\kappa(s-t)}-e^{-\kappa(t+s)}}{2\kappa} \left(\sigma^2 + \int_\RR z^2 \nu(\d z) \right)
+        \end{align*} 
+
+        We can remove our assumption that \( t\geq s \) and write,
+        \begin{align*}
+            c(t,s)  
+            = \dfrac{e^{-\kappa|t-s|} - e^{-\kappa(t+s)}}{2\kappa} \left(\sigma^2 + \int_\RR z^2 \nu(\d z) \right)
+        \end{align*}
+\end{enumerate}
+\end{solution}
+
+\begin{problem}[Exercise 10.5]
+Let \( X \) be the following one-dimensional jump-diffusion
+\begin{align*}
+    \d X_t = \mu(t,X_t)\d t + \sigma(t,X_t)\d W_t + \int_{\RR} \gamma(t,X_{t^-},z) \tilde{N}(t,\d z),
+\end{align*}
+    where \( W \) is a one-dimensional Brownian motion and \( \tilde{N} \) is a one-dimensional compensated Poisson random measure on \( \RR \). Derive using the L\'evy-It\^o formula the infinitesimal generator \( \mathcal{A} (t) \) of the \( X \) process,
+    \begin{align*}
+        \mathcal{A}(t) \varphi(x) := \lim_{s\to t^+} \dfrac{\EE \left[ \varphi(X_s) | X_t = x \right]-\varphi(x)}{s-t}
+    \end{align*}
+\end{problem}
+
+
+\begin{solution}[Solution]
+Since \( \EE[\varphi(X_t)|X_t = x] = \varphi(x) \),
+\begin{align*}
+    \EE \left[ \varphi(X_s) | X_t = x \right] - \varphi(x)
+    = \EE \left[ \varphi(X_t) + \int_{t}^{s}\d \varphi(X_u) \right] - \varphi(x)
+    = \EE \left[ \int_{t}^{s}\d \varphi(X_u) \right]
+\end{align*}
+
+
+
+From the L\'evy-It\^o formula we have,
+\begin{align*}
+    \d \varphi(X_u)
+    &= \left( \mu(u,X_u) \varphi'(X_u) + \dfrac{1}{2}\sigma(u,X_u)^2\varphi''(X_u)\right)\d u
+    + \sigma(u,X_u)\varphi'(X_u) \d W_u
+    \\&\hspace{2em}+ \int_{\RR} \Big(\varphi(X_{u^-}+\gamma(u,X_{u^-},z)) - \varphi(X_{u^-}) \Big) \tilde{N}(\d u, \d z)
+    \\&\hspace{3em}+ \int_{\RR} \Big(\varphi(X_{u^-}+\gamma(u,X_{u^-},z)) - \varphi(X_{u^-}) - \gamma(u,X_{u^-},z)\varphi'(X_{u^-})\Big) \nu(\d z) \d u
+\end{align*}
+
+We note that as integrals with respect to \( W \) and \( \tilde{N}  \) are martingales that,
+\begin{align*}
+    \EE \left[ \int_{t}^{s} \d \varphi(X_u) \right] 
+    &= \EE \Bigg[ \int_{t}^{s} \bigg( \mu(u,X_u) \varphi'(X_u) + \dfrac{1}{2}\sigma(u,X_u)^2\varphi''(X_u)\d u
+    \\&\hspace{3em}+ \int_{\RR} \Big(\varphi(X_{u^-}+\gamma(u,X_{u^-},z)) - \varphi(X_{u^-}) - \gamma(u,X_{u^-},z)\varphi'(X_{u^-})\Big) \nu(\d z) \bigg) \d u \Bigg]
+\end{align*}
+
+Thus, taking the limit as \( s\to t^+ \),
+\begin{align*}
+    \mathcal{A} (t) \varphi(x) 
+    %&= \lim_{s\to t^+} \dfrac{1}{s-t} \EE \left[ \int_{s}^{t} \d \varphi(X_u) \right]
+    &= \left( \mu(t,X_t) \partial_x + \dfrac{1}{2} \sigma(t,X_t) \partial_x^2 + \int_{\RR} \nu(\d z) \left(\theta_{\gamma(t,X_t,z)} - 1 - \gamma(t,X_t,z) \partial_x\right) \right)\varphi(x)
+\end{align*}
+\end{solution}
+
+
+\end{document}

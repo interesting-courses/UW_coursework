@@ -1,0 +1,350 @@
+\documentclass[10pt]{article}
+\usepackage[T1]{fontenc}
+
+% Document Details
+\newcommand{\CLASS}{AMATH 561}
+\newcommand{\assigmentnum}{Assignment 3}
+
+\usepackage[margin = 1.15in, top = 1.25in, bottom = 1.in]{geometry}
+
+\input{../../TeX_headers/title.tex} % Title Styling
+\input{../../TeX_headers/sfftoc.tex} % General Styling
+\input{../../TeX_headers/styling.tex} % General Styling
+\input{../../TeX_headers/code.tex} % Code Display Setup
+\input{../../TeX_headers/math.tex} % Math shortcuts
+\input{../../TeX_headers/problem.tex} % Problem Environment
+
+\newcommand{\note}[1]{\textcolor{red}{\textbf{Note:} #1}}
+
+\hypersetup{
+   colorlinks=true,       % false: boxed links; true: colored links
+   linkcolor=violet,          % color of internal links (change box color with linkbordercolor)
+   citecolor=green,        % color of links to bibliography
+   filecolor=magenta,      % color of file links
+   urlcolor=cyan           % color of external links
+}
+
+
+\begin{document}
+\maketitle
+
+\begin{problem}[Exercise 3.1]%
+    Let \(X \sim \operatorname{Bin}(n,U) \) where \( U\sim \mathcal{U}((0,1))\). What is the probability Generating function \( G_X(s) \) of \( X \)? What is \( \PP(X=k) \) where \( k\in\{0,1,2,...,n\} \)?
+\end{problem}
+
+\begin{solution}[Solution]
+Using iterated conditioning, since a Binomial random variable is the sum of \( n \) iid Bernioulli random variables,
+\begin{align*}
+    G_X(s) = \EE[s^X] = \EE\EE[s^X|U] = \EE[((1-U)s^0+Us^1)^n]
+\end{align*}
+
+We calculate this by integrating with Mathematica as,
+\begin{lstlisting}
+Integrate[((1 - x) + x s)^n, {x, 0, 1}, Assumptions -> {s > 0}] 
+\end{lstlisting}
+
+This yields,
+\begin{align*}
+    \EE[((1-U)+Us)^n] = \int_\RR \mathbbm{1}_{(0,1)}((1-x)+xs)^n \d x 
+    = \int_{0}^{1}((1-x)+xs)^n \d x = \dfrac{1-s^{n+1}}{(n+1)(1-s)} \\
+\end{align*}
+
+This is a finite geometric progression which we simplify so,
+\begin{align*}
+    G_X(s) = \sum_{k=0}^{n} \dfrac{s^k}{n+1}
+\end{align*}
+
+Therefore \( \PP(X=k) = 1/(1+n) \) for \( k=0,1,2,...,n \).
+\end{solution}
+
+\begin{problem}[Exercise 3.2]
+    Let \( Z_n \) be the size of the \( n \)-th generation in an ordinary branching process with \( Z_0 = 1\), \( \EE Z_1=\mu \) and \( \mathbb{V}Z_1>0 \). Show that \( \EE Z_nZ_m=\mu^{n-m} \EE Z_m^2 \) for \( m\leq n\) . Use this to find the correlation coefficient \( \rho(Z_m,Z_n) \) in terms of \( \mu, n\) and \( m \). Consider the case \( \mu = 1 \) and the case \( \mu \neq 1 \).
+\end{problem}
+
+\begin{solution}[Solution]
+Let \( Y_{m,i} \) denote the number of offspring in the \( n \)-th generation that descends from the \( i \)-th member of the \( m \)-th generation. Then the \( (Y_{m,i}) \) are iid with distribution \( Z_{n-m} \) and \( Z_n = Y_{m,1}+Y_{m,2}+...+Y_{m,Z_m} \). 
+
+Then, since \( (Y_{m,i}) \) are iid with distribution \( Z_{n-m} \),
+\begin{align*}
+    \EE \left[ Z_n | Z_m \right] = \EE \left[ Y_{m,1}+Y_{m,2}+...+Y_{m,Z_m} | Z_m \right] = Z_m \EE[Z_{m-n}] = Z_m \mu^{n-m}
+\end{align*}
+
+Therefore, by taking out what is known,
+\begin{align*}
+    \EE \left[ Z_mZ_n \right] &= \EE \left[ \EE \left[ Z_mZ_n | Z_m \right] \right] = \EE \left[ Z_m^2 \EE  \left[ Z_n | Z_m \right] \right] 
+    = \EE \left[ Z_m^2 \mu^{n-m} \right] = \mu^{n-m}\EE \left[ Z_m^2 \right]
+\end{align*}
+
+Observing that \( \EE[Z_mZ_n] = \mu^{n-m}\EE[Z_m^2] = \mu^{n-m}(\mathbb{V}[Z_m] + \EE[Z_m]^2) = \mu^{n-m}(\mathbb{V}[Z_m]+\mu^{2m}) \), write,
+\begin{align*}
+    \rho(Z_m,Z_n) &= \dfrac{\operatorname{Cov}(Z_n,Z_m)}{(\mathbb{V}[Z_n] \mathbb{V}[Z_m])^{1/2}} 
+    = \dfrac{\EE[Z_nZ_m]-\EE[Z_n]\EE[Z_m]}{(\mathbb{V}[Z_n]\mathbb{V}[Z_m])^{1/2}} 
+    = \dfrac{\mu^{n-m}(\mathbb{V}[Z_m]+\mu^{2m})-\mu^{n+m}}{(\mathbb{V}[Z_n]\mathbb{V}[Z_m])^{1/2}} \\
+\end{align*}
+Denote \( \mathbb{V}[Z_1] \) by \( \sigma \).
+
+
+Suppose \( \mu=1 \) so that \( \mathbb{V}[Z_m]=m\sigma^2 \). We use Mathematica to simplify the above expression as,
+\begin{lstlisting}
+FullSimplify[
+ PowerExpand[(\[Mu]^(n - m) (Vzm + \[Mu]^(2 m)) - \[Mu]^(
+    n + m))/(Vzn Vzm)^(
+   1/2) /. {Vzm -> m \[Sigma]^2, Vzn -> n \[Sigma]^2, \[Mu] -> 1}], 
+ Assumptions -> {{m, n, \[Sigma], \[Mu]} > 0}]    
+\end{lstlisting}
+
+This yields,
+\begin{align*}
+    \rho(Z_m,Z_n) = \sqrt{\dfrac{m}{n}}
+\end{align*}
+\iffalse
+\begin{align*}
+    \rho(Z_m,Z_n) &= \dfrac{\operatorname{Cov}(Z_n,Z_m)}{(\mathbb{V}[Z_n] \mathbb{V}[Z_m])^{1/2}} \\
+    &= \dfrac{\EE[Z_nZ_m]-\EE[Z_n]\EE[Z_m]}{(n\sigma^2m\sigma^2)^{1/2}} \\
+    &= \dfrac{\mu^{n-m}\EE[Z_m^2]-\mu^n\mu^m}{\sigma^2(nm)^{1/2}} \\
+    &= \dfrac{\mu^{n-m}(m\sigma^2+\mu^{2m})-\mu^n\mu^m}{\sigma^2(nm)^{1/2}} \\
+    &= \sqrt{\dfrac{m}{n}}\mu^{n-m}
+\end{align*}
+\fi
+
+Now suppose \( \mu\neq 1 \) so that \( \mathbb{V}[Z_m] = \sigma^2(\mu^n-1)\mu^{n-1}/(\mu-1) \). We use Mathematica to simplify the above expression as,
+\begin{lstlisting}
+FullSimplify[
+ PowerExpand[(\[Mu]^(n - m) (Vzm + \[Mu]^(2 m)) - \[Mu]^(
+    n + m))/(Vzn Vzm)^(
+   1/2) /. {Vzm -> \[Sigma]^2 (\[Mu]^m - 1) \[Mu]^(m - 1)/(\[Mu] - 1),
+     Vzn -> \[Sigma]^2 (\[Mu]^n - 1) \[Mu]^(n - 1)/(\[Mu] - 1) }], 
+ Assumptions -> {\[Mu] != 1, {m, n, \[Sigma], \[Mu]} > 0}]
+\end{lstlisting}
+
+This yields,
+\begin{align*}
+    \rho(Z_m,Z_n) = \sqrt{\dfrac{\mu^n(\mu^m-1)}{\mu^m(\mu^n-1)}}
+\end{align*}
+
+Observe that in the limit \( \mu\to 1 \) this coincides with the previous value.
+
+\iffalse
+\begin{align*}
+    \rho(Z_m,Z_n) &= \dfrac{\operatorname{Cov}(Z_n,Z_m)}{(\mathbb{V}[Z_n] \mathbb{V}[Z_m])^{1/2}} \\
+    &= \dfrac{\EE[Z_nZ_m]-\EE[Z_n]\EE[Z_m]}{(n\sigma^2m\sigma^2)^{1/2}} \\
+    &= \dfrac{\mu^{(n-m)/2}}{\sigma}\sqrt{\dfrac{\mu^m-1}{\mu^n-1}}
+\end{align*}
+\fi
+
+\iffalse 
+Clearly \( Z_n = \sum_{i=1}^{Z_m}Y_{m,i}  \). Then,
+\begin{align*}
+    \EE[Z_nZ_m] &= \EE\EE \left[ Z_m (Y_{m,1} + Y_{m,2} +...+Y_{m,Z_m} ) \big| Z_m \right] \\
+    &= \EE\EE\left[ Z_mY_{m,1}+Z_mY_{m,2}+...+Z_mY_{m,Z_m}\big| Z_m \right] \\
+    &= \EE \left[ Z_m \EE[Z_m Z_{n-m}|Z_m]  \right] \\
+    &= \EE \left[ Z_m^2 \EE[Z_{n-m}|Z_m]\right] \\
+    &= \EE \left[Z_m^2  \mu^{n-m} ] \\
+    &= \mu^{n-m}\EE\left[Z_m^2\right]
+\end{align*}
+
+Then this is the sum of iid random variables so,
+\begin{align*}
+    
+\end{align*}
+\fi
+\end{solution}
+
+\begin{problem}[Exercise 3.3]
+
+\end{problem}
+
+\begin{solution}[Solution]
+    
+\end{solution}
+
+
+\begin{problem}[Exercise 3.4]
+Consider a branching process with immigration
+\begin{align*}
+    Z_0=1 && Z_{n+1}=\sum_{i=1}^{Z_n}X_{n,i}+Y_n
+\end{align*}
+where the \( (X_{n,i}) \) are iid with common distribution \( X \), the \( (Y_n) \) are iid with common distribution \( Y \), and the \( (X_{n,i}) \) and \( (Y_n) \) are independent. What is \( G_{Z_{n+1}}(s) \) in terms of \( G_{Z_n}(s)\), \( G_X(s) \), and \( G_Y(s) \)? Write \( G_{Z_2}(s) \) explicitly in terms of \( G_X(s) \) and \( G_Y(s) \).
+\end{problem}
+
+\begin{solution}[Solution]
+Define:
+\begin{align*}
+    G_{Z_n}(s) = s^{Z_n} && G_X(s) = \EE s^X && G_Y(s)=\EE s^Y 
+\end{align*}
+
+Write \( S_n = \sum_{i=1}^{Z_n}X_{n,i} \) so that, \( Z_{n+1}=S_n+Y_n \).
+
+
+First observe that since the \( (X_{n,i}) \) are iid with common distribution \( X \),
+\begin{align*}
+    G_{S_n}(s) = \EE\left[s^{S_n}\right] = \EE\left[\EE\left[s^{S_n}|Zn\right]\right] = \EE \left[ \EE[s^X]^{Z_n} \right] = \EE \left[ G_X(s)^{Z_n} \right] = G_{Z_n}(G_X(s))
+\end{align*}
+
+Since the \( (X_{n,i}) \) and \( (Y_n) \) are independent, \( S_n \) and \( Y_n \) are independent. Therefore,
+\begin{align*}
+    G_{Z_{n+1}}(s) = G_{S_n+Y_n}(s) = G_{S_n}(s)G_{Y}(s)  = G_{Z_n}(G_X(s))G_Y(s)
+\end{align*}
+
+
+We calculate, 
+\begin{align*}
+    G_{Z_0}(s) = \EE\left[s^{Z_0}\right] = \EE[s] = s
+\end{align*}
+Similarly,
+\begin{align*}
+    G_{Z_1}(s) = G_{Z_0}(G_X(s))G_Y(s) = G_X(s)G_Y(s) 
+\end{align*}
+Therefore,
+\begin{align*}
+    G_{Z_2}(s) = G_{Z_1}(G_X(s))G_Y(s) = G_X(G_X(s))G_Y(G_X(s))G_Y(s)
+\end{align*}
+
+\iffalse
+Therefore,
+\begin{align*}
+    G_{Z_{n+1}} &= \EE s^{Z_{n+1}} 
+    = \EE \left[s^{Y_n+\sum_{i=1}^{Z_n}X_{n,i}} \right]
+    = \EE\left[\EE \left[s^{Y_n+\sum_{i=1}^{Z_n}X_{n,i}} \Big| Z_n \right]\right]
+\end{align*}
+
+Thus, since the \( (X_{n,i}) \) and \( (Y_n) \) are all independent,
+\begin{align*}
+    \EE\left[\EE \left[s^{Y_n+\sum_{i=1}^{Z_n}X_{n,i}} \Big| Z_n \right]\right]
+    = \EE\left[\EE \left[s^{Y_n}\right]\prod_{i=1}^{Z_n}\EE \left[s^{X_{n,i}}\right]\right]
+\end{align*}
+Since \( (X_{n,i}) \) and \( (Y_n) \) are iid,
+\begin{align*}
+    \EE\left[\EE \left[s^{Y_n}\right]\prod_{i=1}^{Z_n}\EE \left[s^{X_{n,i}}\right]\right]
+    = \EE\left[ (\EE s^X)^{Z_n}(\EE s^Y)\right] 
+    = \EE\left[ (G_X(s)G_Y(s)^{1/Z_n})^{Z_n}\right] 
+\end{align*}
+
+Therefore,
+\begin{align*}
+    G_{Z_{n+1}}(s) = G_{Z_n}\left( G_X(s) G_Y(s)^{1/Z_n} \right)
+\end{align*}
+\fi
+\end{solution}
+
+\begin{problem}[Exercise 3.5]
+    Find \( \phi_{X^2}(t):=\EE \exp(itX^2) \) where \( X\sim \mathcal{N}(\mu,\sigma) \).
+\end{problem}
+
+\begin{solution}[Solution]
+We have,
+\begin{align*}
+    f_X(x) = \dfrac{1}{\sqrt{2\pi\sigma^2}}\exp\left(\dfrac{-(x-\mu)^2}{2\sigma^2}\right) 
+\end{align*}
+
+Thus,
+\begin{align*}
+    \phi_{X^2}(t) = \EE \exp(itX^2) = \int_{-\infty}^{\infty} e^{itx^2}f_X(x)\d x 
+\end{align*}
+
+We evaluate with Mathematica as,
+\begin{lstlisting}
+Integrate[Exp[I t x^2] PDF[NormalDistribution[\[Mu], \[Sigma]], x], {x, -\[Infinity], \[Infinity]}, 
+ Assumptions -> {\[Mu] \[Element] Reals, t \[Element] Reals, \[Sigma] > 0}]
+\end{lstlisting}
+
+This yields,
+\begin{align*}
+    \phi_{X^2}(t) = \dfrac{\exp(it\mu^2/(1-2it\sigma^2))}{\sqrt{1-2it\sigma^2}}
+\end{align*}
+\end{solution}
+
+\begin{problem}[Exercise 3.6]
+    Let \( X_n \) have cumulative distribution function
+    \begin{align*}
+        F_{X_n}(x)=\left(x-\dfrac{\sin(2n\pi x)}{2n\pi}\right)\mathbbm{1}_{0\leq x\leq 1}+\mathbbm{1}_{x>1}
+    \end{align*}
+    \begin{enumerate}
+        \item[(a)] Show that \( F_{X_n} \) is a distribution function and find the corresponding density function \( f_{X_n} \).
+        \item[(b)] Show that \( F_{X_n} \) converges to the uniform distribution function \( F_U \) as \( n \to\infty \), but that the density function \( f_{X_n} \) does NOT converge to \( f_U \). Here, \( U\sim \mathcal{U}((0,1)) \).
+    \end{enumerate}
+\end{problem}
+
+\begin{solution}[Solution]
+\begin{enumerate}
+    \item[(a)] Clearly \( F_{X_n}(x) = 0 \) for \( x\leq 0 \) and \( F_{X_n}(x) = 1 \) for \( x\geq 1 \). 
+        Observe, \( x-\sin(2n\pi x)/2n\pi \) is non-decreasing and continuous on \( (0,1) \), since the derivative, calculated below is non-negative on this interval. Moreover, \( x-\sin(2n\pi x)/2n\pi \) is equal to zero at \( x=0 \), and equal to one at \( x=1 \).
+        
+        Therefore \( F_{X_n}(x) \) is a non-decreasing continuous function with \( F_{X_n}(x)\to 0 \) as \( x\to-\infty \) and \( F_{X_n}(x)\to 1 \) as \( x\to\infty \). So \( F_{X_n}(x) \) is a distribution function.
+        
+        It is straightforward to compute the density function as,
+        \begin{align*}
+            f_{X_n}(x) = \dfrac{d}{dx}F_{X_n}(x) = (1-\cos(2n\pi x))\mathbbm{1}_{0\leq x\leq 1}
+        \end{align*}
+    \item[(b)]
+
+        The uniform distribution on \( (0,1) \) is given by,
+        \begin{align*}
+            F_U(x) = x\mathbbm{1}_{0\leq x\leq 1}+\mathbbm{1}_{x>1}
+        \end{align*}
+
+        Obviously outside of \( (0,1) \) both \( F_U \) and \( F_{X_n} \) agree exactly. Consider a point \( x\in(0,1) \). Then, since \( |\sin(u)|\leq 1 \) for all \( u \),
+        \begin{align*}
+            \lim_{n\to\infty}\left[ x-\dfrac{\sin(2n \pi x)}{2n\pi}\right] = x-0 = x%\lim_{n\to\infty}[x] -\lim_{n\to\infty}\left[\dfrac{\sin(2n\pi x)}{2n\pi}\right] = x - \lim_{n\to\infty}\cos(2n\pi x)/2\pi = 
+        \end{align*}
+
+        Therefore \( F_X \) converges pointwise on to \( F_U \) on \( (0,1) \), and therefore on all of \( \RR \).
+
+        It is clear that \( f_{X_n}(x) \) does not converge to \( f_U(x) \) as \( f_U(x) \) is constant on \( (0,1) \) while \( f_{X_n}(x) \) oscillates between zero and two. In particular, fix a rational number \( x=p/q \). Then for \( n=qk, k\in\NN \), \( f_{X_n}(x)=0 \). 
+
+
+
+\end{enumerate} 
+\end{solution}
+    
+\begin{problem}[Exercise 3.7]
+A coin is tossed repeatedly, with heads turning up with probability \( p \) on each toss. Let \( N \) be the minimum number of tosses required to obtain \( k \) heads. Show that, as \( p\to 0 \), the distribution function of \( 2Np \) converges to that of a gamma distribution. Note that, if \(X \sim\Gamma(\lambda,r) \) then,
+    \begin{align*}
+        f_X(x) = \dfrac{1}{\Gamma(r)}\lambda^rx^{r-1}e^{-\lambda x}\mathbbm{1}_{x\geq 0}
+    \end{align*}
+\end{problem}
+
+\begin{solution}[Solution]
+We have \( \Gamma(r) = \int_{0}^{\infty} x^{r-1}e^{-x}\d x \). Thus, making the substitution \( u=(\lambda-it)x \),
+\begin{align*}
+    \phi_X(t) &= \EE\left[ e^{itx}f_X(x)dx \right] \\ 
+    &= \int_{0}^{\infty} e^{itx} \dfrac{1}{\Gamma(r)}\lambda^r x^{r-1}e^{-\lambda x} \d x \\
+    &= \int_{0}^{\infty} \dfrac{\lambda^r}{\Gamma(r)}e^{-u} \dfrac{u^{r-1}}{(\lambda-it)^{r-1}} \dfrac{\d u}{(\lambda-it)} \\
+    &= \dfrac{\lambda^r}{\Gamma(r)(\lambda-it)^r}\int_{0}^{\infty} e^{-u}u^{r-1} \d u \\
+    &= \dfrac{\lambda^r}{(\lambda-it)^r}
+\end{align*}
+
+
+Let \( (X_i)_{i=1}^{k} \) be idd  with \( X,X_i\sim \operatorname{Geo}(p) \).
+Then \( N=\sum_{i=1}^{k} X_i \) so, since the \( X_i \) are iid,
+\begin{align*}
+    \varphi_{2Np}(t) &= \EE[\exp(it2Np)] 
+    =\EE[\exp(2itp(X_1+...+X_k))] 
+    =\EE[\exp(2itpX)]^k 
+\end{align*}
+Therefore, since \( |e^{2itp}(1-p)|<1 \) if \( p\in(0,1) \),
+\begin{align*}
+    \EE[\exp(2itpX)]^k 
+    = \left[ \sum_{m=1}^{\infty} e^{2itpm}p(1-p)^{m-1} \right]^k 
+    = \left[ pe^{2itp}\sum_{m=1}^{\infty}\left(e^{2itp}(1-p)\right)^{m-1} \right]^k 
+    = \left[ \dfrac{pe^{2itp}}{1-(1-p)e^{2itp}} \right]^k
+\end{align*}
+
+With Mathematica we evaluate,
+\begin{lstlisting}
+    Limit[((p Exp[2 I t p])/(1 - (1 - p) Exp[2 I t p]))^k, {p -> 0}, 
+  Assumptions -> {k \[Element] Integers, k > 0}] // FullSimplify
+\end{lstlisting}
+
+This yields,
+\begin{align*}
+    \lim_{p\to 0} \varphi_{2Np} = \dfrac{1}{(1-2it)^k} = \dfrac{(1/2)^k}{(1/2-it)^k}
+\end{align*}
+
+Thus, for a random variable \( X\sim\Gamma(1/2,k) \), by the continuity theorem, 
+\( \lim_{p\to 0} f_{2Np}(x) = f_X(x) \)
+
+\end{solution}
+
+
+\end{document}

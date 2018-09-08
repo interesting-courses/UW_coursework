@@ -1,0 +1,289 @@
+\documentclass[10pt]{article}
+\usepackage[T1]{fontenc}
+
+% Document Details
+\newcommand{\CLASS}{AMATH 562}
+\newcommand{\assigmentnum}{Assignment 7}
+
+\usepackage[margin = 1.15in, top = 1.25in, bottom = 1.in]{geometry}
+
+\input{../../TeX_headers/title.tex} % Title Styling
+\input{../../TeX_headers/sfftoc.tex} % General Styling
+\input{../../TeX_headers/styling.tex} % General Styling
+\input{../../TeX_headers/code.tex} % Code Display Setup
+\input{../../TeX_headers/math.tex} % Math shortcuts
+\input{../../TeX_headers/problem.tex} % Problem Environment
+
+\newcommand{\note}[1]{\textcolor{red}{\textbf{Note:} #1}}
+
+\hypersetup{
+   colorlinks=true,       % false: boxed links; true: colored links
+   linkcolor=violet,          % color of internal links (change box color with linkbordercolor)
+   citecolor=green,        % color of links to bibliography
+   filecolor=magenta,      % color of file links
+   urlcolor=cyan           % color of external links
+}
+
+
+\begin{document}
+\maketitle
+
+\begin{problem}[Exercise 7.1]
+    Let \( W \) be a Brownian motion and let \( \mathbb{F} = (\mathcal{F}_t)_{t\geq0} \) be a filtration for \( W \). Show that \( W(t)^2 - t \) is a martingale with respect to the filtration \( \mathbb{F} \).
+\end{problem}
+
+\begin{solution}[Solution]
+Suppose \( X\sim \mathcal{N}(0,\sigma^2) \). Then,
+\begin{align*}
+    \sigma^2 = \mathbb{V} \left[ X \right] = \EE[X^2] - \EE[X]^2 = \EE[X^2] - 0^2 = \EE[X^2]
+\end{align*}
+
+Let \( 0 \leq s \leq t \). 
+By the definition of a filtration, \( (W(t)-W(s)) \) is independent of \( \mathcal{F}_s \). Moreover, by the definition of Brownian Motion we have \( W(t)-W(s) \sim \mathcal{N}(0,t-s) \). Thus,
+\begin{align*}
+    \EE \left[ (W(t)-W(s))^2 \big| \mathcal{F}_s \right] = \EE \left[ (W(t) - W(s))^2 \right] = (t-s)
+\end{align*}
+
+Since \( W(s) \in \mathcal{F}_s \), by ``taking out what is known'' we have,
+\begin{align*}
+    \EE \left[ W(t)W(s) \big|\mathcal{F}_s \right] 
+    = W(s) \EE\left[ W(t) \big| \mathcal{F}_s \right]
+    = W(s)W(s)
+    = W(s)^2 
+    \\
+    \EE \left[ W(s)^2 \big|\mathcal{F}_2 \right]
+    = W(s) \EE \left[ W(s) \big|\mathcal{F}_2 \right]
+    = W(s)W(s)
+    = W(s)^2
+\end{align*}
+
+Therefore,
+\begin{align*}
+    \EE \left[ W(t)^2 - t \big| \mathcal{F}_s \right] 
+    &= \EE \left[ (W(t)-W(s)+W(s))^2 -t \right] 
+    \\ &= \EE \left[ (W(t)-W(s))^2 + 2(W(t)-W(s))W(s)+W(s)^2-t \right]
+    \\ &= \EE \left[ (W(t)-W(s))^2 \big| \mathcal{F}_s \right] + 2 \EE \left[ W(t)W(s) \big| \mathcal{F}_s \right] - \EE \left[ W(s)^2 \big| \mathcal{F}_2 \right] - \EE \left[ t \right]
+    \\ &= (t-s) + 2 W(s)^2 - W(s)^2-t
+    \\ &= W(s)^2 - s
+\end{align*}
+
+This proves \( W(t) - t \) is a martingale with respect to the filtration \( \mathbb{F} \). \qed
+\end{solution}
+
+\begin{problem}[Exercise 7.2]
+    Compute the characteristic function of \( W(N(t)) \) where \( N \) is a Poisson process with intensity \( \lambda \) and the Brownian motion \( W \) is independent of the Poisson process \( N \).
+\end{problem}
+
+\begin{solution}[Solution]
+The characteristic function is defined as,
+\begin{align*}
+    \phi(s) = \EE e^{isW(N(t))}
+\end{align*}
+
+We condition on \( N(t) \) using iterated conditioning,
+\begin{align*}
+    \EE \left[ e^{is W(N(t))} \right] = 
+    \EE \left[\EE\left[e^{is W(N(t))} \Big| N(t) \right] \right]
+\end{align*}
+
+The characteristic function of \( Z\sim\mathcal{N}(\mu,\sigma^2) \) is \( \phi_Z(s) = \exp(i\mu s-\sigma^2s^2/2) \).
+At time \( t \), \( W(t) \) is normally distributed with mean zero and variance \( t \). Thus,
+\begin{align*}
+    \EE \left[\EE\left[e^{is W(N(t))} \Big| N(t) \right] \right] =
+    \EE \left[ e^{ -N(t)s^2 /2}\right]
+\end{align*}
+
+Since \( N(t) \) is a Poisson process with parameter \( \lambda \), then \( N(t) = k \) with probability \( (\lambda t)^ke^{-\lambda t}/k! \). Thus,
+\begin{align*}
+    \EE \left[ e^{ -N(t)s^2 /2}\right]
+    \sum_{k=0}^{\infty} \dfrac{(\lambda t)^k}{k!}e^{-\lambda t} e^{-ks^2/2} = 
+    e^{- \lambda t}\sum_{k=0}^{\infty} \dfrac{(\lambda t)^k}{k!} \left( e^{-s^2/2} \right)^k 
+\end{align*}
+
+Simplifying yields,
+\begin{align*}
+    e^{- \lambda t}\sum_{k=0}^{\infty} \dfrac{(\lambda t)^k}{k!} \left(  e^{-s^2/2} \right)^k =
+    e^{-\lambda t}\sum_{k=0}^{\infty} \dfrac{1}{k!}\left(\lambda t e^{-s^2/2} \right)^k = 
+    e^{-\lambda t} \exp \left( \lambda t e^{-s^2/2} \right) =
+    \exp \left( \lambda t \left( e^{-s^2/2}-1 \right) \right)
+\end{align*}
+
+That is, the characteristic function \( \phi(s) \) of \( W(N(t)) \) is,
+\begin{align*}
+    \phi(s) = \exp \left( \lambda t \left( e^{-s^2/2}-1 \right) \right)
+\end{align*}
+\end{solution}
+
+
+\begin{problem}[Exercise 7.3]
+    The \( n \)-th variation of a function \( f \), over the interval \( [0,T] \) is defined as,
+    \begin{align*}
+        V_T(n,f) := 
+        \lim_{\norm{\Pi}\to 0} \sum_{j=0}^{m-1} |f(t_{j+1})-f(t_j)|^n, && \Pi = \{0=t_0,t_1, \ldots, t_m=T\}, && \norm{\Pi} = \max_j(t_{j+1}-t_{j})
+    \end{align*}
+
+    Show that \( V_T(1,W) = \infty \) and \( V_T(3,W) = 0 \), where \( W \) is a Brownian motion.
+\end{problem}
+
+
+\begin{solution}[Solution]
+We first prove that if \( f_n \to 0 \) and \( |g_n| \leq M \) for some \( |M| < \infty \) then \( (f_ng_n)\to 0 \).
+
+Indeed, fix \( \varepsilon > 0 \). Then, by convergence of \( f_n \) there is some \( N\in\NN \) such that \( |f_n| < \varepsilon/M \) for all \( n\geq N \). Then,
+\begin{align*}
+    |f_ng_n| = |f_n||g_n| \leq |f_n|M < (\varepsilon/M)M = \varepsilon
+\end{align*}
+
+This proves \( f_ng_n \to 0 \). \qed
+
+
+Write,
+\begin{align*}
+    V_T(k+1,W) = 
+    \lim_{\norm{\Pi}\to 0} \sum_{j=0}^{m-1} |W(t_{j+1})-W(t_j)|^{k+1} = 
+    \lim_{\norm{\Pi}\to 0} \sum_{j=0}^{m-1} |W(t_{j+1})-W(t_j)|^k|W(t_{j+1})-W(t_j)|
+\end{align*}
+
+Let, \( M_\Pi = \max_j |W(t_{j+1}) - W(t_j)| \) for a given partition \( \Pi \). Then,
+\begin{align*}
+    \lim_{\norm{\Pi}\to 0} \sum_{j=0}^{m-1} |W(t_{j+1})-W(t_j)|^k|W(t_{j+1})-W(t_j)| 
+    &\leq \lim_{\norm{\Pi}\to 0} \sum_{j=0}^{m-1} |W(t_{j+1})-W(t_j)|^k M_\Pi 
+    \\&= \lim_{\norm{\Pi}\to 0} M_\Pi \sum_{j=0}^{n-1} |W(t_{j+1})-W(t_j)|^k
+\end{align*}
+
+Provided, \( |V_T(k,T)| = V_T(k,T) \) is not infinite,
+\begin{align*}
+    \lim_{\norm{\Pi}\to 0} M_\Pi \sum_{j=0}^{m-1} |W(t_{j+1})-W(t_j)|^k
+    = \left( \lim_{\norm{\Pi}\to 0} M_\Pi \right) \left( \lim_{\norm{\Pi}\to 0} \sum_{j=0}^{n-1} |W(t_{j+1})-W(t_j)|^2 \right)
+\end{align*}
+
+Since \( W(t) \) is continuous, \( |W(t_{j+1}) - W(t_j)| \to 0 \) as \( \norm{\Pi}\to 0 \) since \( t_{j+1} - t_{j} \to 0 \). In particular, this means that \( M_\Pi \to 0 \) as \( \norm{\Pi} \to 0 \).
+
+Thus,
+\begin{align*}
+    0 \geq V_T(k+1,W) = 
+    \left( \lim_{\norm{\Pi}\to 0} M_\Pi \right) \left( \lim_{\norm{\Pi}\to 0} \sum_{j=0}^{m-1} |W(t_{j+1})-W(t_j)|^k \right) \leq 
+    0\cdot N 
+    = 0
+\end{align*}
+
+Recall \( V_T(2,W) = T < \infty \). 
+Then, by above, \( V_T(3,W) = 0 \). \qed
+
+Suppose, for the sake of contradiction that \( V_T(1,W) \neq \infty \). Clearly \( V_T(1,W) \geq 0 \), so \( V_T(1,W) \) is bounded above and below by finite constants. Then, by above, \( V_T(2,W) = 0 \), a contradiction (for \( T>0 \)). This proves \( V_T(1,W) = \infty \). \qed 
+\end{solution}
+
+
+\begin{problem}[Exercise 7.4]
+Define
+\begin{align*}
+    X_t = \mu t+W_t && \tau_m:=\inf\{t\geq 0:X_t=m\}
+\end{align*}
+Show that \( Z \) is a martingale where,
+\begin{align*}
+    Z_t = \exp(\sigma X_t-(\sigma \mu+\sigma^2/2)t)
+\end{align*}
+
+    Assume \( \mu>0 \) and \( m\geq 0 \). Assume further that \( \tau_m < \infty \) with probability one and the stopped process \( Z_{t\wedge \tau_m} \) is a martingale. Find the Laplace transform \( \EE e^{-\alpha \tau_m} \).
+\end{problem}
+
+
+\begin{solution}[Solution]
+Let \( 0\leq s\leq t \). Rewrite,
+\begin{align*}
+    \EE \left[ Z_t \big| \mathcal{F}_s \right]
+    = \EE \left[ e^{\sigma X_t - (\sigma \mu+\sigma^2/2)t } \big|\mathcal{F}_s \right]
+    = \EE \left[ e^{\sigma (\mu t+W_t) - (\sigma \mu+\sigma^2/2)t } \big|\mathcal{F}_s \right]
+    = \EE \left[ e^{\sigma W_t - (\sigma^2/2)t } \big|\mathcal{F}_s \right]
+\end{align*}
+
+Now, pulling out what is known,
+\begin{align*}
+    \EE \left[ e^{\sigma W_t - (\sigma^2/2)t } \big|\mathcal{F}_s \right]
+    = \EE \left[ e^{\sigma (W_t-W_s) + \sigma W_s-(\sigma^2/2)t)} \big|\mathcal{F}_s \right]
+    = e^{\sigma W_s - (\sigma^2/2)t} \EE \left[ e^{\sigma (W_t-W_s)} \big|\mathcal{F}_s \right]
+\end{align*}
+
+By the property of independent increments,
+\begin{align*}
+    e^{\sigma W_s - (\sigma^2/2)t} \EE \left[ e^{\sigma (W_t-W_s)} \big|\mathcal{F}_s \right]
+    = e^{\sigma W_s - (\sigma^2/2)t} \EE \left[ e^{\sigma (W_t-W_s)} \right]
+    = e^{\sigma W_s - (\sigma^2/2)t} e^{\sigma^2(t-s)/2}
+\end{align*}
+
+Finally,
+\begin{align*}
+    e^{\sigma W_s - (\sigma^2/2)t} e^{\sigma^2(t-s)/2}
+    =e^{\sigma W_s - (\sigma^2/2)s}
+    =e^{\sigma (\mu s+W_s) - (\sigma\mu  +\sigma^2/2)s}
+    =e^{\sigma X_2 - (\sigma\mu  +\sigma^2/2)s}
+\end{align*}
+
+This proves \( Z_t \) is a martingale. \qed
+
+
+Define \( s=\min\{t,\tau_m\} \). Fix \( m\geq 0 \) and define,
+\begin{align*}
+    Z^{(m)} = \left( Z_t^{(m)} \right)_{t\geq 0}, && Z_t^{(m)} = Z_s
+\end{align*}
+
+Then, using the fact that \( Z_t \) is a martingale we have,
+\begin{align*}
+    1 = Z_0^{(m)} = \EE \left[ Z_t^{(m)} \right]
+    = \EE \left[ e^{\sigma X_s - (\sigma \mu+\sigma^2/2) s} \right]
+\end{align*}
+
+If \( \tau_m = \infty \) then \( X_{t} < m \) for all \( t \). Thus, since \( \sigma\geq0, \mu>0 \), 
+\begin{align*}
+    e^{\sigma X_t - (\sigma\mu+\sigma^2/2)t} \leq  
+    e^{\sigma m - (\sigma\mu+\sigma^2/2)t} < \infty
+\end{align*}
+
+Therefore, since \( \PP(\tau_m <\infty) = 0 \),
+\begin{align*}
+    \EE \left[ e^{\sigma X_s - (\sigma \mu+\sigma^2/2) s} \right]
+    &= \EE \left[ \mathbbm{1}_{\{\tau_m = \infty\}} \left( e^{\sigma X_s - (\sigma \mu+\sigma^2/2) s} \right)+ \mathbbm{1}_{\{\tau_m < \infty\}} \left( e^{\sigma X_s - (\sigma \mu+\sigma^2/2) s} \right) \right]
+    \\&= \EE \left[ \mathbbm{1}_{\{\tau_m = \infty \}} \left( e^{\sigma X_t - (\sigma \mu+\sigma^2/2) t} \right) \right] + \EE \left[ \mathbbm{1}_{\{\tau_m<\infty\}} \left( e^{\sigma X_{\tau_m} - (\sigma \mu+\sigma^2/2) \tau_m} \right) \right]
+    \\&= 0 + \EE \left[ \mathbbm{1}_{\{\tau_m<\infty\}} \left( e^{\sigma m - (\sigma \mu+\sigma^2/2) \tau_m} \right) \right]
+\end{align*}
+
+Similarly, since \( \sigma\geq 0, \mu>0 \), \( e^{\sigma m - (\sigma\mu+\sigma^2/2)\tau_m) } < \infty  \). Therefore,
+\begin{align*}
+    \EE \left[ \mathbbm{1}_{\{\tau_m<\infty\}} \left( e^{\sigma m - (\sigma \mu+\sigma^2/2) \tau_m} \right) \right]
+    &= \EE \left[ \mathbbm{1}_{\{\tau_m=\infty\}} \left( e^{\sigma m - (\sigma \mu+\sigma^2/2) \tau_m} \right) \right]
+    +\EE \left[ \mathbbm{1}_{\{\tau_m<\infty\}} \left( e^{\sigma m - (\sigma \mu+\sigma^2/2) \tau_m} \right) \right]
+    \\&= \EE \left[ \mathbbm{1}_{\{\tau_m=\infty\}} \left( e^{\sigma m - (\sigma \mu+\sigma^2/2) \tau_m} \right) + \mathbbm{1}_{\{\tau_m<\infty\}} \left( e^{\sigma m - (\sigma \mu+\sigma^2/2) \tau_m} \right) \right]
+    \\&= \EE \left[ e^{\sigma m - (\sigma \mu+\sigma^2/2) \tau_m} \right]
+\end{align*}
+
+\iffalse
+In the limit \( t\to\infty \), since \( \tau_m < \infty\) a.s. , \( s = \min\{t,\tau_m\} \to \tau_m < \infty \) and \( X_s \to X_{\tau_m} = m \). Thus,
+\begin{align*}
+    1 = \lim_{t\to\infty} \EE \left[ e^{\sigma X_s - (\sigma \mu+\sigma^2/2) s} \right]
+      = \EE \left[ \lim_{t\to\infty} e^{\sigma X_s - (\sigma \mu+\sigma^2/2) s} \right]
+      = \EE \left[ e^{\sigma m - (\sigma \mu+\sigma^2/2) \tau_m} \right]
+\end{align*}
+\fi
+
+Then, setting \( \alpha = (\sigma\mu+\sigma^2/2) \),
+\begin{align*}
+    e^{-\sigma m} = \EE \left[ e^{-(\sigma \mu+\sigma^2/2)\tau_m} \right] = \EE \left[ e^{-\alpha \tau_m} \right]
+\end{align*}
+
+We solve the equation, \( \alpha = (\sigma\mu + \sigma^2/2) \) for \( \sigma \) using the quadratic equation, yielding,
+\begin{align*}
+    \sigma 
+    %= \left( -\mu \pm \sqrt{\mu^2-4(1/2)(-\alpha)} \right)/\left(2 (1/2) \right)
+    = -\mu \pm \sqrt{\mu^2+2\alpha}
+\end{align*}
+
+However, \( \sigma,\alpha \geq 0 \) so we must take \( \sigma = -\mu + \sqrt{\mu^2+2\alpha} \).
+Thus,
+\begin{align*}
+    \EE \left[ e^{-\alpha \tau_m} \right] = e^{\left(\mu-\sqrt{\mu^2+2\alpha}\right)m}
+\end{align*}
+
+\end{solution}
+
+
+\end{document}

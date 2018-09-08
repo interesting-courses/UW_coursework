@@ -1,0 +1,496 @@
+\documentclass[10pt]{article}
+\usepackage[T1]{fontenc}
+
+% Document Details
+\newcommand{\CLASS}{AMATH 561}
+\newcommand{\assigmentnum}{Assignment 5}
+
+\usepackage[margin = 1.15in, top = 1.25in, bottom = 1.in]{geometry}
+
+\input{../../TeX_headers/title.tex} % Title Styling
+\input{../../TeX_headers/sfftoc.tex} % General Styling
+\input{../../TeX_headers/styling.tex} % General Styling
+\input{../../TeX_headers/code.tex} % Code Display Setup
+\input{../../TeX_headers/math.tex} % Math shortcuts
+\input{../../TeX_headers/problem.tex} % Problem Environment
+
+\newcommand{\note}[1]{\textcolor{red}{\textbf{Note:} #1}}
+
+\hypersetup{
+   colorlinks=true,       % false: boxed links; true: colored links
+   linkcolor=violet,          % color of internal links (change box color with linkbordercolor)
+   citecolor=green,        % color of links to bibliography
+   filecolor=magenta,      % color of file links
+   urlcolor=cyan           % color of external links
+}
+
+
+\begin{document}
+\maketitle
+
+\begin{problem}[Exercise 5.1]
+Patients arrive at an emergency room as a Poisson process with intensity \( \lambda \). The time to treat each patient is an independent exponential random variable with parameter \( \mu \). Let \( X= (X_t)_{t\geq 0} \) be the number of patients in the system (either being treated or waiting). Write down the generator of \( X \). Show that \( X \) has an invariant distribution \( \pi \) if and only if \( \lambda<\mu \). Find \( \pi \). What is the total expected time (waiting + treatment) a patient waits when the system is in its invariant distribution?
+\end{problem}
+
+\begin{solution}[Solution]
+In some small time interval \( s \) there is probability \( \lambda s + \mathcal{O}(s^2) \) that a patient arrives, probability \( 1-\lambda s + \mathcal{O}^2 \) that a patient does not arrive, and probability \( \mathcal{O}(s^2) \) that multiple patients arrive.
+
+If there are patients, in this times there is also probability \( \mu s + \mathcal{O}(s^2) \) that a patient is treated, probability \( 1- \mu s + \mathcal{O}(s^2) \) that a patient is not treated, and probability \( \mathcal{O}(s^2) \) that more than one (if possible) patients are treated.
+
+Note that any moves which have more than one transition such as a patient arriving, and a patient being treated are all \( \mathcal{O}(s^2) \).
+
+Suppose there are no patients at time \( t \). The probability of transitioning to \( j \) patients after a short time \( s \) is given by,
+\begin{align*}
+    \PP(X_{t+s} = j | X_{t} = 0) = 
+    \begin{cases}
+        \lambda s + \mathcal{O}(s^2) & j=1 \\
+        1-\lambda s + \mathcal{O}(s^2) & j=0 \\
+        \mathcal{O}(s^2) & \text{otherwise}
+    \end{cases}
+\end{align*}
+
+Now suppose there are \( i>0 \) patients at time \( t \). The probability of transitioning to \( j \) patients after a short time \( s \) is given by,
+\begin{align*}
+    \PP(X_{t+s} = j | X_{t} = i) = 
+    \begin{cases}
+        (\lambda s + \mathcal{O}(s^2))(1-\mu s + \mathcal{O}(s^2)) & j=i+1 \\
+        (1-\lambda s + \mathcal{O}(s^2))(1-\mu s + \mathcal{O}(s^2)) + \mathcal{O}(s^2) & j=i \\
+        (1-\lambda s + \mathcal{O}(s^2))(\mu s + \mathcal{O}(s^2)) & j=i-1 \\
+        \mathcal{O}(s^2) & \text{otherwise}
+    \end{cases}
+\end{align*}
+
+This is simplified as,
+\begin{align*}
+    \PP(X_{t+s}=j | X_t = i) = 
+    \begin{cases}
+        \lambda s + \mathcal{O}(s^2) & j=i+1 \\
+        1-\lambda s -\mu s +\mathcal{O}(s^2) & j=i \\
+        \mu s + \mathcal{O}(s^2) & j=i-1 \\
+        \mathcal{O}(s^2) & \text{otherwise}
+    \end{cases}
+\end{align*}
+
+
+This gives,
+\begin{align*}
+    G = 
+    \left[\begin{array}{cccccc}
+        -\lambda & \lambda \\
+        \mu & -(\lambda+\mu) & \lambda \\
+        &  \mu & -(\lambda+\mu) & \lambda \\
+        & &  \mu & -(\lambda+\mu) & \lambda & \cdots\\
+        & & & \vdots & \vdots & \ddots 
+    \end{array}\right]
+\end{align*}
+
+We recognize this as a birth-death process (a bit ironic in the context of an emergency room) with \( \lambda_i = \lambda \) and \( \mu_i=\mu \).
+
+Then if a stationary distribution \( \pi \) exists, for \( n\in\ZZ_{>0} \),
+\begin{align*}
+    \pi(n>0) = \left(\dfrac{\lambda}{\mu}\right)^{n} \pi(0)
+\end{align*}
+and
+\begin{align*}
+    \pi(0) = \left( 1+\sum_{n=1}^{\infty} \left( \dfrac{\lambda}{\mu} \right)^n \right)^{-1} = \left( \sum_{n=0}^{\infty} \left( \dfrac{\lambda}{\mu} \right)^n \right)^{-1}
+\end{align*}
+
+This is a geometric series which is convergent exactly when \( \lambda/\mu < 1 \). That is, when \( \lambda < \mu \). In this case,
+\begin{align*}
+    \pi(0) = \left( \sum_{n=0}^{\infty} \left( \dfrac{\lambda}{\mu} \right)^n \right)^{-1} = \left(\dfrac{\mu}{\mu-\lambda}\right)^{-1} = \dfrac{\mu-\lambda}{\mu}
+\end{align*}
+
+
+We condition on knowing the number of people on the queue. Suppose there are \( n \) people in the queue when a patient arrives. Then the patient will have to wait a random time distributed as the sum of \( n \) exponential random variables with parameter \( \mu \) to be treated and one more to finish treatment. The expectation of each of each exponential random variable is \( 1/\mu \), so the patient waits an expected time of \( (n+1)/\mu \).
+
+In equilibrium, the probability that there are \( n \) people in the queue when a patient arrives is \( \pi(n) \). 
+
+Therefore, the expected wait time is,
+\begin{align*}
+    \sum_{n=0}^{\infty} \pi(n) \dfrac{(n+1)}{\mu} 
+    %= \sum_{n=0}^{\infty} \left( \dfrac{\lambda}{\mu} \right)^n \left(\dfrac{\mu-\lambda}{\mu}\right)\left(\dfrac{n+1}{\mu} \right) 
+    = \dfrac{\mu-\lambda}{\mu^2}\sum_{n=0}^{\infty} \left( \dfrac{\lambda}{\mu} \right)^n (n+1) 
+    = \dfrac{\mu-\lambda}{\mu^2} \left( \dfrac{\mu\lambda}{(\mu-\lambda)^2}+\dfrac{\mu}{\mu-\lambda} \right)
+    = \dfrac{1}{\mu-\lambda}
+\end{align*}
+\end{solution}
+
+\begin{problem}[Exercise 5.2]
+    Let \( X = (X_t)_{t\geq 0} \) be a Markov chain with stationary distribution \( \pi \). Let \( N \) be an independent Poisson process with intensity \( \lambda \) and denote by \( \tau_n \) the time of the \( n \)-th arrival of \( N \). Define \( Y_n:=X_{\tau_n+} \) (i.e., \( Y_n \) is the value of \( X \) immediately after the \( n \)-th jump). Show that \( Y \) is a discrete time Markov chain with the same stationary distribution as \( X \).
+\end{problem}
+
+\begin{solution}
+It is obvious that \( Y \) is Markov, as given the present, the future is independent of the past. We add a bit more rigor below.
+
+Fix a probability space \( (\Omega, \mathcal{F}, \PP) \).
+By hypothesis \( X_t \) is a Markov process. That is, for a filtration \( (\mathcal{F}_s)_{s\in[0,T]} \), for \( 0\leq s\leq t\leq T \), and for every non-negative Borel measurable function \( f \), 
+\begin{align*}
+    \EE[f(X_t) | \mathcal{F}_s] = \EE[f(X_t)|X_s]
+\end{align*}
+
+Let \( \mathcal{F}'_n = \mathcal{F}_{\tau_n+} \) be a sub-\( \sigma \)-algebra of \( \mathcal{F} \). Then clearly \( (\mathcal{F}'_n) \) is a filtration. Let \( f \) be any non-negative Borel measurable function. Then,
+\begin{align*}
+    \EE[f(Y_n) | \mathcal{F}'_m] = \EE[f(X_{\tau_n+}) | \mathcal{F}_{\tau_m+}] = \EE[f(X_{\tau_n+}) | X_{\tau_m+}] = \EE[f(Y_n) | Y_m]
+\end{align*}
+
+This means \( Y \) is Markov, and clearly \( Y \) is discrete time. Therefore \( Y \) is a discrete time Markov chain.
+
+%A discrete time Markov chain is a Markov process process with countable state space \( S \).
+
+
+Note we assume \( X \) is time homogeneous.
+
+Suppose \( X \) has stationary distribution \( \pi \). Then for all \( 0\leq t \leq T \), \( \pi P_t = \pi \), where,
+\begin{align*}
+    (P_t)_{i,j} = \PP(X_t = j | X_0 = i)
+\end{align*}
+
+Thus, the one step probability transition matrix, denoted \( \tilde{P} \), for \( Y \) is,
+\begin{align*}
+    \tilde{P}_{i,j} = \PP(Y_1=j | Y_0 = i) = \PP( X_{\tau_1+}=j | X_0 = i) = (P_{\tau_1})_{i,j}
+\end{align*}
+
+This means \( \pi \tilde{P} = \pi \), so \( \pi \) is a stationary distribution of \( Y \).
+\end{solution}
+
+\begin{problem}[Exercise 5.3]
+    Let \( X=(X_t)_{t\geq 0} \) be a Markov chain with state space \( S=\{0,1,2,...\} \) and generator \( G \) whose \( i \)-th row has entries
+    \begin{align*}
+        g_{i,i-1} = i\mu && g_{i,i} = -i\mu-\lambda && g_{i,i+1} = \lambda,
+    \end{align*}
+    with all other entries being zero (the zeroth row has only two entries: \( g_{0,0} \) and \( g_{0,1} \)). Assume \( X_0=j \). Find \( G_{X_t}(s) := \EE s^{X_t} \). What is the distribution of \( X_t \) as \( t\to\infty \)?
+\end{problem}
+
+\begin{solution}[Solution]
+We have \( G \) in matrix form,
+\begin{align*}
+    G = 
+    \left[\begin{array}{cccccc}
+        -\lambda & \lambda \\
+        \mu & -(\mu+\lambda) & \lambda \\
+        & 2\mu & -(2\mu+\lambda) & \lambda \\
+        & & 3\mu & -3(\mu+\lambda) & \lambda & \cdots \\
+        & & & \vdots & \vdots & \ddots
+    \end{array}\right]
+\end{align*}
+
+We wish to find the transition semi group \( P_t \). We know this can be derived from the Kolmogorov forward equations. That is,
+\begin{align*}
+    \dfrac{d}{dt}P_t = P_t G
+\end{align*}
+
+With the assumption that \( X_0 = i \) ({\em I am using \( i \) rather than \( j \) like the problem statement since this is the standard way of doing things}) we have,
+\begin{align*}
+    \dfrac{d}{dt}p_t(i,0) &= \sum_{k=0}^{\infty}p_t(i,k)g(k,0) %= p(i,0)g(0,0) + p(i,1)g(1,0) 
+    = -\lambda p_t(i,0) + \mu p_t(i,1) \\
+    \dfrac{d}{dt}p_t(i,j) &= \sum_{k=0}^{\infty}p_t(i,k)g_t(k,j) 
+    = \lambda p_t(i,j-1) -(j\mu+\lambda) p_t(i,j) + (j+1)\mu p_t(i,j+1) \tag*{\( j\geq 1 \)}
+\end{align*}
+
+We multiply the \( j \)-th equation by \( s^j \).
+This gives,
+\begin{align*}
+    \sum_{j=0}^{\infty} \dfrac{\partial}{\partial t} p_t(i,j)s^j
+    = \sum_{j=1}^{\infty} \left[ \lambda p_t(i,j-1)s^j\right] - \sum_{j=0}^{\infty}\left[ (j\mu-\lambda)p_t(i,j)s^j\right] + \sum_{j=0}^{\infty} \left[ (j+1)\mu p_t(i,j+1)s^j \right]
+\end{align*}
+
+Summing the left hand sides gives,
+\begin{align*}
+    \sum_{j=0}^{\infty} \dfrac{\partial}{\partial t} p_t(i,j)s^j
+    = \dfrac{\partial}{\partial t} \sum_{j=0}^{\infty} p_t(i,j)s^j
+    = \dfrac{\partial}{\partial t} G_{X_t}(s)
+\end{align*}
+
+The first term of the right hand side gives,
+\begin{align*}
+    \sum_{j=1}^{\infty}\lambda p_t(i,j-1)s^j 
+    &= \lambda s \sum_{j=1}^{\infty} p_t(i,j-1)s^{j-1}
+    = \lambda s \sum_{j=0}^{\infty} p_t(i,j)s^j
+    = \lambda s G_{X_t}(s)
+\end{align*}
+
+The negative of the first part of the second term of the right hand side gives,
+\begin{align*}
+    \sum_{j=0}^{\infty} j\mu p_t(i,j)s^j
+    = s\mu  \sum_{j=0}^{\infty} j p_t(i,j)s^{j-1}
+    = s\mu \sum_{j=0}^{\infty} \dfrac{\partial}{\partial s} p_t(i,j) s^{j}
+    = s\mu \dfrac{\partial}{\partial s} \sum_{j=0}^{\infty} p_t(i,j) s^{j}
+    = s\mu \dfrac{\partial}{\partial s} G_{X_t}(s)
+\end{align*}
+
+The negative of the second part of the second term of the right hand side gives,
+\begin{align*}
+    \sum_{j=0}^{\infty} \lambda p_t(i,j)s^{j}
+    = \lambda \sum_{j=0}^{\infty} p_t(i,j) s^{j}
+    = \lambda G_{X_t}(s)
+\end{align*}
+
+The third term of the right hand side gives,
+\begin{align*}
+    \sum_{j=1}^{\infty} (j+1)\mu p_t(i,j+1) s^{j}
+%    &= \mu \sum_{j=1}^{\infty} (j+1) p_t(i,j+1)s^{j}
+    = \mu \sum_{j=1}^{\infty} \dfrac{\partial}{\partial s} p_t(i,j+1) s^{j+1} 
+    = \mu \dfrac{\partial}{\partial s} \sum_{j=0}^{\infty} p_t(i,j)s^j
+    = \mu \dfrac{\partial}{\partial s}G_{X_t}(s)
+\end{align*}
+
+Putting these results together we have,
+\begin{align*}
+    \dfrac{\partial}{\partial t} G_{X_t}(s)
+    = \left[ \lambda s - s\mu \dfrac{\partial}{\partial s} - \lambda + \mu \dfrac{\partial}{\partial s} \right] G_{X_t}(s) 
+\end{align*}
+
+Since \( X_0 = j \) we have initial condition, 
+\begin{align*}
+    G_{X_0}(s) = s^j
+\end{align*}
+
+We solve with Mathematica by,
+\begin{lstlisting}
+DSolve[{
+    D[G[s,t],t]==\[Lambda] s G[s,t]-s \[Mu] D[G[s,t],s]-\[Lambda] G[s,t]+\[Mu] D[G[s,t],s],
+    G[s,0]==s^j
+    },G[s,t],{s,t}]//FullSimplify
+\end{lstlisting}
+
+This yields,
+\begin{align*}
+    G_{X_t}(s) = \left((s-1) e^{-\mu t}+1\right)^j \exp \left[ \frac{\lambda  (s-1) e^{\mu  (-t)} \left(e^{\mu  t}-1\right)}{\mu } \right]
+\end{align*}
+
+We find the limit as \( t\to\infty \) with Mathematica by,
+\begin{lstlisting}
+Limit[E^((E^(-t \[Mu]) (-1+E^(t \[Mu])) (-1+s) \[Lambda])/\[Mu]) (1+E^(-t \[Mu]) (-1+s))^j,{t->\[Infinity]},Assumptions->{\[Lambda]>0,\[Mu]>0}]
+\end{lstlisting}
+
+This yields,
+\begin{align*}
+    G_{X_\infty}(s) = \lim_{t\to\infty} G_{X_t}(s) = e^{\frac{\lambda}{\mu}(s-1)} 
+\end{align*}
+
+So \( X_\infty = \lim_{t\to\infty} X_t \) is a Poission random variable with parameter \( \lambda/\mu \).
+\end{solution}
+
+\begin{problem}[Exercise 5.4]
+    Let \( N \) be a time-inhomogeneous Poisson process with intensity function \( \lambda(t) \). That is, the probability of a jump of size one in the time interval \( (t,t+ dt) \) is \( \lambda(t)dt \) and the probability of two jumps in that interval of time is \( \mathcal{O}(dt^2) \). Write down the Kolmogorov forward and backward equations of \( N \) and solve them. Let \( N_0 = 0 \) and let \( \tau_1 \) be the time of the first jump of \( N \). If \( \lambda(t) = c/(1 + t) \) show that \( \EE\tau_1< \infty \) if and only if \( c >1 \).
+\end{problem}
+
+\begin{solution}[Solution]
+Based on the definition of the generator and the given transition probabilities we have,
+\begin{align*}
+    G(t) = 
+    \left[\begin{array}{rrrrr}
+        -\lambda(t) & \lambda(t) \\
+        & -\lambda(t) & \lambda(t) \\
+        & & -\lambda(t) & \lambda(t) & \cdots \\
+        & & \vdots & \vdots & \ddots
+    \end{array}\right]
+\end{align*}
+
+For \( t\geq s \) we define, 
+\begin{align*}
+    p_{s,t}(i,j) = \PP( N_t = j | N_s = i)
+\end{align*}
+
+We first derive the Kolmogorov forward equations. We consider,
+\begin{align*}
+    p_{s,t+\Delta t} &= \PP( N_{t+\Delta t} = j | N_s = i) \\
+    &= \sum_{k}^{} \PP(N_{t+\Delta t}=j | N_t = k)\PP(N_{t}=k | N_s=i) \\
+    &= \begin{cases}
+        \lambda(t)\Delta t p_{s,t}(i,j-1) 
+        +(1-\lambda(t)\Delta t) p_{s,t}(i,j) + \mathcal{O}(\Delta t^2) & j > i \\
+        (1-\lambda(t)\Delta t) p_{s,t}(i,j) +\mathcal{O}(\Delta t^2) & j=i \\
+        0 & j < i
+    \end{cases}
+\end{align*}
+
+Therefore,
+\begin{align*}
+    \dfrac{p_{s,t+\Delta t}(i,j) - p_{s,t}(i,j)}{\Delta t} 
+    &= \begin{cases}
+        \lambda(t)\Delta t p_{s,t}(i,j-1) 
+        -\lambda(t)\Delta t p_{s,t}(i,j) + \mathcal{O}(\Delta t^2) & j > i \\
+        -\lambda(t)\Delta t p_{s,t}(i,j) +\mathcal{O}(\Delta t^2) & j=i \\
+        0 & j < i
+    \end{cases}
+\end{align*}
+
+Taking the limit as \( \Delta t \to 0  \) we have,
+\begin{align*}
+    \dfrac{\partial}{\partial t}p_{s,t}(i,j) = 
+    \begin{cases}
+        \lambda(t) p_{s,t}(i,j-1) 
+        -\lambda(t)p_{s,t}(i,j) & j > i \\
+        -\lambda(t)p_{s,t}(i,j) & j=i \\
+        0 & j < i
+    \end{cases}
+\end{align*}
+
+Fix \( i \). Noting that \( G_F(x) \) is also a function of \( s,t \) and \( j \), we have,
+\begin{align*}
+    G_F(x) = \sum_{j=0}^{\infty} \PP(N_t = j | N_s = i) x^{j} = \sum_{j=i}^{\infty}p_{s,t}(i,j) x^{j} 
+\end{align*}
+
+Thus, multiplying the \( j \)-th KFE by \( x^j \) and summing, we have,
+\begin{align*}
+    \dfrac{\partial}{\partial t} \sum_{j=i}^{\infty} p_{s,t}(i,j)x^{j}
+    =\sum_{j=i}^{\infty} \dfrac{\partial}{\partial t} p_{s,t}(i,j)x^j 
+    &= \sum_{j=i+1}^{\infty} \lambda(t) p_{s,t}(i,j-1) x^{j} + \sum_{j=i}^{\infty} (-\lambda(t)) p_{s,t}(i,j) x^j \\
+    &= \lambda(t) x\sum_{j=i}^{\infty} p_{s,t}(i,j) x^{j} -\lambda(t) \sum_{j=i}^{\infty} p_{s,t}(i,j) x^j \\
+\end{align*}
+
+Therefore,
+\begin{align*}
+    \dfrac{\partial}{\partial t} G_{F}(x) 
+    = \lambda(t) x G_{F}(x) - \lambda(t) G_{F}(x) 
+    = \lambda(t) (x-1)G_{F}(x)
+\end{align*}
+
+We have initial condition \( N_s = i \), so \( G_B(x) = x^i \) when \( s=t \). 
+
+We solve with Mathematica as,
+\begin{lstlisting}
+DSolve[{D[G[s, t], t] == \[Lambda][t] (x - 1) G[s, t],
+   G[s, s] == x^i
+   }, G[s, t], {s, t}] // FullSimplify
+\end{lstlisting}
+
+This gives,
+\begin{align*}
+    G_F(x) = x^i\exp \left( (x-1) \int_{s}^{t}\lambda(z)\d z \right)
+\end{align*}
+
+Write \( I = \int_{s}^{t}\lambda(z)dz \). Then,
+\begin{align*}
+    G_F(x) = e^{-I} x^i e^{Ix} = e^{-I} x^i \sum_{k=0}^{\infty} \dfrac{1}{k!}(Ix)^k 
+    = e^{-I} \sum_{k=0}^{\infty}\dfrac{1}{k!}I^kx^{k+i} 
+    = e^{-I} \sum_{j=i}^{\infty} \dfrac{I^{j-i}}{(j-i)!}x^{j}
+\end{align*}
+
+Therefore, from the definition of the Generating function we have,
+\begin{align*}
+    P_{s,t}(i,j) 
+    = \PP(N_t=j | N_s = i) 
+    =  \dfrac{1}{(j-i)!} \left[ \int_{s}^{t}\lambda(z)\d z \right]^{j-i}\exp \left( -\int_{s}^{t} \lambda(z)\d z \right)
+\end{align*}
+
+
+
+We now derive the Kolmogorov Backward equations. We consider,
+\begin{align*}
+    p_{s-\Delta s,t} &= \PP( N_{t} = j | N_{s-\Delta s} = i) \\
+    &= \sum_{k}^{} \PP(N_{t}=j | N_{s}t = k)\PP(N_{s}=k | N_{s-\Delta s}=i) \\
+    &= \begin{cases}
+        \lambda(s)\Delta s p_{s,t}(i+1,j) 
+        +(1-\lambda(s)\Delta s) p_{s,t}(i,j) + \mathcal{O}(\Delta s^2) & j > i \\
+        (1-\lambda(s)\Delta s) p_{s,t}(i,j) +\mathcal{O}(\Delta s^2) & j=i \\
+        0 & j < i
+    \end{cases}
+\end{align*}
+
+Therefore,
+\begin{align*}
+    \dfrac{p_{s-\Delta s,t}(i,j) - p_{s,t}(i,j)}{\Delta s} 
+    &= \begin{cases}
+        \lambda(s)\Delta t p_{s,t}(i+1,j) 
+        -\lambda(s)\Delta t p_{s,t}(i,j) + \mathcal{O}(\Delta s^2) & j > i \\
+        -\lambda(s)\Delta t p_{s,t}(i,j) +\mathcal{O}(\Delta s^2) & j=i \\
+        0 & j < i
+    \end{cases}
+\end{align*}
+
+Taking the limit as \( \Delta s \to 0  \) we have,
+\begin{align*}
+    -\dfrac{\partial}{\partial s}p_{s,t}(i,j) = 
+    \begin{cases}
+        \lambda(s) p_{s,t}(i+1,j) 
+        -\lambda(s)p_{s,t}(i,j) & j > i \\
+        -\lambda(s)p_{s,t}(i,j) & j=i \\
+        0 & j < i
+    \end{cases}
+\end{align*}
+
+Fix \( i \). Noting that \( G_B(x) \) is also a function of \( s,t \) and \( j \), we have,
+\begin{align*}
+    G_B(x) = \sum_{j=0}^{\infty} \PP(N_t = j | N_s = i) x^{j} = \sum_{j=i}^{\infty}p_{s,t}(i,j) x^{j} 
+\end{align*}
+
+Thus, multiplying the \( j \)-th KBE by \( x^j \) and summing, we have,
+\begin{align*}
+    -\dfrac{\partial}{\partial s} \sum_{j=i}^{\infty} p_{s,t}(i,j)x^j = 
+    -\sum_{j=i}^{\infty} \dfrac{\partial}{\partial s} p_{s,t}(i,j)x^j 
+    &= \sum_{j=i+1}^{\infty} \lambda(s) p_{s,t}(i+1,j) x^{j} + \sum_{j=i}^{\infty} (-\lambda(s)) p_{s,t}(i,j) x^j \\
+    &= \sum_{j=i+1}^{\infty} \lambda(s) p_{s,t}(i,j-1) x^{j} + \sum_{j=i}^{\infty} (-\lambda(s)) p_{s,t}(i,j) x^j \\
+    &= \lambda(s) x\sum_{j=i}^{\infty} p_{s,t}(i,j) x^{j} -\lambda(s) \sum_{j=i}^{\infty} p_{s,t}(i,j) x^j \\
+\end{align*}
+
+Therefore,
+\begin{align*}
+    \dfrac{\partial}{\partial s} G_{B}(x) 
+    = -\lambda(s) x G_{B}(x) + \lambda(s) G_{B}(x) 
+    = -\lambda(s) (x-1)G_{B}(x)
+\end{align*}
+
+From the result for \( G_F(x) \) we know,
+\begin{align*}
+    G_B(x) = x^i\exp \left( -(x-1) \int_{t}^{s}\lambda(z)\d z \right) = x^i \exp \left( (x-1) \int_{s}^{t}\lambda(z)\d z \right) = G_F(x)
+\end{align*}
+
+
+
+
+We now show that for \( \lambda(t) = c/(1+t) \), that \( \EE \tau_1 < \infty \) if and only if \( c<1 \).
+Indeed,
+\begin{align*}
+    \int_{0}^{t}\lambda(z)\d z = \int_{0}^{t} \dfrac{c}{1+z}\d z = c\ln(1+t) - c\ln(1) = c \ln(1+t)
+\end{align*}
+
+Therefore,
+\begin{align*}
+    \EE[\tau_1] 
+    =  \int_{0}^{\infty} \PP(\tau_1 > t) \d t 
+    = \int_{0}^{\infty} \PP(N_t=0 | N_0 = 0) \d t 
+    = \int_{0}^{\infty} \exp(-c\ln(1+t))\d t 
+    = \int_{0}^{\infty} \dfrac{\d t}{(1+t)^c}
+\end{align*}
+
+This is convergent if and only if \( c>1 \).
+\end{solution}
+
+\begin{problem}[Exercise 5.5]
+    Let \( N_t \) be a Poisson process with a random intensity \( \Lambda \) which is equal to \( \lambda_1 \) with probability \( p \) and \( \lambda_2 \) with probability \( 1-p \). Find \( G_{N_t}(s) = \EE s^{N_t} \). What is the mean and variance of \( N_t \)?
+\end{problem}
+
+\begin{solution}[Solution]
+Recall the generating function for a Poisson process with intensity \( \lambda \) is,
+\begin{align*}
+    G(s) = e^{-\lambda t(1-s)}
+\end{align*}
+
+%\textbf{DO I NEED TO DERIVE THIS????}
+
+Therefore,
+\begin{align*}
+    G_{N_t}(s) 
+    = \EE \left[ s^{N_t} \right] 
+    = \EE \left[ \EE \left[ s^{N_t} \right] \Big| \Lambda \right] 
+    = \EE\left[ e^{-\Lambda t(1-s)} \Big| \Lambda \right]
+    = pe^{-\lambda_1t(1-s)} + (1-p) e^{-\lambda_2(1-s)}
+\end{align*}
+
+We use Mathematica to caluculate moments,
+\begin{lstlisting}
+GNt[s_]:=p Exp[-\[Lambda]1 t (1-s)]+(1-p)Exp[-\[Lambda]2 t(1-s)]
+D[GNt[s],{s,1}]/.{s->1}
+D[GNt[s],{s,2}]-D[GNt[s],{s,1}]^2+D[GNt[s],{s,1}]/.{s->1}
+\end{lstlisting}
+
+This yields,
+\begin{align*}
+    \mu &= G'_{N_t}(1) = p \lambda_1 t  + (1-p) \lambda_2 t 
+    \\\sigma^2 &= G''_{N_t}(1) - [G'_{N_t}(1)]^2 + G'_{N_t}(1) =  
+    p (\lambda_1 t)^2 + (1-p)(\lambda_2 t)^2 - \mu^2 + \mu
+\end{align*}
+\end{solution}
+
+\end{document}

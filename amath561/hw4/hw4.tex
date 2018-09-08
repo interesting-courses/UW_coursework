@@ -1,0 +1,370 @@
+\documentclass[10pt]{article}
+\usepackage[T1]{fontenc}
+
+% Document Details
+\newcommand{\CLASS}{AMATH 561}
+\newcommand{\assigmentnum}{Assignment 4}
+
+\usepackage[margin = 1.15in, top = 1.25in, bottom = 1.in]{geometry}
+
+\input{../../TeX_headers/title.tex} % Title Styling
+\input{../../TeX_headers/sfftoc.tex} % General Styling
+\input{../../TeX_headers/styling.tex} % General Styling
+\input{../../TeX_headers/code.tex} % Code Display Setup
+\input{../../TeX_headers/math.tex} % Math shortcuts
+\input{../../TeX_headers/problem.tex} % Problem Environment
+
+\newcommand{\note}[1]{\textcolor{red}{\textbf{Note:} #1}}
+
+\hypersetup{
+   colorlinks=true,       % false: boxed links; true: colored links
+   linkcolor=violet,          % color of internal links (change box color with linkbordercolor)
+   citecolor=green,        % color of links to bibliography
+   filecolor=magenta,      % color of file links
+   urlcolor=cyan           % color of external links
+}
+
+
+\begin{document}
+\maketitle
+
+\begin{problem}[Exercise 4.1]
+A six-sided die is rolled repeatedly. Which of the following a Markov chains? For those that are, find the one-step transition matrix. 
+\begin{enumerate}[nolistsep,label=(\alph*)]
+	\item \( X_n \) is the largest number rolled up to the nth roll. 
+	\item \( X_n \) is the number of sixes rolled in the first \( n \) rolls. 
+	\item At time \( n \), \( X_n \) is the time since the last six was rolled.
+	\item At time \( n \), \( X_n \) is the time until the next six is rolled.
+\end{enumerate}
+\end{problem}
+
+\begin{solution}[Solution]
+\begin{enumerate}[label=(\alph*)]
+	\item Yes.
+        \begin{align*}
+            P = 
+            \left[\begin{array}{cccccc}
+                1/6 & 1/6 & 1/6 & 1/6 & 1/6 & 1/6 \\
+                & 2/6 & 1/6 & 1/6 & 1/6 & 1/6 \\
+                && 36 & 1/6 & 1/6 & 1/6 \\
+                &&& 4/6 & 1/6 & 1/6 \\
+                &&&& 5/6 & 1/6 \\
+                &&&& & 1
+            \end{array}\right]
+        \end{align*}
+        
+	\item Yes.
+        \begin{align*}
+            P=
+            \left[\begin{array}{cccc}
+                5/6 & 1/6 \\
+                & 5/6 & 1/6 \\
+                && \ddots & \ddots
+            \end{array}\right]
+        \end{align*}
+        
+    \item Yes. Suppose \( X_n = i \). The next roll is either a 6, in which case \( X_{n+1} = 0 \). Otherwise \( X_{n+1} = i+1 \).  
+        \begin{align*}
+            P = \left[\begin{array}{ccccc}
+            1/6 & 5/6 \\
+            1/6 & & 5/6 \\
+            1/6 &  & & 5/6 \\
+            \vdots & & & & \ddots
+            \end{array}\right]
+        \end{align*}
+        
+    \item Yes. Suppose \( X_n = 0 \). The probability of \( X_{n+1} = j \) is \( (1/6)(5/6)^j \) as you must not roll a 6 for \( j \) turns, and then must roll a \( 6 \) on the \( j \)-th. Suppose \( X_n = i > 0 \). Then the next step you will be on turn closer to rolling a 6. That is, \( X_{n+1} = i-1 \).
+        \begin{align*}
+            P =
+            \left[\begin{array}{cccccc}
+                \frac{1}{6} & \frac{1}{6}\left(\frac{5}{6}\right) & \frac{1}{6} \left( \frac{5}{6}^2 \right) & \frac{1}{6} \left( \frac{5}{6} \right)^3 & \cdots \\
+                1 \\
+                & 1 \\
+                & & 1 \\
+                & & & 1 \\
+                & & & & \ddots
+            \end{array}\right]
+        \end{align*}
+        
+\end{enumerate}
+\end{solution}
+
+\begin{problem}[Exercise 4.2]
+    Let \(Y_n=X_{2n} \). Compute the transition matrix for \( Y \) when 
+    \begin{enumerate}[nolistsep,label=(\alph*)]
+        \item \( X \) is a simple random walk (i.e., \( X \) increases by one with probability \( p \) and decreases by 1 with probability \( q \))
+        \item \( X \) is a branching process where \( G \) is the generating function of the number of offspring from each individual
+    \end{enumerate}
+\end{problem}
+
+\begin{solution}[Solution]
+\begin{enumerate}[label=(\alph*)]
+    \item
+        In each step we can go down with probability \( q \) and then down again with probability \( q \) or up with probability \( p \). Alternatively we can go up with probability \( p \) and then down with probability \( q \) or up again with probability \( p \). 
+
+        Therefore we will end up two spaces down with probability \( q^2 \), in the same position with probability \( qp+pq = 2pq \), or up two spaces with probability \( p^2 \). Thus,
+        \begin{align*}
+            p(i,j) = \begin{cases} p^2 & j=i+2 \\ 2pq & i=j \\ q^2 & j=i-2 \\ 0 & \text{otherwise}\end{cases} 
+        \end{align*}
+    \item
+    We can obtain the exponents of a generating function \( G(s) = a_0 + a_1s+a_2s^2 + ... \) by,
+        \begin{align*}
+            a_n = \dfrac{1}{n!} \dfrac{d^n}{ds^n}\Big[G(s) \Big]_{s=0}
+        \end{align*}
+
+        The coefficient of the \( s^k \) term is the value of the probability mass function of \( X \) evaluated at \( k \).
+
+        The generating function of \( Y \) is \( G(G(s)) = G_2(s) \) from the notes.
+
+        For a branching process with current population \( k \), the population of the next generation will be \( X_1+X_2+...+X_k\), where each \( X_i \) is iid with distribution \( X \). Therefore,    
+        \begin{align*}
+            p(i,j) = \dfrac{1}{j!} \dfrac{d^n}{ds^n}\Big[ G_2(s)^i \Big]_{s=0}
+        \end{align*}
+\end{enumerate}
+\end{solution}
+
+\begin{problem}[Exercise 4.3]
+Let \( X \) be a Markov chain with state space \( S \) and absorbing state \( k \) (i.e., \( p(k, j) = 0 \) for all \( j \in S \)). Suppose \( j\rightarrow k\) for all \( j\in S \). Show that all states other than \( k \) are transient.
+\end{problem}
+
+\begin{solution}[Solution]
+Fix a state \( j\in S \). By definition of \( j\rightarrow k \), \( \exists N\geq 0 : p_N(j,k) \geq 0\). Since \( \{ X_N = k | X_0 = j \} \subseteq \{\forall n, X_n \neq j | X_0 = j \} \) we have,
+\begin{align*}
+    0 < p_N(j,k) = \PP(X_N = k | X_0 = j) \leq \PP(\forall n, X_n\neq j | X_0 = j)
+\end{align*}
+
+Therefore,
+\begin{align*}
+    \PP(\exists n\geq 0: X_n = j | X_0 = j) = 1 - \PP(\forall n, X_n \neq j|X_0 = j) < 1
+\end{align*}
+
+This proves state \( j \) istransient. \qed
+
+
+\end{solution}
+
+\begin{problem}[Exercise 4.4]
+Suppose two distinct states \( i,j \) satisfy
+\begin{align*}
+    \PP(\tau_j<\tau_i | X_0 = i ) = \PP(\tau_i < \tau_j | X_0 = j)
+\end{align*}
+    where \( \tau_j = \inf\{ n\geq 1 : X_n = j \} \). Show that, if \( X_0=i \), the expected value of visits to \( j \) prior to returning to \( i \) is one.
+\end{problem}
+
+\begin{solution}[Solution]
+Write
+\begin{align*}
+    p=\PP(\tau_j<\tau_i | X_0 = i ) = \PP(\tau_i < \tau_j | X_0 = j)
+\end{align*}
+
+That is,
+\( p \) is the probability that we go to state \( j \) before state \( i \) give we are in state \( i \), and \( p \) is also the probability that we go to state \( i \) before state \( j \) given we are in state \( j \).
+
+Then \( 1-p \) is the probability that we do not go to state \( i \) before returning state \( j \),0 given we start in state \( j \).
+
+So \( (1-p)^k \) is the probability that we return to state \( j \) exactly \( k \) times before moving to state \( i \), given we start in state \( j \).
+
+Let \( N \) be the number of visits to \( j \) prior to returning to \( i \) given we start in state \( i \). 
+
+The probability that \( N = k\in\ZZ_{\geq 0} \) is the probability that starting from state \( i \) we go to state \( j \), return to state \( j \) \( (k-1) \) times without returning to state \( i \), and then return to state \( i \) without going to returning to state \( j \).
+
+So \( \PP(N=k | X_0 = i) = p(1-p)^{k-1}p\). This is the probability mass function for \( N \) so,
+\begin{align*}
+    \EE[N] = \sum_{n=0}^{\infty} np^2(1-p)^{k-1} = p \sum_{n=0}^{\infty}n(1-p)^n = p \dfrac{p}{(1-(1-p))^2} = 1
+\end{align*}
+\end{solution}
+
+\begin{problem}[Exercise 4.5]
+Let X be a Markov chain with transition matrix,
+\begin{align*}
+    P = \left[\begin{array}{ccc}1-2p & 2p & 0 \\ p & 1-2p & p \\ 0 & 2p & 1-2p\end{array}\right], && p\in(0,1)
+\end{align*}
+    Find \( P^n \), the invariant distribution \( \pi \), and the mean-recurrence times \( \overline{\tau}_j \) for \( j=1,2,3 \).
+\end{problem}
+
+\begin{solution}[Solution]
+    Note that \( P \) has eigendecomposition \( P = V\Lambda V^{-1} \) where,
+    \begin{align*}
+        \Lambda =
+        \left[\begin{array}{rrr}1 \\ &1-4p \\ && 1-2p\end{array}\right]
+        ,&&
+        V = \left[\begin{array}{rrr} 1 & 1 & -1 \\ 1 & -1 & 0 \\ 1 & 1 & 1\end{array}\right]
+    \end{align*}
+    
+    Therefore, \( P^n = V\Lambda^n V^{-1} \). Explicitly,
+    \begin{align*}
+        P^n = 
+        \left[\begin{array}{rrr} 1 & 1 & -1 \\ 1 & -1 & 0 \\ 1 & 1 & 1\end{array}\right]
+        \left[\begin{array}{rrr}1 \\ &1-4p \\ && 1-2p\end{array}\right]
+        \left[\begin{array}{rrr}1/4 & 1/2 & 1/4 \\ 1/4 & -1/2 & 1/4 \\ -1/2 & 0 & 1/2\end{array}\right]
+    \end{align*}
+    
+    Invariant distributions are linear combinations of left eigenvectors corresponding to eigenvalues of 1. In this case that is the first row of \( V^{-1} \). That is,
+    \begin{align*}
+        \pi = \left[\begin{array}{rrr}\frac{1}{4} & \frac{1}{2} & \\ \frac{1}{4}\end{array}\right]
+    \end{align*}
+
+    Finally, since the invariant distribution is unique, by Theorem we have,
+    \begin{align*}
+        \overline{\tau}_i = \frac{1}{\pi(i)}
+    \end{align*}
+    
+    
+\end{solution}
+
+
+\begin{problem}[Exercise 4.6]
+    Let \( X_n \) be the number of mistakes in the \( n \)-th addition of a book. Between the \( n \)-th and the \( (n+1) \)-th addition an editor corrects each mistake independently with probability \( p \) and introduces \( Y_n \) new mistakes where the\( (Y_n) \) are iid and Poisson distributed with parameter \( \lambda \). Find the invariant distribution \( \pi \) of the number of mistakes in the book. 
+\end{problem}
+
+\begin{solution}[Solution]
+Let \( M_{n,k} \) be distributed as \( \operatorname{Ber}(1-p) \) so that \( M_k \) is 0 if this mistake is corrected, and 1 otherwise. Let \( Y_n \) be Poisson distributed with parameter \( \lambda \). Then,
+\begin{align*}
+    X_{n+1} = Y_n + \sum_{k-1}^{X_n} M_k 
+\end{align*}
+
+Each \( M_{n,k} \) has generating function,
+ \begin{align*}
+     G_{M_{n,k}} = p+(1-p)s = 1-q+qs = 1-q(1-s) 
+ \end{align*}
+
+Similarly. \( Y_n \) has generating function,
+ \begin{align*} 
+     G_Y(s) = \sum_{k=0}^{\infty} e^{-\lambda} \lambda^k/k! s^k = e^{-\lambda}e^{s\lambda} = e^{\lambda(s-1)}
+ \end{align*} 
+ 
+
+Therefore \( X_{n+1} \) has generating function,
+\begin{align*}
+    G_{n+1}(s) &= G_Y(s) \EE\left[ s^{M_{k,1}+M_{k,2}+...+M_{k,X_n}} \right] \\
+    &= G_Y(s) \EE\left[\EE\left[ s^{M_{k,1}+M_{k,2}+...+M_{k,X_n}}\right] | X_n\right] \\
+    &= G_Y(s) \EE \left[ (1-q(1-s))^{X_n} \right] \\
+    &= G_Y(s) G_n(1-q(1-s)) \\
+\end{align*}
+
+First observe \( 1-q^i(1-(1-q(1-s))) = 1-q^{i+1}(1-s) \). We now use the relation \( G_{n+1}(s) = G_Y(s)G_n(1-q(1-s)) \) and the fact that \( G_0(s) = 1 \) to calculate,
+\begin{align*}
+    G_{n+1}(s) &= G_Y(s) G_n(1-q(1-s)) \\
+%    &= G_Y(s) G_Y(1-q(1-s))G_{n-1}(1-q(1-(1-q(1-s)))) \\
+    &= G_Y(s) G_Y(1-q(1-s))G_{n-1}(1-q^2(1-s)) \\
+    &= G_Y(s) G_Y(1-q(1-s)) G_Y(1-q^2(1-s)) G_{n-2}(1-q^3(1-s)) \\
+    &\mathrel{\makebox[\widthof{=}]{\vdots}} \\
+    &= \prod_{i=0}^{n}G_Y(1-q^i(1-s)) 
+\end{align*}
+
+Then,
+\begin{align*}
+    \lim_{n\to\infty} G_{n}(s) &= \lim_{n\to\infty} G_{n+1}(s) \\
+    &= \lim_{n\to\infty} \prod_{i=0}^{n}G_Y(1-q^i(1-s)) \\
+    &= \lim_{n\to\infty} \prod_{i=0}^{n} \exp\left( \lambda(-q^i(1-s)) \right)\\
+    &= \exp \left( \sum_{i=0}^{\infty} \lambda(-q^i(1-s) \right) \\
+    &= \exp \left( \lambda(s-1) \dfrac{1}{1-q}\right) \\
+    &= \exp \left( \dfrac{\lambda}{p}(s-1) \right) \\
+\end{align*}
+
+Thus, \( G_n(S) \) converges to the generating function of a Poisson random variable with parameter \( \lambda/p \).
+
+Then \( X_n \) converges to a random variable distributed like a Poisson random variable with parameter \( \lambda/p \). The random variable for which \( X_n \) converges to must be the variable corresponding to the stationary distribution. Therefore, the stationary distribution is distributed like the probability mass function of this random variable. That is,
+\begin{align*}
+    \pi(k) = e^{-\lambda/p} \dfrac{(\lambda/p)^k}{k!}
+\end{align*}
+
+In the limit \( p\to 1 \), where we correct all mistakes, the stationary distribution looks like a Poisson distribution with parameter \( \lambda \). In the limit \( \lambda \to 0 \) so we do not make any new mistakes, \( \pi(0)\to 1 \) as expected.
+\end{solution}
+
+
+\begin{problem}[Exercise 4.7]
+Give an example of a transition matrix \( P \) that admits multiple stationary distributions \( \pi \).
+\end{problem}
+
+\begin{solution}[Solution]
+Define \( P \) to be the identity matrix. Then any distribution is a stationary distribution.
+\end{solution}
+
+
+\begin{problem}[Exercise 4.8]
+    A Markov chain on \( S=\{0,1,2,...,n\} \) has transition probabilities \( p(0,0) = 1-\lambda_0 \), \( p(i,i+1) = \lambda_i \) and \( p(i+1,i) = \mu_{i+1} \) for \( i=0,1,...,n-1 \), and \( p(n,n)=1-\mu_n \). Show that the process is reversible in equilibrium.
+\end{problem}
+
+\begin{solution}[Solution]
+We assume all entries not specified are zero. (I heard this is the intent, however I wonder why we are given \( \mu_j\) when \( \mu_j=1-\lambda_j \) for all \( j \)). We write the matrix \( P \) as,
+
+Write \( \mu_n=1-\lambda_n  \). Thus, \( \mu_i=1-\lambda_i \) for \( i=1, ..., n \) as the sum of each row must be 1 (making the assumption that all entries not specified at zero). 
+    {\tiny
+    \begin{align*}
+    P = \left[\begin{array}{rrrrrr}
+        1-\lambda_0 & \lambda_0 & & &\\
+        \mu_1 & & \lambda_1 & & \\
+        & \mu_2 & & \lambda_2 & \\
+        & & \mu_3 \\\\
+        & & & & & \lambda_{n-1} \\
+        & & & & \mu_n & 1-\mu_n
+    \end{array}\right]
+      = \left[\begin{array}{rrrrrr}
+        1-\lambda_0 & \lambda_0 & & &\\
+        1-\lambda_1 & & \lambda_1 & & \\
+        & 1-\lambda_2 & & \lambda_2 & \\
+        && 1-\lambda_3\\\\
+        & & & & & \lambda_{n-1} \\
+        & & & & 1-\lambda_n & \lambda_n
+    \end{array}\right]
+\end{align*}
+    }
+
+This chain is irreducible and finite so a unique invariant distribution \( \pi \) exists. Write \( \pi=[\pi_0,\pi_1, ..., \pi_n] \). Then \( \pi P = \pi \). That is,
+\begin{align*}
+    \pi P = \left[\begin{array}{r}
+        \pi_0(1-\lambda_0)+\pi_1(1-\lambda_1) \\
+        \pi_0 \lambda_0 + \pi_2(1-\lambda_2) \\ 
+        \pi_1\lambda_1+\pi_3(1-\lambda_3) \\
+        \vdots \\ 
+        \vdots \\
+        \pi_{n-1}\lambda_{n-1}+\pi_n\lambda_n
+    \end{array}\right]^T
+= \left[\begin{array}{r}
+    \pi_0 \\ 
+    \pi_1 \\
+    \pi_2 \\
+    \vdots \\
+    \pi_j \\
+    \vdots \\
+    \pi_n
+\end{array}\right]^T
+\end{align*}
+
+\begin{align*}
+    \pi_1 &= \lambda_0\pi_0 / (1-\lambda_1) 
+        & \lambda_0\pi_0 &= \pi_1(1-\lambda_1) \\
+    \pi_2 &= (\pi_1-\pi_0\lambda_0)/(1-\lambda_2) = \pi_1\lambda_1/(1-\lambda_2) 
+        & \lambda_1\pi_1 &= \pi_2(1-\lambda_2) \\
+    \pi_3 &= (\pi_2-\pi_1\lambda_1)/(1-\lambda_3) = \pi_2\lambda_2/(1-\lambda_3) 
+        & \lambda_2\pi_2 &= \pi_3(1-\lambda_3) \\
+    \vdots \\
+    \pi_{j+1} &= (\pi_j-\pi_{j-1}\lambda_{j-1})/(1-\lambda_{j+1}) = \pi_j\lambda_j/(1-\lambda_{j+1}) & \lambda_j\pi_j &= \pi_{j+1}(1-\lambda_{j+1})\\
+    \vdots \\
+    \pi_n &= (\pi_{n-1}\lambda_{n-1})/(1-\lambda_n) 
+        & \pi_{n-1}\lambda_{n-1} &= \pi_n(1-\lambda_n)
+\end{align*}
+
+Observing the equations on the right hand side we have that for \( i=1,2,...,n-1 \),
+\begin{align*}
+    \pi_{i}p(i,i+p) = \pi_{i+1}p(i+1,i)
+\end{align*}
+
+We now show the detail balance condition. In particular, we must show, 
+\begin{align*}
+    \pi_ip(i,j) = \pi_jp(j,i)  &&\text{ for all } i,j 
+\end{align*}
+However, for \( j\notin\{i-1,i+1\} \) we have \( p(i,j)=0 \). Therefore, for this matrix the previous condition is equivalent to 
+\begin{align*}
+    \pi_i p(i,i+1) = \pi_{i+1}p(i+1,i) &&\text{ for } i=1,2,..., n-1
+\end{align*}
+
+We have shown that these equations hold for all \( i=1,2,...,n-1 \). 
+
+This proves \( \pi \) is in detailed balance with \( P \), and so this process is reversible in equilibrium. \qed
+
+\end{solution}
+
+
+\end{document}
