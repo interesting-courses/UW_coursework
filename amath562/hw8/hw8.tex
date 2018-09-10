@@ -89,7 +89,7 @@ Find an explicit expression for \( Y_T \) where,
 
 
 \begin{solution}[Solution]
-Let \( f(x,y) = \exp(-\alpha x + \frac{1}{2} \lambda^2 y) \) so that,
+Let \( f(x,y) = \exp(-\alpha x + \frac{1}{2} \alpha^2 y) \) so that,
 \begin{align*}
     f_x(W_t,t) = -\alpha F_t && f_y(W_t,t) = \frac{\alpha^2}{2} F_t && f_{xx}(W_t,t) =  \alpha^2 F_t
 \end{align*}
@@ -124,7 +124,7 @@ In integral form,
 
 We can add \( F_0Y_0 = Y_0 \) and divide by \( F_t \) yielding,
 \begin{align*}
-    Y_t = Y_0 + r e^{\alpha W_t - \frac{1}{2}\alpha^2 t} \int_{0}^{t} e^{-\alpha W_s + \frac{1}{2} \alpha^2 s} \d s
+    Y_t = e^{\alpha W_t - \frac{1}{2} \alpha^2 t} \left( Y_0 + r e^{\alpha W_t - \frac{1}{2}\alpha^2 t} \int_{0}^{t} e^{-\alpha W_s + \frac{1}{2} \alpha^2 s} \d s \right)
 \end{align*}
 \end{solution}
 

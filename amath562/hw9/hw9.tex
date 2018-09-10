@@ -34,6 +34,12 @@
 \begin{solution}[Solution]
 \end{solution}
 
+\begin{problem}[Exercise 9.1]
+\end{problem}
+
+\begin{solution}[Solution]
+\end{solution}
+
 
 
 \begin{problem}[Exercise 9.2]
@@ -170,7 +176,7 @@ This gives solution,
     A(t) = \frac{\sqrt{-2 \delta ^2-\kappa ^2} \tan \left(\frac{1}{2} \left(2 c_1 \sqrt{-2 \delta ^2-\kappa ^2}+t \sqrt{-2 \delta ^2-\kappa ^2}\right)\right)-\kappa }{\delta ^2} \\
     B(t) = \frac{\theta  \kappa  \left(2 \log \left(\cos \left(c_1 \sqrt{-2 \delta ^2-\kappa ^2}+\frac{1}{2} t \sqrt{-2 \delta ^2-\kappa ^2}\right)\right)+\kappa  t\right)}{\delta ^2}+c_2
 \end{align*}
-where,
+where, using the boundary conditions we find,
 \begin{align*}
     c_1 = \dfrac{1}{2\sqrt{-2\delta^2-\kappa^2}} \left[ 2\arctan\left(\dfrac{\kappa}{\sqrt{-2\delta^2-\kappa}} \right) - T\sqrt{-2\delta^2-\kappa^2} \right] \\
     c_2 =  -\frac{\theta  \kappa  \left(2 \log \left(\cos \left(c_1 \sqrt{-2 \delta ^2-\kappa ^2}+\frac{1}{2} T \sqrt{-2 \delta ^2-\kappa ^2}\right)\right)+\kappa  T\right)}{\delta ^2}
@@ -203,8 +209,7 @@ As \( B_t \) is an It\^o integral it is a martingale with respect to a filtratio
 
 Similarly, \( B_t \) has continuous sample paths as \( W_t^{(i)} \) have continuous sample paths.
 
-Clearly \( B_0 = 0 \) as \( W_0^{(i)} = 0 \).
-
+By our definition of \( B_t \) we have \( B_0 = 0 \).
 Now, 
 \begin{align*}
     (\d B_t)(\d B_t) &= \dfrac{1}{R_t} \sum_{i=1}^{d}\sum_{j=1}^{d}X_t^{(i)}X_t^{(j)} \d W_t^{(i)} \d W_t^{(j)} \\
