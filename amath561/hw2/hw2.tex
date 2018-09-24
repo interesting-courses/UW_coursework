@@ -28,6 +28,181 @@
 \begin{document}
 \maketitle
 
+\begin{problem}[Exercise 2.1]
+    Let \( \Omega=\{a,b,c,d\} \) and \( \mathcal{F} = 2^\Omega \) (the set of all subsets of \( \Omega \)). We define a probability measure \( \PP \) as follows
+    \begin{align*}
+        \PP(a)=1/6, && \PP(b)=1/3, && \PP(c)=1/4, && \PP(d)=1/4
+    \end{align*}
+    Next, define three random variables,
+    \begin{align*}
+        X(a)=1, && X(b)=1, && X(c)=-1, && X(d)=-1\\
+        Y(a)=1, && Y(b)=-1, && Y(c)=1, && Y(d)=-1,
+    \end{align*}
+    and \( Z=X+Y \).
+    \begin{enumerate}
+        \item[(a)] List the sets in \( \sigma(X) \).
+        \item[(b)] What are the values of \( \EE[Y|X] \) for \( \{a,b,c,d\} \)? Verify the partial averaging property: \( \EE[\mathbbm{1}_A\EE[Y|X]]=\EE[\mathbbm{1}_A Y] \).
+        \item[(c)] What are the values of \( \EE[Z|X] \) for \( \{a,b,c,d\} \)? Verify the partial averaging property.
+    \end{enumerate}
+\end{problem}
 
+\begin{solution}[Solution]
+\begin{enumerate}
+    \item[(a)] Recall that \( \sigma(X) = \{ \{X\in A\}\subseteq\Omega : A\in\mathcal{B}(\RR) \} = \{\{w : X(w)\in A\} : A\in\mathcal{B}(\RR)\} \). Therefore,
+        \begin{align*}
+            \sigma(X) = \{ \emptyset,\{a,b\},\{c,d\}, \Omega \}
+        \end{align*}
+    \item[(b)] We compute, 
+        \begin{align*}
+            \EE[Y|X](a) &= \EE[Y|X=X(a)] = \EE[Y|X=1] = \dfrac{1\PP(a)-1\PP(b)}{\PP(a)+\PP(b)} = -\dfrac{1}{3} \\
+            \EE[Y|X](b) &= \EE[Y|X=X(b)] = \EE[Y|X=1] = \dfrac{1\PP(a)-1\PP(b)}{\PP(a)+\PP(b)} = -\dfrac{1}{3} \\ 
+            \EE[Y|X](c) &= \EE[Y|X=X(c)] = \EE[Y|X=-1] = \dfrac{1\PP(c)-1\PP(d)}{\PP(c)+\PP(d)} = 0 \\
+            \EE[Y|X](d) &= \EE[Y|X=X(d)] = \EE[Y|X=-1] = \dfrac{1\PP(c)-1\PP(d)}{\PP(c)+\PP(d)} = 0 \\
+        \end{align*}
 
+        For each set \( A\in\sigma(X) \) we verify that \( \EE[\mathbbm{1}_A\EE[Y|X]]=\EE[\mathbbm{1}_A Y] \) as follows,        
+        
+        \begin{align*}
+        \begin{array}{c|r|r}
+             A  &  \EE[\mathbbm{1}_A\EE[Y|X]]  & \EE[\mathbbm{1}_AY]  \\ \hline   
+             \emptyset  & 0 & 0 \\
+             \{a,b\}  &  -\frac{1}{3}\PP(a)-\frac{1}{3}\PP(b) = -\frac{1}{6}  &  1\PP(a)-1\PP(b) = -\frac{1}{6}  \\
+             \{c,d\}  &  0\PP(c)+0\PP(d) =\phantom{-} 0  &  1\PP(c)-1\PP(d) =\phantom{-} 0  \\
+             \Omega  &  -\frac{1}{3}\PP(a)-\frac{1}{3}\PP(b)+0\PP(c)+0\PP(d) = -\frac{1}{6}  &  1\PP(a)-1\PP(b)+1\PP(c)-1\PP(d) = -\frac{1}{6}               \end{array}
+        \end{align*}
+
+    \item[(c)]  Write,
+        \begin{align*}
+            Z(a) = 2, && Z(b) = 0, && Z(c) = 0, && Z(d) = -2
+        \end{align*}
+        We compute,
+        \begin{align*}
+            \EE[Z|X](a) &= \EE[Z|X=X(a)] = \EE[Z|X=1] = \dfrac{2\PP(a)+0\PP(b)}{\PP(a)+\PP(b)} = \dfrac{2}{3} \\
+            \EE[Z|X](b) &= \EE[Z|X=X(b)] = \EE[Z|X=1] = \dfrac{2\PP(a)+0\PP(b)}{\PP(a)+\PP(b)} = \dfrac{2}{3} \\
+            \EE[Z|X](c) &= \EE[Z|X=X(c)] = \EE[Z|X=-1] = \dfrac{0\PP(c)+2\PP(d)}{\PP(c)+\PP(d)} = -1 \\
+            \EE[Z|X](d) &= \EE[Z|X=X(d)] = \EE[Z|X=-1] = \dfrac{0\PP(c)+2\PP(d)}{\PP(c)+\PP(d)} = -1 \\
+        \end{align*}
+        
+        For each set \( A\in\sigma(X) \) we verify that \( \EE[\mathbbm{1}_A\EE[Z|X]]=\EE[\mathbbm{1}_A Z] \) as follows,        
+        
+        \begin{align*}
+        \begin{array}{c|r|r}
+             A  &  \EE[\mathbbm{1}_A\EE[Z|X]]  & \EE[\mathbbm{1}_A Z]  \\ \hline   
+             \emptyset  & 0 & 0 \\
+             \{a,b\}  &  \frac{2}{3}\PP(a)+\frac{2}{3}\PP(b) = \frac{1}{3}  &  2\PP(a)+0\PP(b) = \frac{1}{3}  \\
+             \{c,d\}  &  -1\PP(c)+-1\PP(d) = -\frac{1}{2}  &  0\PP(c)-2\PP(d) = -\frac{1}{2}  \\
+        \Omega  &  \frac{2}{3}\PP(a)+\frac{2}{3}\PP(b)-1\PP(c)-1\PP(d) = -\frac{1}{6}  &  2\PP(a)+0\PP(b)+0\PP(c)-2\PP(d) = -\frac{1}{6}               \end{array}
+        \end{align*}
+
+\end{enumerate}
+\end{solution}
+
+\begin{problem}[Exercise 2.2]
+    Fix a probability space \( (\Omega,\mathcal{F},\PP) \). Let \( Y \) be a square integrable random variable: \( \EE Y^2<\infty \) and let \( \mathcal{G} \) be a sub-\( \sigma \)-algebra of \( \mathcal{F} \). Show that
+    \begin{align*}
+        \mathbb{V}(Y-\EE[Y | \mathcal{G}])\leq \mathbb{V}(Y-X) && \forall X\in\mathcal{G}
+    \end{align*}
+\end{problem}
+
+\begin{solution}[Solution]
+
+Suppose further \( \EE[(Y-X)^2]<\infty \) (we make this assumption so that \( \mathbb{V}[Y-X] \) exists).
+
+Clearly \( (\EE[Y|\mathcal{G}]-X)\in \mathcal{G} \). Then, by partial averaging, \( \EE[(\EE[Y|\mathcal{G}]-X)\EE[Y|\mathcal{G}]] = \EE[(\EE[Y|\mathcal{G}]-X)Y] \). Therefore,
+\begin{align*}
+    \EE[(\EE[Y|\mathcal{G}]-X)(Y-\EE[Y|\mathcal{G}])] &= \EE[(\EE[Y|\mathcal{G}]-X)Y]-\EE[(\EE[Y|\mathcal{G}]-X)\EE[Y|\mathcal{G}]] \\
+    &= \EE[(\EE[Y|\mathcal{G}]-X)Y] - \EE[(\EE[Y|\mathcal{G}]-X)Y] \\
+    &= 0
+\end{align*}
+
+Then, since \( \EE[(Y-X)^2] \), exists,
+\begin{align*}
+    \EE[(Y-X)^2] &= \EE[((Y-\EE[Y|\mathcal{G}])+(\EE[Y|\mathcal{G}]-X))^2] \\
+    &= \EE[(Y-\EE[Y|\mathcal{G}])^2]+\EE[(\EE[Y|\mathcal{G}]-X)^2] + 2\EE[(Y-\EE[Y|\mathcal{G}])(\EE[Y|\mathcal{G}]-X)] \\
+    &= \EE[(Y-\EE[Y|\mathcal{G}])^2]+\EE[(\EE[Y|\mathcal{G}]-X)^2]
+\end{align*}
+
+Again by partial averaging, \( \EE[\EE[Y|\mathcal{G}]] = \EE[\mathbbm{1}_{\Omega}\EE[Y|\mathcal{G}]] = \EE[\mathbbm{1}_{\Omega}Y] = \EE[Y] \) so that \( \EE[Y-\EE[Y|G]] = 0 \). Then,
+\begin{align*}
+    \EE[Y-X]^2 &= \EE[Y-\EE[Y|\mathcal{G}]+\EE[Y|\mathcal{G}]-X]^2 \\
+    &= \left(\EE[Y-\EE[Y|\mathcal{G}]]+\EE[\EE[Y|\mathcal{G}]-X]\right)^2 \\
+    &= \EE[Y-\EE[Y|\mathcal{G}]]^2+\EE[\EE[Y|\mathcal{G}]-X]^2+2\EE[Y-\EE[Y|\mathcal{G}]]\EE[\EE[Y|\mathcal{G}]-X] \\
+    &= \EE[Y-\EE[Y|\mathcal{G}]]^2+\EE[\EE[Y|\mathcal{G}]-X]^2
+\end{align*}
+
+Thus, subtracting this result from the first,
+\begin{align*}
+    \EE[(Y-X)^2]-\EE[Y-X]^2 &= \EE[(Y-\EE[Y|\mathcal{G}])^2]-\EE[Y-\EE[Y|\mathcal{G}]]^2+\EE[(\EE[Y|\mathcal{G}]-X)^2]-\EE[\EE[Y|\mathcal{G}]-X]^2 \\
+    \mathbb{V}[Y-X] &= \mathbb{V}[Y-\EE[Y|\mathcal{G}]]+\mathbb{V}[\EE[Y|\mathcal{G}]-X]
+\end{align*}
+
+Therefore, since \( \mathbb{V}[\EE[Y|\mathcal{G}-X]\geq 0 \), for any \( X\in\mathcal{G} \), 
+\begin{align*}
+    \mathbb{V}[Y-X] &\geq \mathbb{V}[Y-\EE[Y|\mathcal{G}]] \tag*{\qed}
+\end{align*}
+
+\problem{Exercise 2.3}{%
+    Give an example of a probability space \( (\Omega,\mathcal{F},\PP) \), a random variable \( X \) and a function \( f \) such that \( \sigma(f(X)) \) is strictly smaller than \( \sigma(X) \) but \( \sigma(f(X))\neq\{\emptyset,\Omega\} \). Give a function \( g \) such that \( \sigma(g(X))=\{\emptyset,\Omega\} \).
+}
+
+Let \( \Omega = \{a,b,c\} \) and \( \mathcal{F}=2^\Omega \). Define \( \PP(a)=\PP(b)=\PP(c)=1/3 \).
+
+Define \( X \) as \( X(a)=0,~ X(b)=-1,~ X(c)=1 \). 
+
+Thus, \( \sigma(X) = \{\emptyset, \{a\}, \{b\}, \{c\}, \{b,c\}, \{a,c\}, \{a,b\}, \Omega \} \)
+
+Since \( X(\Omega)\subset\RR \), define \( f,g:\RR\to\RR \) by \( f(x)=x^2 \) and \( g(x) = 0 \).
+Then \( f(X(a))=0,~ f(X(b)) = f(X(c)) = 1 \) and \( g(Y(a))=g(Y(b))=g(Y(c))=0 \).
+
+Therefore \( \sigma(f(X)) = \{ \emptyset, \{a\},\{b,c\} ,\Omega \} \) so \( \sigma(f(X))\subsetneq \sigma(X) \) so \( \sigma(f(X)) \) is strictly smaller than \( \sigma(X) \).
+
+Similarly, \( \sigma(g(X)) = \{\emptyset, \Omega\}  \).
+\end{solution}
+
+\begin{problem}[Exercise 2.4]
+On a probability space \( (\Omega,\mathcal{F},\PP) \) define random variables \( X \) and \( Y_0,Y_1,Y_2, ... \) and suppose \( \EE[X]<\infty \). Define \( F_n:=\sigma(Y_0,Y_1,...,Y_n) \) and \(X_n=\EE[X|F_n] \). Show that the sequence \(X_0,X_1,X_2,... \) is a martingale under \( \PP \) with respect to the filtration \( (F_n)_{n\geq 0}\).
+\end{problem}
+
+\begin{solution}[Solution]
+
+Since \( (F_n)_{n\geq0} \) is a filtration, then \( F_n \) is a sub \( \sigma \)-algebra of \( F_{n+1} \). Therefore, by iterated conditioning,
+\begin{align*}
+    \EE[X_{n+1} | F_n] = \EE[\EE[X | F_{n+1}]| F_n] = \EE[X | F_n] = X_n
+\end{align*}
+
+This proves the sequence \( X_0, X_1, X_2, ... \) is a martingale under \( \PP \) with respect to the filtration \( (F_n)_{n\geq 0} \). \qed
+\end{solution}
+
+\begin{problem}[Exercise 2.5]
+Let \( X_0,X_1,... \)be i.i.d Bernoulli random variables with parameter \( p \) (i.e., \( P(X_i= 1) =p\)). Define \( S_n=\sum_{i=1}^{n}X_i \) where \( S_0=0 \). Define
+\begin{align*}
+    Z_n:=\left(\dfrac{1-p}{p}\right)^{2S_n-n} && n=0,1,2,...
+\end{align*}
+Let \( \mathcal{F}_n:=\sigma(X_0,X_1,...,X_n) \). Show that \( Z_n \) is a martingale with respect to this filtration.
+\end{problem}
+
+\begin{solution}[Solution]
+Observe,
+\begin{align*}
+    Z_{n+1} = \left(\dfrac{1-p}{p}\right)^{2S_{n+1}-(n+1)} = \left(\dfrac{1-p}{p}\right)^{2S_n-n}\left(\dfrac{1-p}{p}\right)^{2X_{n+1}-1} = Z_n\left(\dfrac{1-p}{p}\right)^{2X_{n+1}-1} 
+\end{align*}
+
+Then, since \( X_{n+1} \) is independent of all other \( X_j \), \( X_{n+1} \) is is independent of \( F_n \). Thus, using the definition of expectation of a discrete random variable,
+\begin{align*}
+    \EE\left[\left(\dfrac{1-p}{p}\right)^{2X_{n+1}-1} \Bigg| F_n \right] &= \EE\left[\left(\dfrac{1-p}{p}\right)^{2X_{n+1}-1}\right] \\
+    &= (p)\left(\dfrac{1-p}{p}\right)^{2\cdot 1-1}+(1-p)\left(\dfrac{1-p}{p}\right)^{2\cdot 0-1} \\
+    &= (1-p)+p \\
+    &=1
+\end{align*}
+
+Therefore, by taking out what is known,
+\begin{align*}
+    \EE[Z_{n+1}|F_n] = \EE\left[Z_n((1-p)/p)^{2X_{n+1}-1}|F_n\right] = Z_n\EE\left[((1-p)/p)^{2X_{n+1}-1}|F_n\right] = Z_n
+\end{align*}
+
+This proves \( (Z_n)_{n\geq 0} \) is a martingale with respect to this filtration. \qed
+
+%\textbf{ADD RIGOR this is missing the rigor of rigorous math}
+
+\end{solution}
 \end{document}

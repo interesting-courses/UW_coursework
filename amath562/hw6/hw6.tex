@@ -30,4 +30,177 @@
 
 
 
+\begin{problem}[Exercise 6.2]
+Consider the sample space \( S=[0,1] \) with uniform probability distribution, i.e.,
+\begin{align*}
+    \PP([a,b])=b-a, ~ \forall 0\leq a\leq b\leq 1
+\end{align*}
+    Define the sequence \( \{X_n\}_{n\in\NN_0} \) as \( X_n(s) = \frac{n}{n+1}s+(1-s)^n \). Also, define the random variable \( X \) on this sample space as \( X(s) = s \). Show that \( X_n \to_{a.s.} X \).
+\end{problem}
+
+\begin{solution}
+
+Observe that for all \( s\in(0,1] \), \( 0 \leq (1-s) < 1 \) so,
+\begin{align*}
+    \lim_{n\to\infty} \left[ \dfrac{n}{n+1}s + (1-s)^n \right] = s + 0 = s
+\end{align*}
+
+In particular, this means that,
+\begin{align*}
+    [0,1) \subseteq \left\{ s\in S : \lim_{n\to\infty} |X_n-X| = 0 \right\} 
+\end{align*}
+
+Thus, since \( \PP[1,1] = 0 \) and \( [0,1) \cap[1,1] = \emptyset \),
+\begin{align*}
+    \PP \left( \lim_{n\to \infty} |X_n-X|=0 \right) \geq \PP([0,1)) = \PP([0,1))+\PP([1,1]) = \PP([0,1)\cup [1,1]) = \PP([0,1]) = 1
+\end{align*}
+
+Probabilities are at most 1, implying \( X_n\to_{a.s.} X \). \qed
+
+
+\end{solution}
+
+\begin{problem}[Exercise 6.3]
+    Let \( \{X_n\}_{n\in\NN_0} \) and \( \{Y_n\}_{n\in\NN_0} \) be two sequences of random variables, defined on the sample space \( S \). Suppose that we know,
+    \begin{align*}
+        X_n \to _{a.s.} X && Y_n \to_{a.s.} Y
+    \end{align*}
+    Prove that \( X_n+Y_n \to_{a.s.} X+Y \).
+\end{problem}
+
+\begin{solution}
+
+By hypothesis,
+\begin{align*}
+    \PP\left(\lim_{n\to\infty}|X_n-X|=0\right)=1 &&
+    \PP\left(\lim_{n\to\infty}|Y_n-Y|=0\right)=1 
+\end{align*}
+
+The intersection of sets of measure 1 is still a set of measure 1. Thus,
+\begin{align*}
+    1 &= \PP \left( \lim_{n\to\infty} |X_n-X| = 0 \wedge \lim_{n\to \infty} |Y_n-Y| = 0 \right) \\ 
+      &= \PP \left( \lim_{n\to\infty} |X_n-X| + \lim_{n\to \infty} |Y_n-Y| = 0 \right) \\ 
+      &= \PP \left( \lim_{n\to\infty} |X_n-X| + |Y_n-Y| = 0 \right) 
+\end{align*}
+
+By the triangle inequality,
+\begin{align*}
+    |(X_n+Y_n) - (X+Y)| = |(X_n-X)+(Y_n-Y)| \leq |X_n-X| + |Y_n-Y|
+\end{align*}
+
+So, \( |X_n-X|+|Y_n-Y| = 0 \) implies \( |(X_n+Y_n) - (X+Y)| = 0 \). Thus,
+\begin{align*}
+    \left\{ \omega :  \lim_{n\to\infty} |X_n(\omega)-X(\omega)| + |Y_n(\omega)-Y(\omega)| = 0  \right\}
+    \subseteq \left\{ \omega :  \lim_{n\to\infty} |(X_n(\omega)+Y_n(\omega)-(X(\omega)+Y(\omega))| = 0  \right\}
+\end{align*}
+
+Finally,
+\begin{align*}
+    \PP \left( \lim_{n\to\infty} |(X_n+Y_n) - (X+Y)| = 0 \right) \geq 1
+\end{align*}
+
+Probabilities are at most 1, implying \( X_n+Y_n \to_{a.s.}X+Y \). \qed
+
+
+\end{solution}
+
+\begin{problem}[Exercise 6.6]
+    Let \( X_1,X_2, ...,  \) be independent with \( \PP(X_n=1) = p_n \) and \( \PP(X_n=0) = 1-p_n \). Show that,
+    \begin{enumerate}
+        \item[(a)] \( X_n \to_{p} 0 \) if and only if \( p_n\to 0 \).
+        \item[(b)] \( X_n \to_{a.s.} 0 \) if and only if \( \sum_{n}p_n < \infty \)
+    \end{enumerate}
+\end{problem}
+
+\begin{solution}
+
+\begin{enumerate}
+    \item[(a)] 
+        Fix \( \varepsilon \in(0,1) \) and consider \( \PP(|X_n| > \varepsilon) \). For any \( \omega\in \Omega \), \( |X_n(w)|  > \varepsilon \) if \( X_n(\omega) = 1 \), and \( |X_n(\omega)| \leq \varepsilon \) if \( X_n(\omega)=0 \). In particular, this means that regardless of the value of \( \varepsilon \), \( \PP(|X_n| > \varepsilon) \geq \PP(X_n=1) = p_n \) and \( \PP(|X_n| \leq \varepsilon) \geq \PP(X_n=0) = 1-p_n \) so that \( \PP(|X_n|>\varepsilon) \leq p_n \).
+
+         Thus, for any \( \varepsilon \in(0,1) \), \( \PP( |X_n| > \varepsilon ) = p_n \), and clearly if \( \varepsilon > 1 \) then \( \PP(X_n > \varepsilon) = 0 \). We then have,
+        \begin{align*}
+            X_n\to_{p}0 
+            \Longleftrightarrow \forall \varepsilon>0, \lim_{n\to\infty} \PP(|X_n|>\varepsilon) = 0 
+            \Longleftrightarrow \forall \varepsilon>0, \lim_{n\to\infty} p_n = 0
+            \Longleftrightarrow X_n\to_{p} 0 \tag*{\qed}
+        \end{align*}
+
+        %        Note that we assumed the sample space of the \( X_i \) is \( \{0,1\} \). I guess it could be something else, where the probability of \( X_i \) being anything outside of \( \{0,1\} \) is zero. This doesn't really the result, it just makes it a bit more tedious to prove..
+
+    \item[(b)]
+
+
+
+         Suppose \( \sum_n \PP(\{\omega : X_n(\omega)=1\} = \sum_n p_n < \infty \). Then, by Borel-Cantelli Lemma we have,
+        \begin{align*}
+            0 = \PP(\{\omega: X_n(\omega) = 1, \text{ i.o.}\}) = \PP(\{\omega: \lim_{n\to\infty} |X_n(\omega)|\neq 0)
+        \end{align*}
+        Equivalently,
+        \begin{align*}
+            1 = \PP(\{\omega : \lim_{n\to\infty} X_n(\omega)=0\}) 
+            \Longleftrightarrow X_n\to_{a.s.}0
+        \end{align*}
+
+
+        Now, suppose \( \sum_n \PP(\{\omega : X_n(\omega)=1\} = \sum_n p_n = \infty \). Then, by Borel-Cantelli Lemma, since \( X_n \) are independent meaning \( \{\omega:X_n(\omega)=1\} \) are independent, we have,
+        \begin{align*}
+            1 = \PP(\{\omega: X_n(\omega) = 1, \text{ i.o.}\})
+              = \PP(\{\omega : \lim_{n\to\infty} X_n(\omega)\neq0\}) 
+            \Longleftrightarrow X_n \not\to_{a.s.}0
+        \end{align*}
+
+        This proves that \( X_n \to_{a.s.}0  \) if and only if \( \sum_n p_n = 0 \). \qed
+
+
+
+\end{enumerate}
+
+
+\end{solution}
+
+\begin{problem}[Exercise 6.7]
+    Suppose that \( X_1, X_2, ..., \) are independent with \( \PP(X_n > x) = x^{-5} \) for all \( x\geq 1 \) and \( n=1,2,..., \). Show that \( \limsup_{n\to\infty}(\log X_n)/\log n = c \) almost surely for some number \( c \), and find \( c \).
+\end{problem}
+
+\begin{solution}
+
+We have,
+\begin{align*}
+    \limsup_{n\to\infty} \{ (\log X_n)/\log n = c \} = \{ \omega : X_n(\omega)/\log n = c, \text{for infinitely many }n \}
+\end{align*}
+
+Fix \( n \in \NN, d \in \RR\). Consider\footnote{note that when \( \log n \) is in the denominator it isn't well defined for \( n=1 \). But we interpret it as if the equalities below are actually true},
+\begin{align*}
+    \PP(\log X_n / \log n > d) &= \PP( \log X_n > d \log n ) 
+    = \PP(X_n > e^{d\log n}) 
+    = \PP(X_n > n^{d} )
+    = \left( n^d \right)^{-5}
+    = n^{-5d}
+\end{align*}
+
+Take \( c=1/5 \) so that for any \( \varepsilon > 0 \),
+\begin{align*}
+    \sum_{n=1}^{\infty}\PP(\log X_n /\log n > c + \varepsilon ) &= \sum_{n=1}^{\infty} n^{-5(c+\varepsilon)} = \sum_{n=1}^{\infty} n^{-1-5\varepsilon}< \infty \\
+    \sum_{n=1}^{\infty}\PP(\log X_n /\log n > c - \varepsilon ) &= \sum_{n=1}^{\infty} n^{-5(c-\varepsilon)} = \sum_{n=1}^{\infty} n^{-1+5\varepsilon} = \infty
+\end{align*}
+
+By Borel Cantelli, and since \( (A_n, \text{i.o.})^c = (A_n^c, \text{a.b.f.m})  \),
+\begin{align*}
+    \PP( \log X_n / \log n > c+\varepsilon, \text{ i.o.}) = 0 
+    \Longleftrightarrow \PP( \log X_n / \log n < c+\varepsilon, \text{ a.b.f.m}) = 1 
+\end{align*}
+Since \( X_n \) are independent, then \( \{ \log X_n /\log n > c+\varepsilon\} \) are independent so, by Borel Cantelli,
+\begin{align*}
+    \PP( \log X_n / \log n > c-\varepsilon, \text{ i.o.}) = 1
+\end{align*}
+
+Together these show,
+\begin{align*}
+    \PP(\log X_n/\log n = c, \text{for infinitely many }n)
+    =\PP\left(\limsup_{n\to\infty}\{(\log X_n)/\log n = 1/5 \}\right) = 1 \tag*{\qed}
+\end{align*}
+
+\end{solution}
+
 \end{document}
