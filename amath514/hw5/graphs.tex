@@ -1,0 +1,107 @@
+\tikzstyle{vertex}=[circle,fill=black,scale=.3]
+
+\begin{figure}[h]\centering
+\begin{subfigure}{.48\textwidth}\centering
+	\begin{tikzpicture}[scale=.6, every node/.style={scale=0.6}]
+    
+        \foreach \pos/\name in {{(.5,0)/s},{(3,2)/a},{(3,0)/b},{(3,-2)/c},{(6,2)/d},
+                                {(6,0)/e},{(6,-2)/f},{(8.5,0)/t}}
+            \node[vertex] (\name) at \pos {};
+        
+            \path[] (s)++(-.25,0) node {\(s\)};
+            \path[] (t)++(.25,0) node {\(t\)};
+
+        
+        \foreach \source/\dest in {}
+            \path[draw,red,line width=2pt] (\source) -- node[fill=white] {} (\dest);
+
+        \foreach \source/\dest/\weight in {s/a/1, s/b/2, s/c/10,
+                                           a/b/4,a/d/2,
+                                           b/d/7,b/e/1,b/f/2,
+                                           c/b/2,c/e/4,c/f/5,
+                                           d/t/11,
+                                           e/a/2,e/d/2,e/t/2,
+                                           f/e/5,f/t/1}                               
+            \path[draw, arrows={- angle 45}] (\source) -- node[fill=white,pos=0.7] {$\weight$} (\dest);
+    \end{tikzpicture}
+\caption{}
+\end{subfigure}
+\begin{subfigure}{.48\textwidth}\centering
+	\begin{tikzpicture}[scale=.6, every node/.style={scale=0.6}]
+    
+        \foreach \pos/\name in {{(.5,0)/s},{(3,2)/a},{(3,0)/b},{(3,-2)/c},{(6,2)/d},
+                                {(6,0)/e},{(6,-2)/f},{(8.5,1)/g},{(8.5,-1)/h},{(11,0)/t}}
+            \node[vertex] (\name) at \pos {};
+        
+            \path[] (s)++(-.25,0) node {\(s\)};
+            \path[] (t)++(.25,0) node {\(t\)};
+
+        
+        \foreach \source/\dest in {}
+            \path[draw,red,line width=2pt] (\source) -- node[fill=white] {} (\dest);
+
+        \foreach \source/\dest/\weight in {s/a/12, s/b/1, s/c/2,
+                                           a/b/1,a/d/7,a/e/5,
+                                           b/e/1,b/f/7,
+                                           c/b/3,c/e/2,c/f/5,
+                                           d/b/2,d/e/3,d/g/3,
+                                           e/f/2,e/g/3,e/h/1,
+                                           f/h/9,
+                                           g/h/1,g/t/4,
+                                           h/t/11}                               
+            \path[draw, arrows={- angle 45}] (\source) -- node[fill=white,pos=0.7] {$\weight$} (\dest);
+    \end{tikzpicture}
+\caption{}
+\end{subfigure}
+\begin{subfigure}{.48\textwidth}\centering
+    \begin{tikzpicture}[scale=.6, every node/.style={scale=0.6}]
+    
+        \foreach \pos/\name in {{(.5,0)/s},{(3,2)/a},{(3,0)/b},{(3,-2)/c},{(6,2)/d},
+                                {(6,0)/e},{(6,-2)/f},{(8.5,0)/t}}
+            \node[vertex] (\name) at \pos {};
+        
+            \path[] (s)++(-.25,0) node {\(s\)};
+            \path[] (t)++(.25,0) node {\(t\)};
+
+        
+        \foreach \source/\dest in {}
+            \path[draw,red,line width=2pt] (\source) -- node[fill=white] {} (\dest);
+
+        \foreach \source/\dest/\weight in {s/a/3, s/b/6, s/c/8,
+                                           a/b/4,a/d/2,a/e/7,
+                                           b/d/6,b/e/1,b/f/2,
+                                           c/b/4,c/f/4,
+                                           d/e/1,d/t/3,
+                                           e/t/9,
+                                           f/e/5,f/t/5}                               
+            \path[draw, arrows={- angle 45}] (\source) -- node[fill=white,pos=0.7] {$\weight$} (\dest);
+    \end{tikzpicture}
+\caption{}
+\end{subfigure}
+\begin{subfigure}{.48\textwidth}\centering
+    \begin{tikzpicture}[scale=.6, every node/.style={scale=0.6}]
+    
+        \foreach \pos/\name in {{(.5,0)/s},{(3,2)/a},{(3,0)/b},{(3,-2)/c},{(6,2)/d},
+                                {(6,0)/e},{(6,-2)/f},{(8.5,0)/t}}
+            \node[vertex] (\name) at \pos {};
+        
+            \path[] (s)++(-.25,0) node {\(s\)};
+            \path[] (t)++(.25,0) node {\(t\)};
+
+        
+        \foreach \source/\dest in {}
+            \path[draw,red,line width=2pt] (\source) -- node[fill=white] {} (\dest);
+
+        \foreach \source/\dest/\weight in {s/a/2, s/b/10, s/c/5,
+                                           a/b/3,a/d/3,a/e/4,
+                                           b/c/2,b/d/4,b/e/2,b/f/2,
+                                           c/e/5,c/f/6,
+                                           d/e/1,d/t/2,
+                                           e/f/7,e/t/4,
+                                           f/t/12}                               
+            \path[draw, arrows={- angle 45}] (\source) -- node[fill=white,pos=0.7] {$\weight$} (\dest);
+    \end{tikzpicture}
+\caption{}
+\end{subfigure}
+\end{figure}
+

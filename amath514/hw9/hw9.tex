@@ -1,0 +1,232 @@
+\documentclass[10pt]{article}
+\usepackage[T1]{fontenc}
+
+% Document Details
+\newcommand{\CLASS}{AMATH 514}
+\newcommand{\assigmentnum}{Assignment 9}
+
+\usepackage[margin = 1.15in, top = 1.25in, bottom = 1.in]{geometry}
+
+\input{../../TeX_headers/title.tex} % Title Styling
+\input{../../TeX_headers/sfftoc.tex} % General Styling
+\input{../../TeX_headers/styling.tex} % General Styling
+\input{../../TeX_headers/code.tex} % Code Display Setup
+\input{../../TeX_headers/math.tex} % Math shortcuts
+\input{../../TeX_headers/problem.tex} % Problem Environment
+
+\newcommand{\note}[1]{\textcolor{red}{\textbf{Note:} #1}}
+
+\hypersetup{
+   colorlinks=true,       % false: boxed links; true: colored links
+   linkcolor=violet,          % color of internal links (change box color with linkbordercolor)
+   citecolor=green,        % color of links to bibliography
+   filecolor=magenta,      % color of file links
+   urlcolor=cyan           % color of external links
+}
+
+
+\begin{document}
+\maketitle
+
+
+
+\begin{problem}[Problem 10.5]
+Let \( M = (X, \mathcal{I} ) \) be a matroid and let \( k \) be a natural number. Let \( \mathcal{I}'  := \{Y\subseteq \mathcal{I}  : |Y| \leq k\} \). Show that \( (X, \mathcal{I}' ) \) is again a matroid.
+\end{problem}
+
+\begin{solution}
+
+\begin{enumerate}[label=(\roman*)]
+    \item Since \( (X, \mathcal{I} ) \) is a matroid then \( \emptyset \in \mathcal{I} \). Clearly \( |\emptyset| \leq k \) so \( \emptyset \in \mathcal{I} ' \).
+    \item Let \( Y \in \mathcal{I}' \) and \( Z\subseteq Y \). Since \( (X, \mathcal{I} ) \) is a matroid then \( Z\in \mathcal{I} \).  Moreover, \( |Z| \leq |Y| \leq k \) as \( Z\in \mathcal{I} ' \). Therefore \( Z\in \mathcal{I} ' \).
+    \item Let \( Y,Z\in  \mathcal{I}' \) with \( |Y|<|Z| \). Since \( (X, \mathcal{I} ) \) is a matroid and \( Y,Z\in \mathcal{I} \) then \( Y\cup \{x\} \in \mathcal{I} \) for some \( x\in Z \setminus Y \). Since \( Z\in \mathcal{I} ' \), \( |Z|\leq k \). Therefore \( |Y\cup \{x\}| = |Y|+ 1 \leq |Z| \leq k \). Therefore \( Y\cup\{x\} \in \mathcal{I} ' \).
+\end{enumerate}
+
+This proves \( (X, \mathcal{I} ') \) is a matroid. \qed
+
+\end{solution}
+
+\begin{problem}[Problem 10.19]
+    Let \( M = (X, \mathcal{I} ) \) be a matroid, let \( B \) be a basis of \( M \), and let \( w: X\to\RR \) be a weight function. Show that \( B \) is a basis of maximum weight if and only if \( w(B') \leq w(B) \) for every basis \( B' \) with \( |B' \setminus B| = 1 \).
+\end{problem}
+
+\begin{solution}
+
+Let \( B,B' \) be bases. From theorem we have:
+\begin{enumerate}[label=(\roman*),nolistsep]
+    \item for any \( x\in B'\setminus B \), \( (B'\setminus\{x\})\cup \{y\} \) is a basis of \( M \) for some  \( y\in B\setminus B' \).
+    \item for any \( x\in B'\setminus B \), \( (B\setminus\{y\})\cup \{x\} \) is a basis of \( M \) for some  \( y\in B\setminus B' \).
+\end{enumerate}
+
+
+\vspace{1em}
+Suppose \( B \) is a basis of maximum weight and let \( B' \) be some basis (with \( |B'\setminus B| = 1 \)). Then \( w(B') \leq w(B) \). 
+
+Conversely, suppose that \( w(B^\dagger) \leq w(B) \) for every basis \( B^\dagger \) with \( |B^\dagger \setminus B| = 1 \). 
+
+Let \( B' \) be a basis of \( M \).
+
+Suppose \( | B' \setminus B| = 0 \). Then, since all bases have the same size we have \( B' = B \) so \( w(B') \leq w(B) \).
+
+Now, suppose \( |B' \setminus B| > 0 \).
+
+We induct on \( k := |B' \setminus B| \), assuming that \( w(B^\dagger) \leq w(B) \) for all bases \( B^\dagger \) of \( M \) with \( |B^\dagger \setminus B| < k \). Clearly the original hypothesis is the base case of our induction.
+
+Since \( |B'\setminus B| > 0 \) there is some \( x\in B'\setminus B \). Therefore, by the theorem listed above there is some \( y\in B\setminus B' \) such that \( B^\dagger = (B' \setminus \{x\}) \cup \{y\} \) is a basis for \( M \).
+
+Observe,
+\begin{align*}
+    |B^\dagger\setminus B| = | ((B'\setminus \{ x \})\cup\{y\}) \setminus B| = | (B'\setminus B)\setminus\{x\} | = k - 1 
+\end{align*}
+
+Therefore, by our induction hypothesis we have,
+\begin{align*}
+    w(B') - w(x) + w(y) = w(B^\dagger) \leq w(B)
+\end{align*}
+
+
+Since,
+\begin{align*}
+    |((B\setminus \{y\})\cup\{x\}) \setminus B| = |\{x\}| = 1 
+\end{align*}
+by the base case we have,
+\begin{align*}
+    w((B\setminus\{y\})\cup\{x\}) \leq w(B)
+\end{align*}
+
+Therefore, 
+\begin{align*}
+    w(B') \leq w(B) -w(y) + w(x) = w( (B\setminus\{y\} )\cup \{x\}) \leq w(B)
+\end{align*}
+
+
+This proves the result. \qed
+
+\iffalse
+
+Recall \( |B''| = |B| \) for any two bases \( B'' \) and \( B \) of \( M \). Therefore \( |B''\setminus B| = 0 \) means \( B = B'' \) in which case \( w(B'') = w(B) \).
+
+Start with any basis \( B_0 \) of \( B \) with \( |B_0\setminus B| > 1 \).
+
+At step \( k \in\{0,1,\ldots \} \), if \( |B_k \setminus B| = 0 \) stop.
+
+Then at each step there is some element \( x\in B_k\setminus B \). By theorem we have, \( B_{k+1}:= (B\setminus\{y_k\})\cup\{x_k\} \) a basis for \( M \) for some \( y_k\in B\setminus B_k \).
+
+Note \( |((B\setminus \{y_k\})\cup\{k_0\})\setminus B| = |\{x_k\}| = 1 \). Then, by hypothesis,
+\begin{align*}
+    w(B) \geq w((B\setminus \{y_k\}) \cup\{x_k\}) = w(B) - w(y_k) + w(x_k)
+\end{align*}
+Therefore,
+\begin{align*}
+    w(y_k) \geq w(x_k)
+\end{align*}
+
+
+At the end of the process we will have sets \( X:= \{x_k\}_{k\geq 0} \) and \( Y:= \{y_k\}_{k \geq 0} \) satisfying,
+\begin{align*}
+    w(Y) \geq w(X)
+\end{align*}
+
+We will also have,
+\begin{align*}
+    B_k = ( B \setminus Y )\cup X = B'
+\end{align*}
+
+Therefore,
+\begin{align*}
+    w(B') = w(B_k) = w(B) - w(Y) + w(X) \leq w(B)
+\end{align*}
+
+\fi
+
+
+
+
+\iffalse
+Now note, \( |((B'\setminus\{x\})\cup \{y\})\setminus B| = | (B'\setminus B)\setminus\{x\} | = k  \). Therefore, by our induction hypothesis,
+\begin{align*}
+    w(B) \geq w((B'\setminus\{x\})\cup\{y\}) = 
+\end{align*}
+\fi
+
+
+\end{solution}
+
+\begin{problem}[Problem 10.22]
+Derive K\"onig's matching theorem from Edmonds' matroid intersection theorem. 
+\end{problem}
+
+\begin{solution}
+
+Let \( G = (V_1\cup V_2, E) \) be a bipartite graph.
+Let \( \mathcal{I}_1 \) be the collection of all subsets \( F \) of \( E \) so that no two edges in \( F \) have a vertex in \( V_1 \) in common.
+Similarly, let \( \mathcal{I}_w \) be the collection of all subsets \( F \) of \( E \) so that no two edges in \( F \) have a vertex in \( V_2 \) in common.
+Then both \( M_1:=(E, \mathcal{I}_1)  \) and \( M_2:=(E, \mathcal{I}_2)  \) are partition matroids.
+
+Now observe that elements of \( \mathcal{I}_1\cap \mathcal{I}_2 \) are matchings in \( G \), and matchings in \( G \) are elements of \( \mathcal{I}_1\cap \mathcal{I}_2 \).
+
+Therefore,
+\begin{align*}
+    \nu(G) = \max_{Y\in \mathcal{I}_1\cap \mathcal{I}_2} |Y| 
+\end{align*}
+
+
+Let \( U\subseteq E \). Define,
+\begin{align*}
+    C_1 = \{ v\in V_1 : \exists e\in E \text{ with } v\in e \}
+\end{align*}
+
+Now define,
+\begin{align*}
+    C_2 = \{ v\in V_2 : v \text{ reachable from } V_1\setminus C_1 \}
+\end{align*}
+
+Finally, let \( C = C_1 \cup C_2 \). If \( e\in U \) then \( e\cap C_1 \neq \emptyset \). Similarly, if \( e\in E\setminus U \) then \( e\cap C_2 \neq \emptyset \). Therefore \( C \) is a vertex cover of \( G \).
+
+Every edge in \( U \) touches a vertex in \( C_1 \), and every vertex in \( C_1 \) touches an edge in \( U \). 
+Similarly, every edge in \( E\setminus U \) touches a vertex in \( C_2 \), and every vertex in \( C_2 \) touches an edge in \( E\setminus U \). 
+
+Therefore \( r_{M_1}(U) = |C_1| \) and \( r_{M_2}(E\setminus U) = |C_2| \) so that \( r_{M_1}(U) + r_{M_2}(E\setminus U) = |C| \).
+
+In particular, this proves,
+\begin{align*}
+    \min_{U\subseteq E} (r_{M_1}(U) + r_{M_2}(E\setminus U)) \geq  \tau(G)
+\end{align*}
+
+
+
+
+Now, let \( C \) be a minimum size vertex cover of \( G \). Define,
+\begin{align*}
+    U = \{ e\in E: (C\cap V_1)\cap e \neq \emptyset  \}
+\end{align*}
+
+Therefore every edge in \( U \) is covered by some vertex in \( C\cap V_1 \) and every vertex in \( C\cap V_1 \) touches some edge in \( U \). This means that that \( r_{M_1}(U) = |C\cap V_1| \).
+
+Similarly, every edge in \( E\setminus U \) must be covered by some vertex in \( C \). Moreover, by the minimality of \( C \), every vertex in \( C \) must touch an edge in \( E\setminus U \) (otherwise \( C \) without this edge would be a smaller vertex cover). Therefore \( r_{M_2}(E\setminus U) = |C\cap V_2| \)
+
+Since points in \( C \) are either in \( V_1 \) or \( V_2 \) we have found a \( U\subseteq E \) such that,
+\begin{align*}
+    r_{M_1}(U) + r_{M_2}(E\setminus U) = |C| = \tau(G)
+\end{align*}
+
+This proves,
+\begin{align*}
+    \min_{U\subseteq E} (r_{M_1}(U) + r_{M_2}(E\setminus U)) \leq  \tau(G)
+\end{align*}
+
+
+
+Using Edmond's matroid intersection theorem we have,
+\begin{align*}
+    \nu(G) 
+    = \max_{Y\in \mathcal{I}_1\cap \mathcal{I}_2} |Y| 
+    = \min_{U\subseteq X} (r_{M_1}(U) + r_{M_2}(E\setminus U)) 
+    = \tau(G)
+\end{align*}
+
+This is Konig's matching theorem. \qed
+
+\end{solution}
+
+\end{document}

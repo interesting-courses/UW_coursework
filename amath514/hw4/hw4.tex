@@ -1,0 +1,186 @@
+\documentclass[10pt]{article}
+\usepackage[T1]{fontenc}
+
+% Document Details
+\newcommand{\CLASS}{AMATH 514}
+\newcommand{\assigmentnum}{Assignment 4}
+
+\usepackage[margin = 1.15in, top = 1.25in, bottom = 1.in]{geometry}
+
+\input{../../TeX_headers/title.tex} % Title Styling
+\input{../../TeX_headers/sfftoc.tex} % General Styling
+\input{../../TeX_headers/styling.tex} % General Styling
+\input{../../TeX_headers/code.tex} % Code Display Setup
+\input{../../TeX_headers/math.tex} % Math shortcuts
+\input{../../TeX_headers/problem.tex} % Problem Environment
+
+\newcommand{\note}[1]{\textcolor{red}{\textbf{Note:} #1}}
+
+\hypersetup{
+   colorlinks=true,       % false: boxed links; true: colored links
+   linkcolor=violet,          % color of internal links (change box color with linkbordercolor)
+   citecolor=green,        % color of links to bibliography
+   filecolor=magenta,      % color of file links
+   urlcolor=cyan           % color of external links
+}
+
+
+\begin{document}
+\maketitle
+
+
+\begin{problem}[Problem 3.3]
+Prove that in a matrix, the maximum number of nonzero entries with no two in the same line (\( = \)row or column), is equal to the minimum number of lines that include all nonzero entries
+\end{problem}
+
+\begin{solution}
+
+Suppose the matrix \( A \) is \( m\times n \). It is pretty obvious that both of these quantities are equal to \( \min\{m,n\} \).
+
+We can recast this as a graph theory problem.
+
+Let \( V = R\cup C \) where \( R = \{ r_1, r_2, \ldots, r_m \} \) and \( C = \{ c_1, c_2, \ldots c_n \} \). Let \( E = \{ \{r,c\} : r\in R, c\in C \} \).
+
+Then \( G = (V,E) \) is a bipartite graph. 
+
+Write \( M = \{ \{r_i,c_j\} \in E : a_{ij} \neq 0 \} \). Then \( M \) is a matching if and only if there is no more than one nonzero entry in a given row or column.
+
+Write \( W = \{ r_i \in V : \text{row } i\text{ is all zeros}\}\cup \{c_j\in V: \text{column }j \text{ is all zeros}\} \). Then \( W \) is a vertex cover if and only if an entire line is nonzero.
+
+By Konig's theorem, the maximum cardinality of a matching in \( G \) is equal to the minimum cardinality of a vertex cover in \( G \). This proves the result. \qed
+
+\end{solution}
+
+\begin{problem}[Problem 3.5]
+    Let \( \mathcal{A} = (A_1, \ldots, A_n) \) be a faimly of subsets of some finite set \( X \). Prove that \( \mathcal{A} \) has an SDR if and only if
+    \begin{align*}
+        \left| \bigcup_{i\in I} A_i \right| \geq \left| I \right| 
+    \end{align*}
+    for each subset \( I \) of \( \{1,\ldots,n\} \).
+\end{problem}
+
+\begin{solution}
+
+Recall a subset \( Y \) of \( X \) is called a transversal or a system of distinct representatives (SDR) of \( \mathcal{A} \) if there exists a bijection \( \pi: \{1,\ldots,n\} \to Y \) such that \( \pi(i) \in A_i \) for each \( i=1,\ldots, n \).
+
+\iffalse
+Suppose \( \mathcal{A} \) has an SDR \( Y\subseteq X \). That is, there exists a bijection \( \pi: \{1,\ldots, n\} \to Y \) such that \( \pi(i) \in A_i \) for each \( i=1,\ldots, n \).
+
+Fix a subset \( I \) of \( \{1,\ldots, n\} \). Then, since \( \pi \) is a bijection, the image of \( I \) under \( \pi \) is a set of \( |I| \) distinct points. Moreover, \( \pi(I) \subseteq \cup_{i\in I}A_i \) as \( \pi(i) \in A_i \) for each \( i\in I\subseteq \{1,\ldots, n\} \). Therefore,
+\begin{align*}
+    \left| \bigcup_{i\in I} A_i \right| \geq \pi(I) = \left| I \right| 
+\end{align*}
+
+Now, suppose that for any subset \( I \) of \( \{1,\ldots,n\} \),
+\begin{align*}
+    \left| \bigcup_{i\in I} A_i \right| \geq \left| I \right| 
+\end{align*}
+
+\textbf{some stuff with counting}
+
+First note that for each \( i\in\{1,\ldots, n\} \),
+\begin{align*}
+    |A_i| \geq |\{ i\}| = 1
+\end{align*}
+That is, every \( A_i \) is nonempty.
+
+\textbf{OBVIOUSLY THERE IS A GRAPH THEORY WAY TO DO THIS WHICH IS PROABABLY NICE..}
+
+
+Now note, \( |\cup_{i\in I} A_i | \geq |\{1,\ldots,n\}| = n \). Therefore, there is an injection,
+\begin{align*}
+    \pi:\{1,\ldots, n\} \to \bigcup_{i\in I} A_i
+\end{align*}
+defined as,
+\begin{align*}
+    \pi(i) = a_i
+\end{align*}
+
+\fi
+
+Let \( V = X\cup N \) where \( X \) is a finite set and \( N = \{1,\ldots, n\} \). Let \( E = \{ \{x,n\} : x\in A_n \}  \).
+
+Then \( G = (V,E) \) is a bipartite graph.
+
+\vspace{1em}
+
+Suppose \( \nu(G) = n \). Then there is a matching of size \( n \). Since \( G \) is bipartite and \( |N| = n \), every vertex of \( N \) is touching an edge of the size \( n \) matching. The matching defines a natural bijection \( \pi:N\to Y \), between \( N \) and some subset \( Y \) of \( X \). Moreover, by the construction of the graph, we have \( \pi(i) \in A_i \) for every \( i\in N \). 
+
+Now, suppose there is a bijection \( \pi:N\to Y \), between \( N \) and some subset \( Y \) of \( X \) such that \( \pi(i) \in A_i \) for each \( i\in N \). This gives a matching of size \( n \). No matching can have size larger than \( n \) since there are only \( n = |N| \) vertices in the ``right side'' of \( G \). Therefore \( \nu(G) = n \).
+
+This proves \( \nu(G) = n \) if and only if there is a bijection \( \pi: N \to Y \), where \( Y \) is some subset of \( X \), such that \( \pi(i) \in A_i \) for all \( i\in N \).
+
+\vspace{1em}
+
+Suppose \( \tau(G) = n \). That is, ever vertex cover has at least \( n \) vertices. 
+
+Let \( I \subseteq N \). Since \( G \) is bipartite, one vertex of every edge in \( G \) is in \( X \).
+Extend \( N\setminus I \) to a vertex cover \( W \) by choosing points from \( X \) such that each additional point covers at least one uncovered edge.
+
+We must add at least \( |I| \) vertices since \( \tau(G) = n \). Each of the added vertices is in \( A_i \) for some \( i\in I \) by our method of adding vertices to the cover (the uncovered edges are those connecting to points in \( I \)). This proves, \( \left| \cup_{i\in I} A_i \right| \geq |I| \) for any \( I\subseteq N \).
+
+
+Suppose that for any \( I\subseteq N \), \( \left| \cup_{i\in I} A_i| \right| \geq |I| \). 
+
+Let \( W \) be a vertex cover of \( G \). Let \( I = N\setminus W \) be points in \( N \) not in \( G \). By hypothesis, each of these points is connected to at least \( |I| \) points in \( X \), each of which must be in the vertex cover. There are \( N\setminus I \) points of the vertex cover in \( N \). Therefore, \( |W| \geq |I| + |N\setminus I| = |N| = n \) so \( \tau(G) \geq n \). 
+Clearly \( N \) is a vertex cover of size \( n \) so \( \tau(G) \leq n \). Therefore \( \tau(G) = n \).
+
+This proves \( \tau(G) = n \) if and only if \( |\cup_{i\in I} A_i | \geq |I| \) for any \( I\subseteq N \).
+
+\vspace{1em}
+
+By Konig's theorem we have \( \tau(G) = \nu(G) \). This proves the desired result: \( \mathcal{A} \) has an SDR if and only if \( |\cup_{i\in I} A_i | \geq |I| \) for any \( I\subseteq N \). \qed
+
+
+\end{solution}
+
+\begin{problem}[Problem 3.11]
+A matrix is called doubly stochastic if it is nonnegative and each row sum and each column sum is equal to 1. A matrix is called a permutation matrix if each entry is 0 or 1 and each row and each column contains exactly one 1.
+\begin{enumerate}
+    \item[(i)]  Show that for each doubly stochastic matrix \( A = (a_{i,j} )^n_{i,j=1} \) there exists a permutation \( \pi\in S_n \) such that \( a_{i,\pi(i)}\neq 0 \) for all \( i=1,\ldots,n \).
+    \item[(ii)] Derive that each double stochastic matrix is a convex linear combination of permutation matrices.
+\end{enumerate}
+\end{problem}
+
+\begin{solution}
+
+\begin{enumerate}
+    \item[(i)]
+        Let \( V = R\cup C \) where \( R = \{r_1, r_2, \ldots r_n\} \) and \( C = \{c_1, c_2, \ldots c_m\} \). Let \( E = \{\{r_i,c_j\} : a_{ij} \neq 0\} \). 
+
+        Then \( G = (V,E) \) is a bipartite graph.
+
+        Since each row/column is non-negative and sums to one, each row and column has at least one entry. Then the graph \( G \) has at least \( n \) edges and no isolated vertices. Since there are no isolated vertices, any set \( W\subseteq V \) with \( |W| < n \) is not a vertex cover. Therefore \( \nu(G) = \tau(G) \geq n \).
+
+        Any set of more than \( n \) edges will have vertices counted twice (since there are only \( n \) vertices in each part of the bipartite graph). Therefore \( \nu(G) \leq n \) so that \( \nu(G) = n \).
+
+        A matching of size \( n \) in \( G \) gives a bijection \( \pi: R\to C \) (a permutation in \( S_n \)). Moreover, by the construction of \( G \), \( a_{i,\pi(i)} \neq 0 \) for each \( i\in \{1,\ldots, n\} \).
+
+
+    \item[(ii)]
+
+        Suppose the rows and columns of a matrix \( A \) each sum to \( s>0 \). Then \( s^{-1} A \) is doubly stochastic so the above result applies to \( s^{-1}A \) and therefore to \( A \).
+
+        We now give an algorithm to find a decomposition of a doubly stochastic matrix \( A \) into a convex sum of permutation matrices.
+
+        Suppose we have a matrix \( A \) whose rows and columns all sum to \( s \). By hypothesis, there is a permutation \( \pi\in S_n \) such that \( a_{i,\pi(i)} \neq 0 \) for each \( i\in\{1,\ldots, n\} \). Let \( c = \min_{i} a_{i,\pi(i)} \). Then, denoting the permutation applied to the identity matrix by \( \pi(I) \), define
+        \begin{align*}
+            A' = A-c\pi(I)
+        \end{align*}
+        
+        First, note that \( c\pi(I) \) is nonzero only in entries where \( A \) is nonzero. Second, note that \( a_{i,\pi(i)} \geq c \) by our choice of \( c \). Finally, note that \( a_{i,\pi(i)} = c \) for some \( i \).
+
+        Therefore, \( A' \) has strictly fewer nonzero entries than \( A \). Second, since \( c\pi(I) \) has exactly one nonzero entry in each row and column, and each entry has value \( c \), \( A' \) will have rows and columns which sum to \( s-c \geq 0 \).
+
+        If \( s-c\neq 0 \) we can repeat this process. If \( s-c=0 \) the process has terminated.
+
+        \vspace{1em}
+        Suppose we start this process with a doubly stochastic matrix.
+        Then the coefficients of the resulting decomposition are all positive since they are all entries of the positive matrices obtained at each step of this algorithm. Moreover, since the sum of each row of \( A \) is the sum of the coefficients of the combination as the permutation matrices have exactly on nonzero entry in each row, which is a one. Therefore the coefficient sum to one.
+
+        This proves any stochastic matrix is the convex linear combination of permutation matrices. \qed
+
+\end{enumerate}
+\end{solution}
+
+\end{document}

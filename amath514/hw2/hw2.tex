@@ -1,0 +1,158 @@
+\documentclass[10pt]{article}
+\usepackage[T1]{fontenc}
+
+% Document Details
+\newcommand{\CLASS}{AMATH 514}
+\newcommand{\assigmentnum}{Assignment 2}
+
+\usepackage[margin = 1.15in, top = 1.25in, bottom = 1.in]{geometry}
+
+\input{../../TeX_headers/title.tex} % Title Styling
+\input{../../TeX_headers/sfftoc.tex} % General Styling
+\input{../../TeX_headers/styling.tex} % General Styling
+\input{../../TeX_headers/code.tex} % Code Display Setup
+\input{../../TeX_headers/math.tex} % Math shortcuts
+\input{../../TeX_headers/problem.tex} % Problem Environment
+
+\newcommand{\note}[1]{\textcolor{red}{\textbf{Note:} #1}}
+
+\hypersetup{
+   colorlinks=true,       % false: boxed links; true: colored links
+   linkcolor=violet,          % color of internal links (change box color with linkbordercolor)
+   citecolor=green,        % color of links to bibliography
+   filecolor=magenta,      % color of file links
+   urlcolor=cyan           % color of external links
+}
+
+\newcommand{\convhull}{\operatorname{convhull}}
+
+
+\begin{document}
+\maketitle
+
+
+\begin{problem}[Exercise 2.2]
+    Let \( C \subseteq \RR^n \) be a convex set and let \( A \) be a \( m\times n \) matrix. Show that the set \( \{Ax \st x\in C \} \) is again convex.
+\end{problem}
+
+\begin{solution}
+
+Any two points in \( C \) can be written as \( Au \) and \( Av \) for some \( u,v,\in C \). Since \( C \) is convex, \( \forall \lambda\in[0,1]\), \( \lambda u + (1-\lambda)v \in C \). Thus,
+\begin{align*}
+    \lambda Au + (1-\lambda)Av = A(\lambda u+ (1-\lambda)v) \in \{Ax \st x\in C \}, && \forall  \lambda\in[0,1] 
+\end{align*}
+
+That is, \( \{Ax \st x\in C\} \) is convex. \qed
+
+\end{solution}
+
+\begin{problem}[Exercise 2.4]
+    Show that if \( z\in\convhull(X) \), then there exist affinely independent vectors \( x_1, ..., x_m \) in \( X \) such that \( z\in \convhull\{x_1, ..., x_m\} \). 
+\end{problem}
+
+\begin{solution}
+
+\iffalse
+\begin{lemma}
+Suppose \( x_1, \ldots, x_m \) are affinely independent vectors. Then \( cx_1, \ldots, cx_m \) are also affinely independent vectors for any \( c\neq 0 \).
+\end{lemma}
+
+Suppose \( x_1, \ldots, x_m \) are affinely independent, and let \( c\in\RR\setminus\{0\} \). Suppose \( \lambda_1 c x_1 + \cdots + \lambda_m c x_m = 0
+ \) and \( \lambda_1 + \cdots + \lambda_m = 0 \). Then \( \lambda_1 c+ \cdots \lambda_m c = (\lambda_1 + \cdots + \lambda_m)c = 0 \), so by the affine independence of \( x_1, \ldots, x_m \), we have \( \lambda_1 = \cdots = \lambda_m = 0 \). That is, \( cx_1, \ldots, cx_m \) are affinely independent. \qed
+
+\fi
+Let \( z\in\convhull(X) \). Then for some \( t\in\NN \), \( x_1, \ldots, x_t\in X \), and \( c_1, \ldots,c_t \geq 0 \) we can write,
+\begin{align*}
+    z = c_1 x_1 + \cdots + c_t x_t && \text{where} && c_1 + \cdots + c_t=1
+\end{align*}
+
+WLOG assume \( c_1, \ldots , c_t > 0 \) since we can drop any \( x_j \) for which \( c_j=0 \).
+
+If \( x_1, \ldots, x_t \) are affinely independent we are done. If not, then there are coefficients \( d_1, \ldots, d_t \) not all zero such that,
+\begin{align*}
+    d_1x_1 + \cdots + d_tx_t = 0 && \text{where} && d_1+\cdots d_t = 0
+\end{align*}
+
+Observe that for any \( \mu >0 \), since \( \sum_{j=1}^{t}(c_j - \mu c_j) = \sum_{j=1}^{t}c_j - \mu \sum_{j=1}^{t}d_j = 1 - \mu (0) = 1 \),
+\begin{align*}
+    z = (c_1 - \mu d_1)x_1 + \cdots + (c_t - \mu d_t)x_t && \text{where} && \sum_{j=1}^{t} (c_j - \mu d_j) = 1
+\end{align*}
+
+Note that for \( \mu = 0 \) we have the original combination for \( z \), and each \( (c_j-\mu d_j) = c_j > 0 \). 
+
+Since the \( \sum_{j}^{}d_j =0  \) and not all \( d_j \) are zero, at least one \( d_j>0 \). By hypothesis, \( c_j>0 \). Thus, \( \{c_j/d_j \st 1\leq j\leq t, c_j/d_j > 0 \} \) is nonempty. Pick \( \mu = c_i / d_i  \) where \( i=\operatorname{argmin}\{ c_j/d_j \st 1\leq j\leq t , c_j/d_j > 0\} \). Note \( \mu > 0 \).
+
+If \( d_j < 0 \), then \( \mu d_j < 0 \) so \( c_j - \mu d_j > 0 \).
+
+If \( d_j \geq 0 \), then since \( (c_j-(c_i/d_i)d_j)/d_j = c_j/d_j - c_i/d_i \geq 0 \),
+\begin{align*}
+    c_j - \mu d_j = c_j - (c_i/d_i )d_j \geq c_i - (c_i/d_i) d_i = 1  
+\end{align*}
+
+So the coefficients for this combination of \( \{x_1, \ldots, x_t\}\setminus \{x_i\} \) are all non-negative with sum equal to one.
+
+Thus \( z\in\convhull(\{x_1, \ldots, x_t \}\setminus\{x_i\}) \). Since the (finite) set generating the convex hull has fewer elements we can repeat this procedure until we have a finite affinely independent generating set. \qed
+
+\textit{Note: I got a bit of inspiration from stackexchange when looking up Carath\'eodory's theorem. However, I wrote my solution without looking back on that page.}
+
+\end{solution}
+
+\begin{problem}[Exercise 2.5]
+    \begin{enumerate}
+        \item[(i)] Let \( C \) and \( D \) be two nonempty, bounded, closed, convex subsets of \( \RR^n \) such that \( C\cap D = \emptyset \). Derive from Theorem 2.1 that there exists and affine hyperplane \( H \) seperating \( C \) and \( D \). 
+            % hint: consider the set C-D:= \{ x-y \st x\in C, y\in D\} 
+        \item[(ii)] Show that in (i) we cannot delete the boundedness condition.
+    \end{enumerate}
+\end{problem}
+
+\begin{solution}
+
+\begin{enumerate}
+    \item[(i)] 
+        The function \( l: C\times D \to \RR_{\geq 0} \) defined as \(  l(x,y) := \norm{x-y} \) is a continuous function (norm on \( \RR^{2n} \supset C\times D \) is continuous) on a compact set (Cartesian product of compact sets is compact). Therefore, \( (c,d) = \operatorname{argmin}\{ l(x,y) \st x\in C, y\in D \} \) exists in \( C\times D \).
+
+        Note then that \( d \) satisfies \( d = \operatorname{argmin}\{\norm{d-c} \st d\in D \} \), and \( c \) satisfies \( c=\operatorname{argmin}\{\norm{c-d} \st c\in C\} \).
+
+        Thus, by Theorem \( 2.1 \), \( d \) is separated from \( C \) by the hyperplane \( H_d = \{ x \st (d-c)^Tx = \delta \}  \), and \( c \) is separated from \( D \) by the hyperplane \( H_c = \{x \st (c-d)^Tx = \delta \} \), where \( \delta = (\norm{c}^2-\norm{d}^2)/2 \) for both hyperplanes.
+        That is, \( (d-c)^T x < \delta  \) for all \( x\in C \), and \( (c-d)^Tx < \delta \) for all \( x\in D \). 
+        
+        But then, \( (d-c)^T x > \delta \) for all \( x\in D \). This proves \( H = H_d \) separates \( C \) from \( D \). \qed
+     
+
+
+    \item[(ii)] Let \( C = \{ (x,y) \st y\leq 0 \} \) and \( D = \{ (x,y) \st y \geq 1/x, x > 0 \} \). Then both sets are convex, closed, and unbounded.
+       
+        Clearly any line (hyperplane in \( \RR^2 \)) which is not horizontal will intersect \( C \). But any horizontal line will intersect \( D \) if it is above the \( x \) axis, or intersect \( C \) if it is on or below the \( x \) axis. Therefore, there is no line which separates \( C \) from \( D \) since such a line cannot intersect either \( C \) or \( D \).
+
+        More rigorously, write \( H = \{(x,y) \st (c_1,c_2)^T(x,y) = \delta \} = \{(x,y) \st c_1x+c_2y = \delta \} \).
+
+        Suppose \( c_1 \neq 0 \). Then the points \( ((\delta+c_2+1)/c_1,-1) \) and \( ((\delta+c_2-1)/c_1,-1) \) are both in \( C \). However, 
+        \begin{align*}
+            (c_1,c_2)^T((\delta+c_2+1)/c_1,-1) = c_1(\delta + c_2 + 1)/c_1 + c_2(-1) = \delta + 1 > \delta \\
+            (c_1,c_2)^T((\delta+c_2-1)/c_1,-1) = c_1(\delta + c_2 - 1)/c_1 + c_2(-1) = \delta - 1 < \delta 
+        \end{align*}
+        So the points \( ((\delta+c_2+1)/c_1,-1) \) and \( ((\delta+c_2-1)/c_1,-1) \) are on opposite sides of \( H \).
+
+        Suppose \( c_1 = 0 \) and \( \delta/c_2 \leq 0 \). Then the points \( (0,0) \) and \( (0,\delta/c_2-1) \) are both in \( C \). However,
+        \begin{align*}
+            (0,c_2)^T(0,0) = 0 \\
+            (0,c_2)^T(0,\delta/c_2-1) = c_2(\delta/c_2-1) = \delta - c_2
+        \end{align*}
+        If \( \delta < 0 \) then \( c_2 > 0 \) so \( \delta - c_2 < \delta \). If \( \delta \geq 0 \) then \( c_2 < 0 \) so \( \delta - c_2 > \delta \). Then the points \( (0,0) \) and \( (\delta/c_2-1) \) are on opposite sides of \( H \).
+
+        Suppose \( c_1 = 0 \) and \( \delta/c_2 > 0 \). Then the points \( (2c_2/\delta, \delta/2c_2)  \) and \( (2c_2/\delta, 2\delta/c_2) \) are both in \( D \). However, 
+        \begin{align*}
+            (0,c_2)^T(2c_2/\delta,\delta/2c_2) = \delta/2 \\
+            (0,c_2)^T(2c_2/\delta,2\delta/c_2) = 2\delta
+        \end{align*}
+        If \( \delta < 0 \) then \( \delta/2 > \delta \) and \( 2\delta < \delta \). If \( \delta > 0 \) then \( \delta/2 < \delta \) and \( 2\delta > \delta \). Then the points \( (2c_2/\delta, \delta/2c_2)  \) and \( (2c_2/\delta, 2\delta/c_2) \) are on opposites sides of \( H \).
+
+        This shows that there is no hyperplane \( H \) which separates \( C \) from \( D \), as every hyperplane will split either \( C \) or \( D \).
+        
+
+        We therefore need the boundedness condition to have a strict separating hyperplane. \qed
+
+\end{enumerate}
+\end{solution}
+
+\end{document}

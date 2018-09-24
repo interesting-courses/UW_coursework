@@ -1,0 +1,142 @@
+\documentclass[10pt]{article}
+\usepackage[T1]{fontenc}
+
+% Document Details
+\newcommand{\CLASS}{AMATH 514}
+\newcommand{\assigmentnum}{Assignment 1}
+
+\usepackage[margin = 1.15in, top = 1.25in, bottom = 1.in]{geometry}
+
+\input{../../TeX_headers/title.tex} % Title Styling
+\input{../../TeX_headers/sfftoc.tex} % General Styling
+\input{../../TeX_headers/styling.tex} % General Styling
+\input{../../TeX_headers/code.tex} % Code Display Setup
+\input{../../TeX_headers/math.tex} % Math shortcuts
+\input{../../TeX_headers/problem.tex} % Problem Environment
+
+\newcommand{\note}[1]{\textcolor{red}{\textbf{Note:} #1}}
+
+\hypersetup{
+   colorlinks=true,       % false: boxed links; true: colored links
+   linkcolor=violet,          % color of internal links (change box color with linkbordercolor)
+   citecolor=green,        % color of links to bibliography
+   filecolor=magenta,      % color of file links
+   urlcolor=cyan           % color of external links
+}
+
+
+\begin{document}
+\maketitle
+
+\begin{problem}[Exercise 1.7]
+Find, both with the Dijkstra-Prim algorithm and with Kruskal's algorithm, a spanning tree of minimum length in the graph in Figure 1.5
+
+\begin{figure}[h]\centering
+\tikzstyle{vertex}=[circle,fill=black,scale=.4]
+\begin{tikzpicture}[scale=0.5]
+    
+    \foreach \pos/\name in {{(0,6)/a},{(4,6)/b},{(8,6)/c},{(12,6)/d},
+                            {(2,3)/e},{(6,3)/f},{(10,3)/g},
+                            {(0,0)/h},{(4,0)/i},{(8,0)/j},{(12,0)/k}}
+        \node[vertex] (\name) at \pos {};
+
+    \foreach \source/\dest/\weight in {a/b/2, b/c/4, c/d/1,
+                                       a/h/3,a/e/5,e/b/4,b/f/4,f/c/6,c/g/2,g/d/3,d/k/2,
+                                       e/f/5,f/g/3,
+                                       h/e/4,e/i/3,i/f/5,f/j/7,j/g/4,g/k/2,
+                                       h/i/3,i/j/6,j/k/3}
+        \path[draw] (\source) -- node[fill=white,scale=.8] {$\weight$} (\dest);
+\end{tikzpicture}
+    \caption{}
+\end{figure}
+\end{problem}
+
+\begin{solution}[Solution]
+We arbitrarily choose the top left node as the starting node and proceed adding the lowest weight edge in the cut of the existing tree which maintains the tree structure.
+\input{dijkstra-prim.tex}
+
+We order the edges. Since the choice of edge in a tie is arbitrary we work from top to bottom left to right. We add edges in this order if they maintain a forest structure (no cycles).
+\input{kruskal.tex}
+\end{solution}
+
+
+\begin{problem}[Exercise 1.9]
+    Let \( G=(V,E) \) be a graph and let \( l:E\to \RR \) be a `length' function. Call a forest \( F \) good if \( l(F') \geq l(F) \) for each forest \( F' \) satisfying \( |F'|=|F| \).
+
+    Let \( F \) be a good forest and \( e \) be an edge not in \( F \) such that \( F\cup\{e\} \) is a forest and such that (among all such \( e \)) \( l(e) \) is as small as possible. Show that \( F\cup\{e\} \) is good again.
+\end{problem}
+
+\begin{solution}[Solution]
+We first prove the following:
+
+Let \( G=(V,E) \) be a graph, and \( (V,F),(V,X) \) be forests in \( G \) with \( |F| < |X| < \infty \). Then there is an edge \( x\in X \) such that \( (V,F\cup\{x\}) \) is a forest in \( G \).
+
+
+Denote the connected components of \( F \) by \( (V_1,F_1), (V_2,F_2), ..., (V_k,F_k) \). 
+
+Define \( Y = \cup_{j=1}^{k}\{ (u,v)\in X | u\in V_j \text{ and } v\in V_j \} \). That is, \( Y \) is the set of edges of \( X \) not contained in any cut \( \delta(V_j) \).
+
+Observe that since \( X \) is acyclic, \( Y \) is also acyclic. Thus, each set \( \{(u,v)\in X | u,v\in V_j\} \) has size at most \( |V_j|-1 = |F_j| \). This means \( Y \) has size at most \( \sum_{j=1}^{k}|F_j| = |F| \).
+
+Therefore, since \( X,Y \) are finite and \( Y\subseteq X \), \( |X\setminus Y| = |X| - |Y| > |X|-|F| > 0 \). This means there is some edge \( x=(u,v)\in X\setminus Y \). That is, there is some \( x=(u,v)\in X \) satisfying,
+\begin{align*}
+    \forall j\in\{1,2,...,k\}, (u,v)\notin \{(u,v)\in X|u\in V_j \text{ and }v\in V_j\} 
+\end{align*}
+Equivalently, there is some edge \( x=(u,v)\in X \) satisfying,
+\begin{align*}
+    \forall j\in\{1,2,...,k\}, u\not\in V_j \text{ or } v\notin V_j
+\end{align*}
+
+That is both edges of \( x \) cannot be in the same set \( V_j \) for any \( j \). In other words, \( x\in\delta(V_j) \) for some \( j \).
+
+
+Then \( (V,F\cup\{x\}) \) is still a forest since adding \( x \) to \( F \) will not not induce a cycle. \qed
+
+
+We now prove the main result. Indeed, let \( F \) be a good forest and let \( X \) be any forest in \( G \) satisfying \( |X| = |F\cup\{e\}| = |F|+1 \), where \( e \) is chosen such that \( F\cup\{e\} \) is a forest and \( l(e) \) is as small as possible.
+
+By above, there is some \( x\in X \) such that \( F\cup\{x\} \) is a forest. By our choice of \( e \) we have \( l(x)\geq l(e) \).
+
+Moreover, \( X\setminus\{x\} \) is a forest satisfying \( |X\setminus\{x\}| = |F| \). Since \( F \) is good, \( l(X\setminus\{x\}) \geq l(F) \).
+
+Therefore,
+\begin{align*}
+    l(X) = l((X\setminus\{x\})\cup\{x\}) = l(X\setminus\{x\}) + l(x) \geq l(F)+l(e) = l(F\cup\{e\}) 
+\end{align*}
+
+This proves \( F\cup\{e\} \) is a good forest. \qed
+\end{solution}
+
+\begin{problem}[Exercise 10.1]
+    Let \( X \) be a finite set and \( \mathcal{I}\subseteq 2^X \). Suppose (i) \( \emptyset \in \mathcal{I} \) and (ii) if \( Y\in \mathcal{I} \) and \( Z\subseteq Y \), then \( Z\in\mathcal{I} \).
+
+    Show the following statements are equivalent:
+    \begin{itemize}[nolistsep]
+        \item[(iii)] if \( Y,Z\in\mathcal{I} \) and \( |Y|<|Z| \) then \( Y\cup\{x\}\in\mathcal{I} \) for some \( x\in Z\setminus Y \).
+        \item[(3)] for any subset \( Y \) of \( X \), any two bases of \( Y \) have the same cardinality.
+    \end{itemize}
+\end{problem}
+
+
+\begin{solution}[Solution]
+Suppose \( (iii) \) and let \( Y\subseteq X \) with \( U,V \) bases for \( Y \). 
+
+Suppose further, for the sake of contradiction, that \( U \) and \( V \) have different cardinalities. Without loss of generality, assume \( |U|<|V|\leq |Y| \). Then, by (iii) there is some \( v\in V\setminus U \) such that \( U\cup\{v\}\in\mathcal{I} \).
+
+Since \( U \) is a proper subset of \( U\cup\{v\} \) and \( U \) is a basis (inclusionwise maximial) we must have \( U\cup\{v\} = Y \). Then \( |Y| = |U|+1 \), so since \( |V|>|U| \), and \( |Y|\geq|V| \), we have \( |V|=|Y| \). Moreover, since \( V\subseteq Y \), we require \( V=Y \). But then \( U \subsetneq V \) is not inclusionwise maximial in \( Y=V=U\cup\{v\} \), contradicting the hypothesis that \( U \) is a basis for \( Y \).
+
+This proves \( U \) and \( V \) have the same cardinality.
+
+Now, suppose not (iii). That is, let \( Y,Z\in\mathcal{I} \) with \( |Y|<|Z| \) and suppose \( Y\cup\{x\} \notin\mathcal{I} \) for any \( x\in Z\setminus Y \).
+
+Let \( U = Z\cup Y \). Suppose \( Y \) is not a basis for \( U \). That is, that there is some \( W\in\mathcal{I} \) with \( Y\subsetneq W\subsetneq U  \). By size arguments it is obvious that \( W\cap Z \neq \emptyset \) so that there is some \( x\in Z\cap W \subseteq Z \). But then, \( Y,\{x\} \) are subsets of \( W \), so their union \( Y\cup\{x\} \) is a subset of \(  W \). By (ii), \( Y\cup\{x\}\in \mathcal{I} \), contradicting the hypothesis. Therefore \( Y \) is a basis for \( U \).
+
+
+If \( Z \) is also inclusionwise maximial in \( U \), then \( Y,Z \) are bases for \( U \) of different cardinality. If \( Z \) is not inclusionwise maximal, then there is some \( W\supsetneq Z \) which is inclusionwise maximal (since \( U \) is finite). But clearly, \( |W|>|Z|>|Y| \) meaning \( W \) has a different cardinality than \( Y \).
+
+This proves two bases of a subset of \( X \) need not have the same cardinality.
+
+We have now shown (iii) \( \Longrightarrow \) (3) and not (iii) \( \Longrightarrow \) not (3). This proves (iii) \( \Longleftrightarrow \) (3). \qed
+\end{solution}
+
+\end{document}

@@ -1,0 +1,157 @@
+\documentclass[10pt]{article}
+\usepackage[T1]{fontenc}
+
+% Document Details
+\newcommand{\CLASS}{AMATH 514}
+\newcommand{\assigmentnum}{Assignment 6}
+
+\usepackage[margin = 1.15in, top = 1.25in, bottom = 1.in]{geometry}
+
+\input{../../TeX_headers/title.tex} % Title Styling
+\input{../../TeX_headers/sfftoc.tex} % General Styling
+\input{../../TeX_headers/styling.tex} % General Styling
+\input{../../TeX_headers/code.tex} % Code Display Setup
+\input{../../TeX_headers/math.tex} % Math shortcuts
+\input{../../TeX_headers/problem.tex} % Problem Environment
+
+\newcommand{\note}[1]{\textcolor{red}{\textbf{Note:} #1}}
+
+\hypersetup{
+   colorlinks=true,       % false: boxed links; true: colored links
+   linkcolor=violet,          % color of internal links (change box color with linkbordercolor)
+   citecolor=green,        % color of links to bibliography
+   filecolor=magenta,      % color of file links
+   urlcolor=cyan           % color of external links
+}
+
+
+\begin{document}
+\maketitle
+
+
+
+\begin{problem}[Problem 8.8]
+Let \( A \) be a totally unimodular matrix. Show that the columns of \( A \) can be split into two classes such that the sum of the columns in one class, minus the sum of the columns in the other class, gives a vector with entries \( 0 \), \( +1 \), and \( -1 \) only.
+\end{problem}
+
+\begin{solution}
+
+Let \( e \) be the vector of all ones. Let \( b = \lfloor \frac{1}{2} (Ae+1) \rfloor \) and \( b' = \lfloor \frac{1}{2} (1-Ae) \rfloor \).  Define a polytope,
+\begin{align*}
+    P = \left\{ x: \left[\begin{array}{r}A \\ -A \\ I \\ -I \end{array}\right]x \leq \left[\begin{array}{l}b \\ b' \\ 1 \\0\end{array}\right] \right\}
+\end{align*}
+
+Then \( P \) is bounded as \( x_i\in[0,1] \) for all \( i \). Moreover, for all integers, \( 2k,2k+1 \),
+\begin{align*}
+    \left\lfloor ((2k)+1)/2  \right\rfloor = \lfloor k+ 1/2 \rfloor = k \geq (2k)/2,
+    && \left\lfloor ((2k+1)+1)/2  \right\rfloor = \lfloor k+1 \rfloor = k+1 \geq (2k+1)/2,
+    \\\left\lfloor (1-(2k))/2  \right\rfloor = \lfloor 1/2-k \rfloor = -k \geq - (2k)/2,
+    && \left\lfloor (1-(2k+1))/2  \right\rfloor = \lfloor -k \rfloor = -k \geq -(2k+1)/2
+\end{align*}
+Therefore, since \( Ae \) is an integer, \( \frac{1}{2} e \in P \). 
+
+Since \( P \) is nonempty and bounded \( P \) has a vertex \( v \). The matrix \( [A; -A; I; -I] \) is totally unimodular since \( A \) is totally unimodular meaning \( v \) is integer. In particular, this means \( v_i\in\{0,1\} \) for all \( i \) and, since \( v\in P \),
+\begin{align*}
+    Av \leq b = \left\lfloor \frac{1}{2} (Ae+1) \right\rfloor \leq \frac{1}{2} (Ae+1) && \Longrightarrow &&
+    Ae - 2Av &\geq - 1 \\
+    -Av \leq b' = \left\lfloor \frac{1}{2} (1-Ae) \right\rfloor \leq \frac{1}{2} (1-Ae) && \Longrightarrow &&
+    Ae - 2Av &\leq 1
+\end{align*}
+
+Now define \( z = 1-2v \). Clearly \( z \) is integer with entries in \( \{-1,1\} \). Therefore \( Az \) is integer as \( A \) and \( z \) are each integer. Moreover, since \( Az = A(e-2v) = Ae-2Av \), by above we have, \( -1\leq Az\leq 1 \). Together these mean \( Az \) has entries in \( \{-1,0,1\} \).
+
+Finally take one class as the rows corresponding to \( 1 \) entries in \( z \) and the other class corresponding to \( -1 \) entries in \( z \). Then the result is proved. \qed
+
+\textit{I got a hint online to use these floor functions, but derived the proof without more.}
+
+\iffalse
+Define a polyhedra,
+\begin{align*}
+    P = \left\{ x : \left[\begin{array}{r}A\\-A\\I\\-I\end{array}\right]x \leq \left[\begin{array}{r}1\\1\\1\\1\end{array}\right] \right\}
+\end{align*}
+
+Note that \( -1\leq x\leq 1 \) so that \( P \) is bounded. Moreover, and since \( 0\in P \), \( P \) is nonempty.
+
+Therefore \( P \) has vertices, which are integer if \( A \) is totally unimodular.
+
+We claim there is a vertex of \( P \) with no zero-entries.
+
+Indeed, let \( v \) be a vertex of \( P \). Then for all \( i \), \( -1\leq v_i \leq 1\) and \( v_i\in \ZZ \) so \( v_i\in\{-1,0,1\} \). If \( v_i\in\{-1,1\} \) for all \( i \) we are done.
+
+Suppose \( v_i = 0 \) for some \( i \).
+\fi
+
+
+\end{solution}
+
+\begin{problem}[Problem 8.9]
+Let \( A \) be a totally unimodular matrix and let \( b \) be an integer vector. Let \( x \) be an integer vector satisfying \( x\geq 0; Ax \leq 2b \). Show that there exists integer vectors \( x'\geq 0 \) and \( x''\geq 0 \) such that \( Ax'\leq b \), \( Ax''\leq b \) and \( x = x'+x'' \).
+\end{problem}
+
+\begin{solution}
+
+Define,
+\begin{align*}
+    P = \left\{ z : \left[\begin{array}{r}A\\I\\-I\\-A\end{array}\right]z \leq \left[\begin{array}{l} b \\ x \\ 0 \\ b-Ax\end{array}\right] \right\}
+\end{align*}
+
+Clearly \( P \) is bounded. We have \( A(x/2) = (Ax)/2 \leq 2b/2 = b \). Then \( A(x-x/2) \leq b  \) so \( -A(x/2) \leq Ax-b \). Clearly \( 0\leq x/2 \leq x \). Therefore \( x/2\in P \).
+
+Since \( P \) is nonempty and bounded \( P \) has a vertex \( x' \). The matrix \( [A;I;-I;-A] \) is totally unimodular since \( A \) is totally unimodular meaning \( x' \) is integer.
+
+Define \( x'' = x-x' \). Since \( x'\in P \) and \( x \) is integer we have \( x'' \) integer with \( 0\leq x'' \leq x \). Moreover, since \( -Ax' \leq b-Ax \) we have \( Ax-Ax' \leq b \) so that \( Ax'' = A(x-x') \leq  b \). \qed
+
+\end{solution}
+
+\begin{problem}[Problem 4.15]
+    Let \( D = (V,A) \) be a directed graph, and let \( f:A\to\RR_+ \). Let \( \mathcal{C} \) be the collection of directed circuits in \( D \). For each directed circuit \( C \) in \( D \) let \( \chi^C \) be the incidence vector of \( C \). That is, \( \chi^C:A\to\{0,1\} \), with \( \chi^C(a) = 1 \) if \( C \) transverses \( a \) and \( \chi^C(a) = 0 \) otherwise.
+
+Show that \( f \) is a non-negative circulation if and only if there exists a function \( \lambda: \mathcal{C}  \to \RR_+ \) such that,
+\begin{align*}
+    f = \sum_{C\in \mathcal{C}} \lambda(C) \chi^C
+\end{align*}
+That is, the non-negative circulations form the code generated by \( \{ \chi^C : C\in \mathcal{C} \} \).
+\end{problem}
+
+\begin{solution}
+
+Fix \( \lambda:A\to\RR_+ \) and let \( f = \sum_{C\in\mathcal{C}} \lambda(C) \chi^C \). Consider the flux into and out of a vertex \( v\in V \). We have,
+\begin{align*}
+    \sum_{a\in \delta^{\text{out}}(v) } f(a) - \sum_{a\in \delta^{\text{in}(a)}} f(a) &= 
+    \sum_{a\in \delta^{\text{out}}(v) } \sum_{C\in \mathcal{C} } \lambda(C)\chi^C(a) - \sum_{a\in \delta^{\text{in}(a)}} \sum_{C\in \mathcal{C}} \lambda(c) \chi^C(a) 
+    \\ &= 
+    \sum_{C\in \mathcal{C} } \left[
+        \sum_{a\in \delta^{\text{out}}(v) } \lambda(C)\chi^C(a) - \sum_{a\in \delta^{\text{in}(a)}} \lambda(C) \chi^C(a) = 
+        \right]
+\end{align*}
+
+Fix \( C\in \mathcal{C} \). If \( C \) does not pass through \( v \) then \( \chi^C(a) = 0 \) for all \( a\in \delta^{\text{in}}(v)\cup \delta^{\text{out}}(v) \). If \( C \) does pass through \( v \), then \( \chi^C(a) = 1 \) for exactly one \( a\in \delta^{\text{in}}(v) \) and exactly one \( a\in\delta^{\text{out}}(v) \). Moreover, since \( \lambda(C) \) is constant (if \( C \) is fixed), then the term \( \lambda(C) \chi^{C}(a) \) appears in both sums. 
+
+Therefore the difference of the two sums is zero. This proves \( f \) is a circulation.
+
+We provide an algorithm to find \( \lambda : A\to\RR_+ \) such that \( f = \sum_{C\in\mathcal{C}} \lambda(C)\chi^C\) for a non-negative circulation \( f \).
+
+At the \( k \)-th step, start with a circulation \( f^{[k-1]} \). If the circulation on each edge of every directed circuit in \( D \) is zero then terminate.
+
+Otherwise, at step \( k \) find a directed circuit \( C_k \) with \( f(a) \neq 0 \) for all \( a\in C_k \). Define,
+\begin{align*}
+    \lambda(C_k) = \min_{a\in C_k} f(a) 
+\end{align*}
+Now, define a new circulation \( f^{[k]}:A\to\RR_+ \) by,
+\begin{align*}
+    f^{[k]}(a) = \begin{cases}
+        f^{[k-1]}(a) - \lambda(C_k) & a\in C_k \\
+        f^{[k-1]}(a) & \text{ otherwise}
+    \end{cases}
+\end{align*}
+
+Then clearly \( f^{[k]} \) is a circulation. Moreover, \( f^{[k]} \) has at least one fewer non-zero edge than \( f^{[k-1]} \) since \( f^{[k-1]}(a) = \lambda(C_k) \) for some \( a\in C_k \). Since \( |A|<\infty \) this means the algorithm will terminate (in less than \( |A| \) steps).
+
+Then, starting with \( f^{[0]} = f \) the algorithm will terminate and give us \( \lambda(C_k) \) such that,
+\begin{align*}
+    f = \sum_{k} \lambda(C_k)\chi^{C_k}(a)
+\end{align*}
+
+\end{solution}
+
+\end{document}

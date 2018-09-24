@@ -1,0 +1,166 @@
+\documentclass[10pt]{article}
+\usepackage[T1]{fontenc}
+
+% Document Details
+\newcommand{\CLASS}{AMATH 514}
+\newcommand{\assigmentnum}{Assignment 7}
+
+\usepackage[margin = 1.15in, top = 1.25in, bottom = 1.in]{geometry}
+
+\input{../../TeX_headers/title.tex} % Title Styling
+\input{../../TeX_headers/sfftoc.tex} % General Styling
+\input{../../TeX_headers/styling.tex} % General Styling
+\input{../../TeX_headers/code.tex} % Code Display Setup
+\input{../../TeX_headers/math.tex} % Math shortcuts
+\input{../../TeX_headers/problem.tex} % Problem Environment
+
+\newcommand{\note}[1]{\textcolor{red}{\textbf{Note:} #1}}
+
+\hypersetup{
+   colorlinks=true,       % false: boxed links; true: colored links
+   linkcolor=violet,          % color of internal links (change box color with linkbordercolor)
+   citecolor=green,        % color of links to bibliography
+   filecolor=magenta,      % color of file links
+   urlcolor=cyan           % color of external links
+}
+
+
+\begin{document}
+\maketitle
+
+
+\begin{problem}[Problem 5.1]
+    \begin{enumerate}[label=(\roman*)]
+    \item Show that a tree has at most one perfect matching
+    \item Show (not using Tutte's 1-factor theorem) that a tree \( G = ( V, E )\) has a perfect matching if and only if the subgraph \( G-v \) has exactly one odd component, for each \( v\in V \).
+\end{enumerate}
+\end{problem}
+
+\begin{solution}
+\begin{enumerate}[label=(\roman*)]
+    \item 
+        
+        Let \( G = (V,E) \) be a tree with a perfect matching \( M \).
+
+        Small forests with zero, one, and two vertices clearly have at most one perfect matching.
+
+        Suppose \( G = (V,E) \) is a forest with \( |V| > 1 \) and that all forests with fewer than \( |V| \) nodes have at most one perfect matching. 
+
+        Then, since \( G \) is a forest, there is at least one vertex \( u \) of degree 1. 
+        
+        If there is no perfect matching we are done. Otherwise, since \( u \) has degree one, there is unique edge \( e = \{ u,v \} \) in \( E \). Therefore \( e \) must be in the matching on \( G \).
+
+        Let \( G' = G \setminus \{u,v\} \). Then \( G' \) is a subgraph of \( G \) and therefore a forest. By the inductive hypothesis, since \( |V'| < |V| \), we have \( G' \) having at most on perfect matching. Therefore, there is at most one perfect matching on \( G' \). 
+
+\item 
+
+    Suppose \( G=(V,E) \) is a tree with a perfect matching and let \( v\in V \). Since \( G \) has a perfect matching it must have an even number of vertices. Therefore \( G-v \) has an odd number of vertices.
+        This means at least one component must be odd.
+
+
+        Suppose, for the sake of contradiction, that \( G-v \) has more than one odd component. Then at least one is not attached to \( v \) by an edge in the matching.
+        
+        Denote one such component by \( C \).
+        Let \( u \) be the vertex in \( C \) such that \( \{v,u\} \in E \). Since \( \{u,v\} \) is not in the perfect matching, \( u \) must be covered by a matching edge in \( C \).
+        Therefore \( C \) must have a perfect matching.
+        
+        This is a contradiction as \( C \) has an odd number of vertices and cannot contain a perfect matching. 
+
+        Therefore \( G-v \) has exactly one odd component.
+       
+        Conversely, suppose \( G-v \) has exactly one odd component for each \( v\in V \). We provide an algorithm to find a perfect matching.
+
+        Indeed, for each vertex \( v\in V \) add the edge of \( G \) connecting \( v \) to the odd component of \( G-v \) to the output (ignore duplicates).
+
+        Clearly this will produce a set of edges which cover every vertex. It remains to show that the set of edges output is a matching.
+
+        Suppose we are on vertex \( v \) and that the edge \( \{v,u\} \) is added to the matching. This means the components \( C_i \) of \( G-v \) not containing \( u \) are all even.
+
+        Consider \( G-u \). We know \( \{ v \}\cup(\cup_i C_i) \) is a component of \( G-u \). Since each \( C_i \) is even it must be the unique odd component of \( G-u \). Therefore the algorithm will add the edge \( \{u,v\} = \{v,u\} \) to the output. That is, the edges the algorithm outputs are a matching on \( G \). 
+        
+        This proves a tree \( G \) has a perfect matching if and only if the subgraph \( G-v \) has exactly one odd component, for each \( v\in V \). \qed
+
+
+
+\end{enumerate}
+
+
+\end{solution}
+
+\begin{problem}[Problem 5.2]
+    Let \( G \) be a 3-regular graph without any bridge. Show that \( G \) has a perfect matching. (A bridge is an edge \( e \) not contained in any circuit; equivalently, deleting \( e \) increases the number of components; equivalently, \( \{ e \} \) is a cut.)
+\end{problem}
+
+\begin{solution}
+
+Write \( G=(V,E) \). Let \( U \subseteq V \) and consider \( G - U \). Let \( C = (W,F) \) be an odd component of \( G - U \). 
+
+Since \( G \) is 3-regular the sum of the degrees (in \( G \)) of the vertices in \( W \), \( \sum_{v\in W} \deg_G(v) = 3|W| \).
+
+However, \( C \) is also a graph. The sum of the degrees of vertices in a graph is even, \( \sum_{v\in W} \deg_C(v) \) is even.
+
+Therefore there are an odd number of edges between \( C \) and \( U \).
+
+Suppose \( C \) were connected to \( U \) by a single edge. Then deleting this edge in \( G \) would mean \( C \) again becomes a component. That is, this edge is a bridge.
+
+Therefore there are at least three edges between \( C \) to \( U \).
+
+Then there can be at most \( |U| \) odd components in \( G - U \). Therefore, by Tutte's 1 factor theorem \( G \) has a perfect matching. \qed
+
+
+
+\textit{I got a hint form here: https://math.stackexchange.com/questions/81257/3-regular-graphs-with-no-bridges. I don't have any graph theory background so I hadn't thought of some of theses facts about the degrees of a graph.}
+
+
+
+
+
+
+\end{solution}
+
+\begin{problem}[Problem 5.4]
+    Let \( G = (V,E) \) be a graph and let \( T \) be a subset of \( V \). Show \( G \) has a matching covering \( T \) if and only if the number of odd components of \( G-W \) contained in \( T \) is at most \( |W| \), for each \( W\subseteq V \).
+\end{problem}
+
+\begin{solution}
+
+Construct a new graph \( G_T \) by reflecting the graph \( G \) and connecting each point not in \( T \) to its image in the mirror graph. That is, define \( G_T = (V\cup V', E\cup E'\cup L) \) where:
+\begin{itemize}[nolistsep]
+    \item For each \( v\in V \) define a new vertex \( v' \). Let \( V' \) denote all such vertices.
+    \item For each \( e=\{u,v\}\in E \) define a new edge \( e' = \{u',v'\} \in E' \).
+    \item For each \( v\in V\setminus T \) define a new edge \( \{v,v'\} \in L \).
+\end{itemize}
+
+For convenience, for every \( W\subseteq V \) denote the set of vertices in the mirror graph by \( W' \). That is, define \( W' = \{ w'\in V' : w\in W \} \). Similarly, for each \( F \subseteq E \) denote the set of edges in the mirror graph by \( F' \). That is, define \( F' = \{f'\in E': f\in F \} \).
+
+Suppose \( G \) has a matching \( M \) covering \( T \). Each point in \( G \) not in \( T \) it part of an edge in \( L \). Thus, \( L\cup M \cup M' \) is a perfect matching in \( G_T \).
+
+Now, suppose \( G_T \) has a perfect matching \( M_T \). Then all the edges \( M\subseteq M_T \) contained in \( E \) are a matching in \( G \) covering \( T \).
+
+Therefore \( G \) has a matching covering \( T \) if and only if \( G_T \) has a perfect matching.
+
+
+Let \( W\subseteq V \) and suppose the number of odd components of \( G_T-W_T \) is at most \( |W_T| \) for all \( W_T\subseteq V\cup V' \).
+
+Let \( C \) be an odd component of \( G-W \) contained in \( T \). Then \( C' \) is an odd component of \( G'-W' \) contained in \( T' \). Both \( C \) and \( C' \) are odd components of \( G_T - (W\cup W') \) since being contained in \( T \) means they do not touch an edge in \( L \).
+
+By hypothesis the number of odd components of \( G_T - (W\cup W') \) is at most \( |W\cup W'| = 2|W| \). 
+Therefore the number of odd components of \( G - W \) contained in \( T \) is less than \( |W| \).
+
+Let \( W_T\subseteq V\cup V' \) and suppose the number of odd components in \( G - W \) contained in \( T \) is at most \( |W| \) for all \( W\subseteq V \).
+
+Partition \( W_T \) into \( W_1, W_2 \) where \( W_1 = \{ w\in V: w\in W_T \} \) and \( W_2 = \{ w\in V: w'\in W_T \} \).
+
+By hypothesis the number of odd components of \( G - W_1 \) contained in \( T \) is at most \( |W_1| \), and the number of odd components of \( G' - W_2 \) contained in \( T' \) is at most \( |W_2| \).
+
+Edges from \( L \) might connect components of \( G - W_1 \) and \( G' - W_2 \), however the new component will be odd only if one of the original components were odd. That is, the number of odd components in \( G_T - W_T \) is at most \( |W_1|+|W_2| = |W_T| \).
+
+Therefore, for all \( W_T\subseteq V\cup  V' \) is at most \( |W_T| \) if and only if for all \( W\subseteq V \), the number of odd components in \( G - W \) contained in \( T \) is at most \( |W| \).
+
+
+Using Tutte's 1 factor theorem we now have: \( G \) has a matching covering \( T \) if and only if \( G_T \) has a perfect matching if and only if 
+for all \( W_T\subseteq V\cup  V' \) the number of odd components is at most \( |W_T| \) if and only if for all \( W\subseteq V \), the number of odd components in \( G - W \) contained in \( T \) is at most \( |W| \). \qed
+
+
+\end{solution}
+\end{document}

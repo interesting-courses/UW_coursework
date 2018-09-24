@@ -10,7 +10,7 @@ In order to compile the LaTeX files you will need to download the `TeX_headers` 
 ### Repository Contents
 Course | Date Taken | Uploaded | Corrected 
 -|-|-|-
-AMATH 514 | Winter 2018 | | 
+AMATH 514 | Winter 2018 | yes | no
 AMATH 561 | Autumn 2017 | yes (except ch1/2) | yes
 AMATH 562 | Winter 2018 | yes (except ch6) | yes (except ch10)
 AMATH 563 | Spring 2019 | yes | no<sup>1</sup>

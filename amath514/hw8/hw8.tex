@@ -1,0 +1,267 @@
+\documentclass[10pt]{article}
+\usepackage[T1]{fontenc}
+
+% Document Details
+\newcommand{\CLASS}{AMATH 514}
+\newcommand{\assigmentnum}{Assignment 8}
+
+\usepackage[margin = 1.15in, top = 1.25in, bottom = 1.in]{geometry}
+
+\input{../../TeX_headers/title.tex} % Title Styling
+\input{../../TeX_headers/sfftoc.tex} % General Styling
+\input{../../TeX_headers/styling.tex} % General Styling
+\input{../../TeX_headers/code.tex} % Code Display Setup
+\input{../../TeX_headers/math.tex} % Math shortcuts
+\input{../../TeX_headers/problem.tex} % Problem Environment
+
+\newcommand{\note}[1]{\textcolor{red}{\textbf{Note:} #1}}
+
+\hypersetup{
+   colorlinks=true,       % false: boxed links; true: colored links
+   linkcolor=violet,          % color of internal links (change box color with linkbordercolor)
+   citecolor=green,        % color of links to bibliography
+   filecolor=magenta,      % color of file links
+   urlcolor=cyan           % color of external links
+}
+
+
+\begin{document}
+\maketitle
+
+
+
+\begin{problem}[Problem 1]
+    Consider the cube \( P:=[0,1]^n = \{x : 0\leq x_i \leq 1, i=1,\ldots, n \} \). Consider a sequence of points \( \{x_k\}_{k\geq 0} \) with \( x_1 = \left( \frac{1}{2}, \ldots, \frac{1}{2} \right) \) and with the only restriction that \( x_{k+1}\in \mathcal{E} (x_k,1/2) \). Prove that it takes at least \( \Omega (\sqrt{n} \log (1/\delta)) \) iterations until \( x_k \) can be within a \( \norm{\cdot}_\infty \)-distance of \( \delta \) from the vertex \( 0 \).
+\end{problem}
+
+\begin{solution}
+
+
+
+We use the interpretation that \( s_i(x) \) is the geometric distance of \( x \) to the \( i \)-th hyperplane. For notational convenience we will start at \( x_0 \).
+
+Observe that,
+\begin{align*}
+    \sum_{i=1}^{2n} \left( \dfrac{s_i(y)-s_i(x)}{s_i(x)} \right)^2 
+    = \sum_{i=1}^{n} \left[ \left( \dfrac{y_i-x_i}{x_i} \right)^2 + \left( \dfrac{y_i-x_i}{1-x_i} \right)^2 \right] > \sum_{i=1}^{n} \left( \dfrac{y_i-x_i}{x_i} \right)^2
+\end{align*}
+
+Suppose \( y = d(1,\ldots, 1) \) and \( x = c(1,\ldots, 1) \). Then,
+\begin{align*}
+    R^2 = \sum_{i=1}^{n} \left( \dfrac{y_i-x_i}{x_i} \right)^2 = n \left( \dfrac{d-c}{c} \right)^2
+    && \Longleftrightarrow &&
+    d = c \pm \dfrac{c R}{\sqrt{n}} = c \left(1 \pm \dfrac{R}{\sqrt{n}}\right)
+\end{align*}
+
+We define a sequence \( \{x_k\} \) where \( x_k = c_k(1, \ldots, 1) \) for all \( k \) and satisfies the relation,
+\begin{align*}
+    c_{k+1} = c_k \left( 1 - \dfrac{R}{\sqrt{n}}  \right) = c_0 \left( 1- \dfrac{R}{\sqrt{n}} \right)^{k+1} 
+\end{align*}
+
+Note that \( x_{k+1} \) is outside of the ellipsoid \( \mathcal{E} (x_k,R) \) since,
+\begin{align*}
+    \sum_{i=1}^{2n} \left( \dfrac{s_i(x_{k+1})-s_i(x_k)}{s_i(x_k)} \right)^2 
+    > \sum_{i=1}^{n} \left( \dfrac{c_{k+1}-c_k}{c_k} \right)^2 
+    = n\left( \dfrac{c_{k+1}-c_k}{c_k} \right)^2 = R^2
+\end{align*}
+
+That is, at each step we jump a bit more than allowed by a ``valid'' sequence.
+
+We now determine how long it takes for \( \{x_k\}_{k\geq 0} \) to get within \( \delta \) of the origin (in the infinity norm). That is, we seek \( k \) such that \( c_k < \delta \). Thus,
+\begin{align*}
+    c_0 \left( 1-\dfrac{R}{\sqrt{n}} \right)^{k} = c_k < \delta
+\end{align*}
+
+Now recall,
+\begin{align*}
+    \log \left( 1-a \right) = -a-a^2/2 - ... < -2a
+\end{align*}
+
+
+Thus, dividing by \( c_0 \) on both sides, and since the logarithm is monotonically increasing, 
+\begin{align*}
+    - k \left( \dfrac{2R}{\sqrt{n}} \right) < k \log \left( 1- \dfrac{R}{\sqrt{n}} \right) < \log \left( \dfrac{\delta}{c_0} \right)
+\end{align*}
+
+Therefore
+\begin{align*}
+    k > - \dfrac{\sqrt{n}}{2R} \log \left( \dfrac{\delta}{c_0} \right) = \dfrac{\sqrt{n}}{2R} \log \left( \dfrac{c_0}{\delta} \right)
+\end{align*}
+
+This proves \( \{x_k\}_{k\geq 0} \) takes \( \Omega(\sqrt{n}\log(1/\delta)) \) steps to be within a \( \norm{\cdot}_\infty \)-distance of \( \delta \) from the origin.
+Therefore, any sequence \( \{y_k\} \) where \( y_{k+1}\in \mathcal{E} (y_k,1/2) \) and \( y_k = d_k(1,\ldots, 1) \) takes at least \( \Omega(\sqrt{n}\log(1/\delta)) \) to be within a \( \norm{\cdot}_\infty \)-distance of \( \delta \) from the origin.
+
+It remains to show that any other sequence \( z_k \) satisfying \( z_{k+1}\in \mathcal{E}(z_k,1/2) \) does not converge faster than a sequence along the diagonal between the points \( 0 \) and \( 1 \).
+
+Let \( \{z_k\}_{k\geq 0} \) be any sequence satisfying \( z_{k+1}\in \mathcal{E}(z_k,1/2) \). We claim the sequence \( \{ y_k \}_{k\geq 0} \) obtained by projecting \( z_k \) onto the diagonal between \( 0 \) and \( 1 \) satisfies \( y_{k+1}\in y_k \).
+
+Let \( u,v \) be two points in \( P \) satisfying \( v\in \mathcal{E} (u,1/2) \). Let \( x,y \) be their projections onto the main diagonal.
+
+We have \( \norm{x-y}\leq \norm{u-v} \). Moreover,
+\begin{align*}
+    |s_i(u)-s_i(v)| = |u_i - v_i| \leq |y_i - x_i| = |s_i(y)-s_i(x)|
+\end{align*}
+
+Therefore,
+\begin{align*}
+    \sum_{i=1}^{2n} \left( \dfrac{s_i(u)-s_i(v)}{s_i(u)} \right)^2 
+    \leq \sum_{i=1}^{2n} \left( \dfrac{s_i(x)-s_i(y)}{s_i(u)} \right)^2 
+    \leq \sum_{i=1}^{2n} \left( \dfrac{s_i(x)-s_i(y)}{s_i(x)} \right)^2 
+\end{align*}
+where the second inequality comes from the fact that for any \( s_i(u) < s_i(x) \) there is some \( j \) such that \( s_j(u) > s_j(x) \). Since \( x \) is on the main diagonal it is ``further away'' from all the boundaries than \( u \). (I know this is kind of handwavy)
+
+This means \( y \in \mathcal{E} (x,1/2) \) as desired.
+
+Therefore the projection of any ``valid'' sequence onto the main diagonal is also valid. But no sequence on the diagonal can converge fast enough so the result is proved
+\qed
+
+
+\end{solution}
+
+\begin{problem}[Problem 2]
+    Recall that the presented interior point method takes \( \mathcal{O} (L\sqrt{m}) \) iterations to get within an additive \( 2^{-L} \) distance to the optimum for a polytope \( P = \{ x\in R^n : Ax\leq b \}  \) with \( A\in \RR^{m\times n} \). There is indeed a way of bringing the number of iterations down to \( \mathcal{O} (L\sqrt{n}) \). A deep result of Nesterov and Nemirovsky says that there is a convex function \( \varphi: \RR^n \to \RR \) that is self-concordant which means it satisfies the following properties for some universal constant \( C > 0 \):
+    \begin{enumerate}
+        \item[(A)] For any \( 0\leq R \leq 1/C \) and \( x\in \mathcal{E}(x^*,R) \) one has 
+            \begin{align*}
+                (1-2R)\nabla^2\varphi(x) \preceq \nabla^2\varphi(x^*) \preceq (1+2R)\nabla^2\varphi(x)  
+            \end{align*}
+            where we redefine the ellipsoid \( \mathcal{E}(x^*,R) := \{x\in \RR^n : (x-x^*)^T \left[\nabla^2 \varphi(x) \right](x-x^*) \leq R^2 \} \).
+        \item[(B)] One has \( \nabla \varphi(x)\nabla \varphi(x)^T \preceq Cn\nabla^2\varphi(x) \) for all \( x\in \operatorname{int}(P) \).
+        \item[(C)] If \( x\to\partial P \), then \( \varphi(x) \to \infty \).
+    \end{enumerate}
+    For \( t\geq 0 \) we modify the barrier function to \( F_t(x) := t\cdot c^Tx+\varphi(x) \). Prove the following:
+    \begin{enumerate}
+        \item For \( x \in \mathcal{E} (x^*,R) \) with \( x^*:= x^*(t) \) and \( x':= x-\left[\nabla^2F_t(x)\right]^{-1}\nabla F_t(x) \) one has \( x'\in \mathcal{E} (x^*, \mathcal{O}(R^2)) \) for sufficiently small \( R \). 
+        \item \( \max\{t\cdot c^T(x-x^*(t)) : x\in \mathcal{E}(x^*(t),R)\} \leq \mathcal{O} (R\sqrt{n}) \) for all \( t > 0 \) and \( R>0 \) small enough.
+    \end{enumerate}
+\end{problem}
+
+\begin{solution}
+
+\begin{enumerate}
+    \item 
+%        Let \( y = \lambda x + (1-\lambda) x^* \) for \( \lambda\in[0,1] \).
+
+        Let \( y = x^* + h \) for some \( h \) with \( \norm{h} = \mathcal{O}(R) \) (for instance any \( y\in \mathcal{E} (x^*,R) \).
+
+        Let \( F_{ij}(y) \) be an entry of \( \nabla^2 F_t(y) \). Then,
+        \begin{align*}
+            F_{ij}(y) = F_{ij}(x^*) + h^T \nabla F_{ij}(x^*) + \mathcal{O} (h^2)
+        \end{align*}
+
+        Since \( \nabla F_t(x^*) = 0 \), this shows that,
+        \begin{align*}
+            \nabla^2 F_t(y) = \nabla^2 F_t(x^*) + \mathcal{O} (h^2)
+        \end{align*}
+        
+        \iffalse
+
+
+        Note that \( F_t(y) = F_t(x^*+h) = F_t(x) + h^T \nabla F_t(x^*) + \mathcal{O} (h^2) \). Then, as \( |h| = \mathcal{O} (R) \), and \( \nabla F_t(x^*) = 0 \),
+        \begin{align*}
+            \nabla^2 F_t(y) = \nabla^2 F_t(x^*) + \mathcal{O} (R^2)
+        \end{align*}
+        \fi
+
+        Then, there is some  \( k_1 \) such that,
+        \begin{align*}
+            \nabla^2 F_t(y) \preceq \nabla^2 F_t(^*x) + k_1R^2
+        \end{align*}
+        
+        Similarly there is some \( k_2 \) such that,
+        \begin{align*}
+            \nabla^2 F_t(x^*) \preceq \nabla^2 F_t(y) + k_2R^2
+        \end{align*}
+       
+        Define \( k = \max\{ |k_1|,|k_2| \} \). Then,
+        \begin{align*}
+            \nabla^2 F_t (x^*) - k R^2 \preceq \nabla^2 F_t (y) \preceq \nabla^2 F_t (x^*) + k R^2
+        \end{align*}
+        
+        Therefore, using (A) and the fact that \( \nabla^2 F_t(x) = \nabla^2 \varphi(x) \),
+        \begin{align*}
+            (1-2R) \nabla^2 F_t(x) - kR^2 \preceq \nabla^2 F_t(y) \preceq (1+2R)\nabla^2 F_t(x) + k R^2
+        \end{align*}
+       
+        Note that here \( k \) depends on \( x \). However, \( \sup_{x\in \mathcal{E}} k \) gives a bound for all \( x\in \mathcal{E} (x^*,R) \).
+
+        Somehow get a bound of the form,
+        \begin{align*}
+            (1-c R) \nabla^2 F_t(x) \leq \nabla^2 F_t(y) \leq (1+cR)\nabla^2 F_t(x) 
+        \end{align*}
+        
+
+        The result then follows from Lemma 8.3 as the result (claim 3) is proved using claim 2 which is proved using claim 1 shown here.
+
+        Sorry for the sloppy work. I was in a bike accident earlier this week and haven't been able to concentrate very well since then. I would have asked for an extension, but at this point I think I need to cut my losses and move on to other work.
+        
+        \iffalse
+        Then,
+        \begin{align*}
+            \nabla^2 F_t(y) 
+            = \lambda \nabla^2 F_t(x) + (1-\lambda) \nabla^2 F_t(x^*)
+        \end{align*}
+        
+        For sufficiently small \( R \) we have,
+        \begin{align*}
+            \lambda \nabla^2 F_t(x) + (1-\lambda) \nabla^2 F_t(x^*)
+            &\leq \lambda \nabla^2 F_t(x) + (1-\lambda)(1+2R) \nabla^2F_t(x)
+            \\ &= (\lambda + (1-\lambda)(1+2R))\nabla^2F_t(x)
+            \\ &= (1 + (1-\lambda)2R)\nabla^2F_t(x)
+        \end{align*}   
+        \begin{align*}
+            \lambda \nabla^2 F_t(x) + (1-\lambda) \nabla^2 F_t(x^*)
+            &\geq \lambda \nabla^2 F_t(x) + (1-\lambda)(1-2R) \nabla^2F_t(x)
+            \\ &= (\lambda + (1-\lambda)(1-2R))\nabla^2F_t(x)
+            \\ &= (1 - (1-\lambda)2R)\nabla^2F_t(x)
+        \end{align*}
+
+        Since \( \lambda\in[0,1] \) we have \( (1-\lambda) < 1 \) so,
+        \begin{align*}
+            (1-2R)\nabla^2F_t(x) \leq \nabla^2 F_t(y) \leq (1+2R)\nabla^2 F_t(x) 
+        \end{align*}
+        
+        The result then follows from Lemma 8.3 as the result (claim 3) is proved using claim 2 which is proved using claim 1 shown here. \qed
+\fi
+    \item
+        Suppose \( x\in \mathcal{E}(x^*,R) \). 
+        That is,
+        \begin{align*}
+            (x-x^*)^T \left[ \nabla^2 \varphi(x^*) \right] (x-x^*) \leq R^2
+        \end{align*}
+        
+        Then, by (B),
+        \begin{align*}
+            (x-x^*)^T \left[ \nabla \varphi(x^*) \nabla \varphi(x^*)^T \right] (x-x^*) 
+            \leq Cn (x-x^*)^T \left[ \nabla^2 \varphi(x^*) \right] (x-x^*) \leq CnR^2
+        \end{align*}
+        
+        But,
+        \begin{align*}
+            (x-x^*)^T \left[ \nabla \varphi(x^*) \nabla \varphi(x^*)^T \right] (x-x^*) 
+            = \left|\nabla \varphi(x^*)^T (x-x^*)\right|^2
+        \end{align*}
+        
+        Since \( \nabla F_t(x^*) = 0 \) we have,
+        \begin{align*}
+            \nabla \varphi(x^*) = -t\cdot c
+        \end{align*}
+        
+        Thus,
+        \begin{align*}
+            \left|\nabla \varphi(x^*)^T (x-x^*)\right|^2
+            = \left| t\cdot c^T (x-x^*) \right|^2
+        \end{align*}
+       
+        Combining these statements we have,
+        \begin{align*}
+            \left| t\cdot c^T (x-x^*) \right|^2
+            \leq CnR^2
+        \end{align*}
+
+        This proves \( t\cdot c^T(x-x^*) \leq \mathcal{O} (R\sqrt{n} \) for all \( x\in \mathcal{E} (x^*,R) \) and sufficiently small \( R \). Then certainly 
+\( \max\{t\cdot c^T(x-x^*(t)) : x\in \mathcal{E}(x^*(t),R)\} \leq \mathcal{O} (R\sqrt{n}) \) for all \( t > 0 \) and \( R>0 \) small enough. \qed
+\end{enumerate}
+\end{solution}
+
+\end{document}

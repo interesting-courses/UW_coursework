@@ -107,18 +107,20 @@ A six-sided die is rolled repeatedly. Which of the following a Markov chains? Fo
             p(i,j) = \begin{cases} p^2 & j=i+2 \\ 2pq & i=j \\ q^2 & j=i-2 \\ 0 & \text{otherwise}\end{cases} 
         \end{align*}
     \item
-    We can obtain the exponents of a generating function \( G(s) = a_0 + a_1s+a_2s^2 + ... \) by,
+        As a property of generating functions and branching processes we have,
         \begin{align*}
-            a_n = \dfrac{1}{n!} \dfrac{d^n}{ds^n}\Big[G(s) \Big]_{s=0}
+            G_{X_2}(s) 
+            = G_{X_0}(G(G(s)))
         \end{align*}
+        where \( G_0 \) is the generating function of \( X_0 \).
 
-        The coefficient of the \( s^k \) term is the value of the probability mass function of \( X \) evaluated at \( k \).
-
-        The generating function of \( Y \) is \( G(G(s)) = G_2(s) \) from the notes.
-
-        For a branching process with current population \( k \), the population of the next generation will be \( X_1+X_2+...+X_k\), where each \( X_i \) is iid with distribution \( X \). Therefore,    
+        Therefore, since \( X_0 = i \) means \( G_{X_0}(s) = s^i \),
         \begin{align*}
-            p(i,j) = \dfrac{1}{j!} \dfrac{d^n}{ds^n}\Big[ G_2(s)^i \Big]_{s=0}
+            p(i,j) 
+            &= \PP(Y_{n+1} = j | Y_n = i)
+            \\&= \PP(X_{2n+2} = j | X_{2n} =i)
+            \\&= \PP(X_2 = j | X_0 = i)
+            \\&= \dfrac{1}{j!} \dfrac{d^n}{ds^n}\Big[ G(G(s))^i \Big]_{s=0}
         \end{align*}
 \end{enumerate}
 \end{solution}
@@ -365,6 +367,7 @@ We have shown that these equations hold for all \( i=1,2,...,n-1 \).
 This proves \( \pi \) is in detailed balance with \( P \), and so this process is reversible in equilibrium. \qed
 
 \end{solution}
+
 
 
 \end{document}

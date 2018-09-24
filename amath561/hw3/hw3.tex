@@ -62,16 +62,18 @@ Therefore \( \PP(X=k) = 1/(1+n) \) for \( k=0,1,2,...,n \).
 \end{problem}
 
 \begin{solution}[Solution]
-Let \( Y_{m,i} \) denote the number of offspring in the \( n \)-th generation that descends from the \( i \)-th member of the \( m \)-th generation. Then the \( (Y_{m,i}) \) are iid with distribution \( Z_{n-m} \) and \( Z_n = Y_{m,1}+Y_{m,2}+...+Y_{m,Z_m} \). 
+Let \( Y_{m,n,i} \) denote the number of offspring in the \( n \)-th generation that descends from the \( i \)-th member of the \( m \)-th generation. Then the \( (Y_{m,n,i}) \) are iid with distribution \( Z_{n-m} \) and \( Z_n = Y_{m,n,1}+Y_{m,n,2}+...+Y_{m,n,Z_m} \). 
+
+%\textbf{do i need more conditions on independence}
 
 Then, since \( (Y_{m,i}) \) are iid with distribution \( Z_{n-m} \),
 \begin{align*}
-    \EE \left[ Z_n | Z_m \right] = \EE \left[ Y_{m,1}+Y_{m,2}+...+Y_{m,Z_m} | Z_m \right] = Z_m \EE[Z_{m-n}] = Z_m \mu^{n-m}
+    \EE \left[ Z_n | Z_m \right] = \EE \left[ Y_{m,1}+Y_{m,2}+...+Y_{m,Z_m} | Z_m \right] = Z_m \EE[Z_{n-m} | Z_0=1] = Z_m \mu^{n-m}
 \end{align*}
 
 Therefore, by taking out what is known,
 \begin{align*}
-    \EE \left[ Z_mZ_n \right] &= \EE \left[ \EE \left[ Z_mZ_n | Z_m \right] \right] = \EE \left[ Z_m^2 \EE  \left[ Z_n | Z_m \right] \right] 
+    \EE \left[ Z_mZ_n \right] &= \EE \left[ \EE \left[ Z_mZ_n | Z_m \right] \right] = \EE \left[ Z_m \EE  \left[ Z_n | Z_m \right] \right] 
     = \EE \left[ Z_m^2 \mu^{n-m} \right] = \mu^{n-m}\EE \left[ Z_m^2 \right]
 \end{align*}
 
@@ -97,16 +99,8 @@ This yields,
 \begin{align*}
     \rho(Z_m,Z_n) = \sqrt{\dfrac{m}{n}}
 \end{align*}
-\iffalse
-\begin{align*}
-    \rho(Z_m,Z_n) &= \dfrac{\operatorname{Cov}(Z_n,Z_m)}{(\mathbb{V}[Z_n] \mathbb{V}[Z_m])^{1/2}} \\
-    &= \dfrac{\EE[Z_nZ_m]-\EE[Z_n]\EE[Z_m]}{(n\sigma^2m\sigma^2)^{1/2}} \\
-    &= \dfrac{\mu^{n-m}\EE[Z_m^2]-\mu^n\mu^m}{\sigma^2(nm)^{1/2}} \\
-    &= \dfrac{\mu^{n-m}(m\sigma^2+\mu^{2m})-\mu^n\mu^m}{\sigma^2(nm)^{1/2}} \\
-    &= \sqrt{\dfrac{m}{n}}\mu^{n-m}
-\end{align*}
-\fi
 
+    
 Now suppose \( \mu\neq 1 \) so that \( \mathbb{V}[Z_m] = \sigma^2(\mu^n-1)\mu^{n-1}/(\mu-1) \). We use Mathematica to simplify the above expression as,
 \begin{lstlisting}
 FullSimplify[
@@ -151,7 +145,9 @@ Then this is the sum of iid random variables so,
 \end{solution}
 
 \begin{problem}[Exercise 3.3]
+    Consider a branching process with generation sizes \( Z_n \) satisfying \( Z_0 = 1 \) and \( P(Z_1 = 0) = 0 \). Pick two individuals as random with replacementfrom the \( n \)th generation and let \( L \) be the intex of the generation which contains their most recent common ancestor. Show that 
 
+    \note{WHAT DO WE SHOW???}
 \end{problem}
 
 \begin{solution}[Solution]
@@ -290,9 +286,14 @@ This yields,
 
         Therefore \( F_X \) converges pointwise on to \( F_U \) on \( (0,1) \), and therefore on all of \( \RR \).
 
-        It is clear that \( f_{X_n}(x) \) does not converge to \( f_U(x) \) as \( f_U(x) \) is constant on \( (0,1) \) while \( f_{X_n}(x) \) oscillates between zero and two. In particular, fix a rational number \( x=p/q \). Then for \( n=qk, k\in\NN \), \( f_{X_n}(x)=0 \). 
+        It is clear that \( f_{X_n}(x) \) does not converge to \( f_U(x) \) as \( f_U(x) \) is constant on \( (0,1) \) while \( f_{X_n}(x) \) oscillates between zero and two. In particular, fix a rational number \( x=p/q \). Then for \( n=qk, k\in\NN \), \( f_{X_n}(x)=0 \). %However, it is still possible for \( f_{X_n}(x) \) to converge \( \PP \)-almost-surely. 
 
+%        More rigorously define \( g_n(x) = 1-\cos(2 n \pi x) \), fix \( x\in(0,1) \) and \( \varepsilon>0 \). Suppose \( g_n(x) \) converges to 1. Then there is some \( N\in\NN \) such that \( |1-g_n(x)| < \varepsilon \) for all \( n\geq N \).
 
+%        By the density of the rationals in the reals there are rational points \( a,b \) with \( a<x<b \) such that \( |a-x|,|b-x| \) are as small as we want. Since \( g_n(x) \) is continuous, pick \( a,b \) such that \( g_n(x) \) is either increasing or decreasing on \( (a,b) \) (we can do this since \( x \) can't be an extrema or \( g_n(x) \) would not converge to \( 1 \)). By the above result we can choose \( n\geq N \) such that \( g_n(a),g_n(b)>1+\varepsilon \). Thus, since \( g_n(x) \)\( g_n(x) \)
+        
+
+%        Since \( \cos(2 n pi x) \) is continuous
 
 \end{enumerate} 
 \end{solution}
@@ -323,11 +324,12 @@ Then \( N=\sum_{i=1}^{k} X_i \) so, since the \( X_i \) are iid,
     =\EE[\exp(2itpX)]^k 
 \end{align*}
 Therefore, since \( |e^{2itp}(1-p)|<1 \) if \( p\in(0,1) \),
+
 \begin{align*}
     \EE[\exp(2itpX)]^k 
-    = \left[ \sum_{m=1}^{\infty} e^{2itpm}p(1-p)^{m-1} \right]^k 
-    = \left[ pe^{2itp}\sum_{m=1}^{\infty}\left(e^{2itp}(1-p)\right)^{m-1} \right]^k 
-    = \left[ \dfrac{pe^{2itp}}{1-(1-p)e^{2itp}} \right]^k
+    &= \left[ \sum_{m=1}^{\infty} e^{2itpm}p(1-p)^{m-1} \right]^k 
+    \\&= \left[ pe^{2itp}\sum_{m=1}^{\infty}\left(e^{2itp}(1-p)\right)^{m-1} \right]^k 
+    \\&= \left[ \dfrac{pe^{2itp}}{1-(1-p)e^{2itp}} \right]^k
 \end{align*}
 
 With Mathematica we evaluate,
@@ -344,6 +346,7 @@ This yields,
 Thus, for a random variable \( X\sim\Gamma(1/2,k) \), by the continuity theorem \( 2Np \) converges in distribution to \( X \).
 
 \end{solution}
+
 
 
 \end{document}
