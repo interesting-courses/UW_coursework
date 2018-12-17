@@ -1,0 +1,406 @@
+\documentclass[10pt]{article}
+\usepackage[T1]{fontenc}
+
+% Document Details
+\newcommand{\CLASS}{CSE 521}
+\newcommand{\assigmentnum}{Problem Set 4}
+
+\usepackage[margin = 1.5in]{geometry}
+\input{../../TeX_headers/title.tex} % Title Styling
+\input{../../TeX_headers/styling.tex} % General Styling
+\input{../../TeX_headers/code.tex} % Code Display Setup
+\input{../../TeX_headers/math.tex} % Math shortcuts
+\input{../../TeX_headers/proof.tex} % Proof shortcuts
+\input{../../TeX_headers/problem.tex} % Problem Environment
+\rhead{\sffamily Tyler Chen \textbf{\thepage}}
+
+
+\newcommand{\sgn}{\operatorname{sgn}}
+\newcommand{\rank}{\operatorname{rank}}
+\newcommand{\range}{\operatorname{range}}
+
+\usepackage{placeins}
+
+
+\begin{document}
+\maketitle
+
+\begin{problem}[Problem 1]
+Let \( G \) be a graph, and let \( 0  =\lambda_1 \leq \lambda_2 \leq \cdots \leq \lambda_n \) be the eigenvalues of the normalized Laplacian matrix of \( G \), \( \tilde{L}_G \). Show that \( G \) is bipartite if and only if \( \lambda_n = 2 \).
+\end{problem}
+
+
+\begin{solution}[Solution]
+    Note: I did this problem before the hint came out so I used a different approach.
+
+    Recall that a graph \( G = (V,E) \) is bipartite if there is a set \( S\subset V \) such that for each edge \( e=(u,v) \in E \), one of \( u,v \) is in \( S \) and the other is in \( \overline{S} \).
+
+    For convenience define \( \bOne_S[v] = +1 \) if \( v\in S \) and \( -1 \) otherwise. For a set \( S\subset V \) define \( v_S \) to be the vector with \( i \)-th entry \( \bOne_S[i] \).
+
+    We use \( D \) to denote the matrix with degrees on the diagonal, and denote the degree of vertex \( i \) by \( d_i \). Similarly, we use \( A \) do denote the adjacency matrix of \( G \). Recall that \( L_G = D-A \) and \( \tilde{L}_G = D^{-1/2} L_G D^{-1/2}  = I - D^{-1/2}AD^{-1/2} \). 
+
+    Now note that since \( \norm{A} \leq \max_i d_i \) (by Gershgorin's circle theorem),
+    \begin{align*}
+        \snorm{D^{-1/2}AD^{-1/2}} \leq \snorm{D^{-1/2}}\norm{A}\snorm{D^{-1/2}} = \frac{1}{\max_i d_i} \norm{A}_2 \leq 1 
+    \end{align*}
+
+    This also means that,
+    \begin{align*}
+        \norm{\tilde{L}_G} 
+        = \norm{I - D^{-1/2} A D^{-1/2}} 
+        \leq \norm{I} + \norm{D^{-1/2}AD^{-1/2}}
+        \leq 2
+    \end{align*}
+
+    For symmetric matrices, the spectral norm gives the magnitude of the largest eigenvalue. Therefore, \( |\lambda_n| \leq 2 \) so \( \lambda_n = 2 \) if and only if \( -1 \) is an eigenvalue of \( D^{-1/2}AD^{-1/2} \). 
+    
+    It therefore suffices to show that \( -1 \) is an eigenvalue of \( D^{-1/2}AD^{-1/2} \) if and only if \( G \) is bipartite.
+   
+    
+    First, suppose \( G \) is bipartite and let \( v_S \) be defined as above, where \( S \) is one of the sides of \( G \). Then, if \( j\sim i \), \( \bOne_S[j] = -\bOne_S[i] \).
+
+    Now, note that the \( i \)-th row of \( A \) has nonzero entries only in coordinates corresponding to vertices in the opposite side of the bipartite vertex partition as \( i \). Therefore, 
+    \begin{align*}
+        (Av_S)_i = \sum_{j=1}^{n} A_{i,j} (v_S)_i
+        = \sum_{j\sim i}^{} A_{i,j} (v_S)_j
+        = \sum_{j\sim i}^{} A_{i,j} \bOne_S[j]
+        = \bOne_S[j] d_{i}
+        = -\bOne_S[i] d_{i}
+    \end{align*}
+    
+    We then have, 
+    \begin{align*}
+        (D^{-1/2} A D^{-1/2}D^{1/2} v_S)_i 
+        = (D^{-1/2} Av_S)_i 
+        = -\bOne_S[i]\sqrt{d_i} 
+        = -(D^{-1/2}v_S)_i 
+    \end{align*}
+
+
+    This proves \( D^{1/2} v_S \) is an eigenvector of \( D^{-1/2}A D^{-1/2} \) with eigenvalue \( -1 \). 
+
+
+    We now prove the converse. If \( G \) is disconnected, the graph is trivially bipartite. Assume \( G \) is connected and suppose \( -1 \) is an eigenvalue of \( D^{-1/2}AD^{1/2} \). That is, there is some vector \( x\neq 0 \) such that,
+    \begin{align*}
+        D^{-1/2}AD^{-1/2}x = -x
+    \end{align*}
+    
+    Equivalently, there is some vector \( y  = D^{1/2} x \neq 0 \) such that,
+    \begin{align*}
+        A y = - y
+    \end{align*}
+    since \( G \) is connected, meaning \( D \) is full rank. 
+    
+    WLOG assume \( \norm{y}_\infty = 1 \) and let \( i \) be a row such that \( |y_i| = 1 \). Then,
+    \begin{align*}
+        \sum_{j=1}^{n} A_{i,j} y_j = (Ay)_i = - (Dy)_i = -d_iy_i = -\sgn(y_i) d_i
+    \end{align*}
+    
+    Now note that \( A_{i,j} \in \{0,1\} \) and by definition of \( d_i \), exactly \( d_i \) of \( \{A_{i,j} : j=1,\ldots,n\} \) are nonzero. Moreover, \( |y_j| \leq 1 \) by our choice of \( y \).
+    
+    A sum with \( d_i \) terms each at most one in magnitude has magnitude \( d_i \) only if each term has magnitude 1. In particular, we this means that \( y_j = -\sgn(y_i) \) for each \( j\sim i \); i.e. triangle inequality in \( \RR \) is tight if and only if all signs are the same.
+
+    For each \( j\sim i \), we can repeat the argument. At each step, all the vertices \( k_j \) connected to \( j \) will be shown to have modulus one. Since \( G \) is connected, this means that in at most \( \operatorname{diam}(G) < \infty \) steps each vertex will have been touched by some sum and therefore shown to have modulus one. Therefore, since \( y \) is real, all entries are \( +1 \) or \( -1 \).
+
+    Clearly \( y \) gives the left and right vertex sets of \( G \) as \( \sgn(j) = -\sgn(i) \) if \( i\sim j \). That is, for every edge, the two vertices of the edge belong to separate classes.
+
+\end{solution}
+
+\begin{problem}[Problem 2]
+    We say a graph \( G \) is an expander graph if the second eigenvalue of the normalized Laplacian matrix \( \tilde{L}_G \), \( \lambda_2 \) is at least a constant independent of the size of \( G \). It follows by Cheeger’s inequality that if \( G \) is an expander, then \( \phi(G) \geq  \Omega(1) \) independent of the size of \( G \). It turns out that many optimization problems are ``easier'' on expander graphs. In this problem we see that the maximum cut problem is easy in strong expander graphs. First, we explain the expander mixing lemma which asserts that expander graphs are very similar to complete graphs.
+
+    \textbf{Theorem.} (Expander Mixing Lemma). Let \( G \) be a \( d \)-regular graph and \( 1=\lambda_1 \geq \lambda_2 \geq \cdots \geq \lambda_n \geq -1 \) be the eigenvalues of the normalized adjacency matrix of \( G \), \( A/d \). Let \( \lambda^* = \max\{ \lambda_2, |\lambda_n| \} \). Then for any two disjoints sets \( S,T\subset V \),
+    \begin{align*}
+        \left| |E(S,T)| - \frac{d\cdot|S|\cdot |T|}{n} \right| \leq d\cdot \lambda^* \sqrt{|S|\cdot|T|}
+    \end{align*}
+    
+    Note that \( d|S||T|/n \) is the expected number of edges between \( S, T \) in a random graph where is an edge between each pair of vertices \( i, j \) with probability \( d/n \). So, the above lemma says that in an expander graph, for any large enough sets \( |S|, |T| \), then the number of edges between \( S , T \) is very close to what you see in a random graph.
+
+    Use the above theorem to design an algorithm for the maximum cut problem that for any \( d \)-regular graph returns a set \( T \) such that,
+    \begin{align*}
+        |E(T,\overline{T})| \geq (1-4 \lambda^*)\max_S|E(S,\overline{S})|.
+    \end{align*}
+    
+    Note that the performance of such an algorithm may be terrible if \( \lambda^* > 1/4 \), but in strong expander graphs, we have \( \lambda^* \ll 1 \); for example, in Ramanujan graphs we have \( \lambda^*\leq 2/\sqrt{d} \). So the number of edges cut by the algorithm is very close to optimal solution as \( d\to\infty \). It turns out that in random graph \( \lambda^* \leq 2/\sqrt{d} \) with high probability. So, it is easy to give a \( 1 + \cO(1/\sqrt{d}) \) approximation algorithm for max cut in most graphs.
+\end{problem}
+
+\begin{solution}[Solution]
+Intuitively, the expander mixing lemma tells us that if \( \lambda^* \) is small (as in the case of expanders), that sets of the same size have about the same cut. 
+
+First observe, that since \( k(n-k) \) is maximized at \( k=n/2 \),
+\begin{align*}
+    \max_{T\subseteq V} |T||\overline{T}| = |T|(n-|T|) = \max_{k\in\{0,\ldots,n\}} k(n-k) \leq \frac{n^2}{4}
+\end{align*}
+
+
+Let \( S \) be a set attaining the max cut. Then, for any \( T\subseteq V \),
+\begin{align*}
+    d \sqrt{|T| |\overline{T}|} \leq \frac{dn}{2} = |E| \leq 2|E(S,\overline{S})|
+\end{align*}
+
+By the expander mixing lemma we have,
+\begin{align*}
+    |E(S,\overline{S})| - \frac{d|S||\overline{S}|}{n}
+    \leq \left| |E(S,\overline{S})| - \frac{d|S||\overline{S}|}{n} \right|
+    \leq d \cdot \lambda^* \sqrt{|S||\overline{S}|}
+\end{align*}
+\begin{align*}
+    - |E(T,\overline{T})| + \frac{d|T||\overline{T}|}{n}
+    \leq \left| |E(T,\overline{T})| - \frac{d|T||\overline{T}|}{n}  \right|
+    \leq d\cdot \lambda^* \sqrt{|T||\overline{T}|}
+\end{align*}
+
+Adding these together we have,
+\begin{align*}
+    |E(S,\overline{S})| - |E(T,\overline{T})| + \frac{d}{n} \left( |T||\overline{T}| - |S||\overline{S}| \right)  
+    \leq d \cdot \lambda^* \left(\sqrt{|S||\overline{S}|} + \sqrt{|T||\overline{T}|}\right)
+    \leq 4 \lambda^* |E(S,\overline{S})|
+\end{align*}
+
+Therefore,
+\begin{align*}
+    |E(T,\overline{T})| \geq (1-4\lambda^*) |E(S,\overline{S})| + \frac{d}{n} \left( |T||\overline{T}| - |S||\overline{S}| \right)
+\end{align*}
+
+    Now, note that by picking \( T \) to maximize \( |T||\overline{T}| \), we can always choose \( |T||\overline{T}| \geq |S||\overline{S}| \). In particular, taking \( |T| = n/2 \) if \( n \) is even (or \( T = (n\pm 1)/2 \) if \( n \) is odd) will guarantee,
+\begin{align*}
+    |E(T,\overline{T})| \geq (1-4\lambda^*) |E(S,\overline{S})|
+\end{align*}
+
+
+\end{solution}
+
+
+\begin{problem}[Problem 3]
+You are given data containing grades in different courses for 5 students; say \(G_{i,j} \) is the grade of student \( i \) in course \( j \). (Of course, \( G_{i,j} \) is not defined for all \( i, j \) since each student has only taken a few courses.) We are trying to ``explain'' the grades as a linear function of the student’s innate aptitude, the easiness of the course and some error term.
+
+\begin{align*}
+    G_{i,j} = \text{aptitude}_i + \text{easiness}_j + \epsilon_{i,j} 
+\end{align*}
+
+    where \( \epsilon_{i,j} \) is an error term of the linear model. We want to find the best model that minimizes the sum of the \( | \epsilon_{i,j} | \)'s.
+
+    \begin{enumerate}[label=(\alph*),nolistsep]
+        \item Write a linear program to find \( \text{aptitude}_i \) and \( \text{easiness}_j \) for all \( i,j \) minimizing \( \sum_{i,j}^{} |\epsilon_{i,j}| \).
+        \item Use any standard package for linear programming (Matlab/CVX, Freemat, Sci-Python, Excel etc.; we recommend CVX on matlab) to fit the best model to this data. Include a printout of your code, the objective value of the optimum, \( \sum_{i,j} |\epsilon_{i,j} |\), and the calculated easiness values of all the courses and the aptitudes of all the students.
+
+            \begin{table}[h]\centering
+                \begin{tabular}{c|lllllll}
+                    & MAT & CHE & ANT & REL & POL & ECO & COS \\ \hline
+                    Alex & & C+ & B & B+ & A\(-\) & C & \\
+                    Billy & B\(-\) & A\(-\) & & & A+ & D+ & B \\
+                    Chris & B\(-\) & & B+ & &  A\(-\) & B & B+ \\
+                    David & A+ & & B\(-\) & A & & A\(-\) & \\
+                    Elise & & B\(-\) & D+ & B+ & & B & C+ \\ 
+                \end{tabular}
+            \end{table}
+            Assume \( \text{A} = 4 \), \( \text{B} = 3 \) and so on. Also, let \( \text{B}+ = 3.33 \) and \( \text{A}- = 3.67 \).
+    \end{enumerate}
+\end{problem}
+
+\begin{solution}[Solution]
+
+    We first note that the solution will only be unique up to a constant factor, since we could add any constant to the each of the aptitude, and subtract the same constant from each of the easiness, without chancing the error.
+
+    Let \( n = 5 \) be the number of students and \( m = 7 \) be the number of classes. Define \( x \) to be the vector of length \( n+m \), where the first \( n \) entries represent the aptitude of the students and last \( m \) entries represent the easiness of the classes. That is, \( \text{aptitude}_i = x_i \) and \( \text{easiness}_j = x_{n+j} \).
+
+    Now, reshape the grade matrix \( G \) to a vector \( g \) of nonzero entries, starting in the top left and moving across rows skipping any empty entries. The length of \( G \) should be \( \operatorname{nnz}(G) \). For convenience of notation, let \( k\leftrightarrow i,j \) be the bijection mapping the indices of nonzero entries of \( G \) to their indices in \( g \). That is, \( g_k = G_{i,j} \).
+    
+    At the same time, construct a coefficient matrix, \( C \) of size \( \operatorname{nnz}(G) \) by \( n+m \), with rows corresponding to nonzero entries of \( G_{i,j} \), where the \( i \)-th and \( n+j \)-th entries are 1 and all other entries are zero.
+
+    Then the \( k \)-th row of \( g - Cx \) corresponds to \( G_{i,j} - \text{aptitude}_i - \text{easiness}_j \). That is,
+    \begin{align*}
+        \epsilon_{i,j} = (g-Cx)_k = g_k - C_k x
+    \end{align*}
+
+    We rewrite this as a linear program. First, observe that \( \min \sum_{i,j}^{} |\epsilon_{i,j}| \) is equivalent to \( \min_k y_k \) subject to \( y_k \geq \epsilon_{i,j} \) and \( y_k \geq -\epsilon_{i,j} \).
+
+    This gives the constraints,
+    \begin{align*}
+        y_k \geq g_k - C_kx 
+        && \Leftrightarrow &&
+        -C_k x - y_k\leq -g_k \\
+        y_k \geq -(g_k - C_kx) 
+        && \Leftrightarrow &&
+        C_kx - y_k \leq g_k
+    \end{align*}
+    
+    Writing these in matrix form yields the linear program,
+    \begin{align*}
+        \min \left[\begin{array}{cc} 0^T & 1^T\end{array}\right]\left[\begin{array}{c}x \\ y\end{array}\right]
+            && \text{s.t.} &&
+        \left[\begin{array}{cc}-C & -I \\ C & -I\end{array}\right] \left[\begin{array}{c}x\\y\end{array}\right] \leq \left[\begin{array}{c}-g \\ g\end{array}\right]
+    \end{align*}
+    where \( 0^T \) is the all zeros row vector of length \( n+m \), \( 1^T \) is the all ones row vector of length \( \operatorname{nnz}(G) \), and \( I \) is the identity of size \( \operatorname{nnz}(G) \).
+    
+    We implement this in numpy/scipy using the built in linear program solver with the default method (simplex).
+    \lstinputlisting[]{linprog.py}
+
+
+    This gives the results:
+    \begin{table}[h] \centering
+    \begin{tabular}{r|ccccc}
+        Name & Alex & Billy & Chris & David & Elise \\ \hline
+        Aptitude & 1.99 & 2.66 & 2.99 & 2.66 & 1.99    
+    \end{tabular}
+    \end{table}
+    \begin{table}[h]\centering
+    \begin{tabular}{r|ccccccc}\centering
+            Class & MAT & CHE & AND & REL & POL & ECO & COS \\ \hline
+            Easiness & 0 & 0.67 & 0.34 & 1.34 & 1.67 & 0.01 & 0.34
+    \end{tabular}
+    \end{table}
+
+    
+
+
+\end{solution}
+
+
+\begin{problem}[Problem 4]
+    In the congestion minimization problem we are given a connected (undirected) graph \( G = (V,E) \) and a set of pairs \( s_i,t_i \) of vertices of \( G \) for \( 1\leq i\leq k \). We want to choose \textit{exactly one} path between each pair \( s_i,t_i \) (\(k\) paths total) such that for each edge \( e\in G \), the number of paths that use \( e \) is as small as possible. Consider the LP-relaxation of this problem:
+    \begin{align*}
+        \min z 
+        &&\text{ s.t. } 
+        &&\forall e: \:\sum_{P:e\in P}^{} f_P \leq z, 
+        &&\forall i: \:\sum_{P\in \cP_{s_i,t_i}}^{} f_P = 1,
+        &&\forall P: \:f_P\geq 0
+    \end{align*}
+    Here, \( \cP_{s_i,t_i} \) represent the set of all paths connecting \( s_i \) to \( t_i \).
+    \begin{enumerate}[nolistsep]
+        \item Prove that the above LP gives a relaxation of the problem
+        \item \textbf{Extra Credit}: Design an algorithm to round the solution to exactly one path connecting each \( s_i \) to \( t_i \).
+        \item \textbf{Extra Credit}: Prove that your algorithm gives an approximation factor of \\\( \cO(\log n/ \log \log n ) \) to the problem.
+    \end{enumerate}
+\end{problem}
+
+\begin{solution}[Solution]
+\begin{enumerate}[label=(\alph*)]
+    \item We first write the congestion problem using \( \cP_{s_i,t_i} \) as described above. We interpret the problem to be finding a set of \( k \) paths connecting \( s_i \) to \( t_i \), such that the maximum number of overlaps on any edge is minimized.
+
+        For any path \( P \), let \( f_P = 1\) if path \( P \) is chosen, and 0 otherwise. Then, that each \( s_i \) has exactly one path to \( t_i \) means,
+        \begin{align*}
+            \forall i: \: \sum_{P\in\cP_{s_i,t_i}}^{} f_P = 1
+        \end{align*}
+        
+        For a given edge \( e \), the number of paths using this edge is,
+        \begin{align*}
+            \sum_{P : e\in P} f_P
+        \end{align*}
+        
+        Finally, the problem is to minimize the maximum over all \( e \) of this quantity. With this definition of \( f_P \) we can write the congestion problem as,
+        \begin{align*}
+            \min z 
+            &&\text{ s.t. } 
+            &&\forall e: \:\sum_{P:e\in P}^{} f_P \leq z, 
+            &&\forall i: \:\sum_{P\in \cP_{s_i,t_i}}^{} f_P = 1,
+            &&\forall P: \:f_P = \begin{cases}1 & \text{ if \( P \) chosen} \\ 0 & \text{o.w.} \end{cases}
+        \end{align*}
+        
+        Thus, relaxing the final constraint to \( f_P \geq 0 \) gives the LP relaxation. That is, the optimum of the this problem is feasible in the LP.
+    
+    \item A naive deterministic algorithm is, for each \( i \), to round the maximum of \( f_P \) for \( P\in\cP_{s_i,t_i} \) to one, and all others to zero. This will give \( k \) paths, each connecting \( s_i \) to \( t_i \) for \( i=1,\ldots, k \).
+
+        A naive randomized algorithm is, for each \( i \), to pick \( P \) from \( \cP_{s_i,t_i} \) with probability \( f_P \).
+
+
+    \item 
+        We will show,
+        \begin{align*}
+            \text{RD} 
+            \leq \frac{\log n}{\log \log n} \text{OPT-LP}
+            \leq \frac{\log n}{\log \log n} \text{OPT}
+        \end{align*}
+        
+        Note that the second inequality is immediate since the linear program we use is a relaxation of the original problem.
+
+        I didn't actually solve this, but maybe the approach would be to first compute the expected congestion of an edge, then bound the probability it is within some error of the LP optimum, and then use union bound to compute the probability that the maximum congestion over all edges is within this error of the LP optimum.
+
+        Fix an edge \( e \). Let \( N_e \) be the congestion on edge \( e \) after rounding. Then, the expected number of paths which contain \( e \) after applying the rounding algorithm is,
+        \begin{align*}
+            \EE[N_e]
+            = \sum_{P : e\in P}^{} \PP[\text{pick path }P\text{ from some }\cP_{s_i,t_i}]
+            = \sum_{P:e\in P}^{} f_P
+            \leq z
+        \end{align*}
+
+        By Chernoff bound we have,
+        \begin{align*}
+            \PP[N_e < (1+\epsilon) z] 
+            \geq \PP[ N_e < (1+\epsilon) \EE[N_e]] 
+            \geq 1 - \exp \left( -\frac{\epsilon^2 \EE[N_e]}{2+\epsilon} \right)
+        \end{align*}
+    
+
+
+
+\end{enumerate}
+\end{solution}
+
+
+\begin{problem}[Problem 5]
+    \textbf{Extra Credit.} 
+    In this problem we see applications of expander graphs in coding theory. Error correcting codes are used in all digital transmission and data storage schemes. Suppose we want to transfer \( m \) bits over a noisy channel. The noise may flip some of the bits; so {\tt 0101} may become {\tt 1101}. Since the transmitter wants that the receiver correctly receives the message, he needs to send \( n > m \) bits encoded such that the receiver can recover the message even in the presence of noise. For example, a naive way is to send every bit 3 times; so, {\tt 0101} becomes {\tt 000111000111}. If only 1 bit were flipped in the transmission receiver can recover the message but even if 2 bits are flipped, e.g., {\tt 110111000111} the recover is impossible. This is a very inefficient coding scheme.
+
+    An error correcting code is a mapping \( C : \{0, 1\}^m \to \{0, 1\}^n \). Every string in the image of \( C \) is called a codeword. We say a coding scheme is linear, if there is a matrix \( M \in \{0, 1\}^{(n-m)\times n} \) such that for any \( y \in \{0, 1\}^n \), \( y \) is a codeword if and only if \( My = 0 \). 
+
+    Note that we are doing addition and multiplication in the field \( F_2 \).
+
+    \begin{enumerate}[label=(\alph*),nolistsep]
+        \item Suppose \( C \) is a linear code. Construct a matrix \( A \in \{0,1\}^{n\times m} \) such that for any \( x\in \{0,1\}^m \), \( Ax \) is a code word and that for distinct \( x,y\in\{0,1\}^m \), \( Ax \neq Ay \).
+    \end{enumerate}
+    The rate of a code \( C \) is defined as \( r = m/n \). Codes of higher rate are more efficient; here we will be interested in designing codes with \( r \) being an absolute constant bounded away from 0. The Hamming distance between two codewords \( c^1, c^2 \) is the number of bits that they differ, \( \norm{c^1-c^2}_1 \). The minimum distance of a code is \( \min_{c^1,c^2} \norm{c^1-c^2}_1 \).
+\begin{enumerate}[label=(\alph*),nolistsep]
+    \item[(b)] Show that the minimum distance of a linear code is the minimum Hamming weight of its codewords, i.e., \( \min_c \norm{c}_1 \).
+\end{enumerate}
+
+    Note that if \( C \) has distance \( d \), then it is possible to decode a message if less than \( d/2 \) of the bits are flipped. The minimum relative distance of \( C \) is \( \delta = \frac{1}{n} \min \norm{c^1-c^2}_1 \). So, ideally, we would like to have codes with constant minimum relative distance; in other words, we would like to say even if a constant fraction of the bits are flipped still one can recover the original message.
+
+    Next, we describe an error correcting code scheme based on bipartite expander graphs with constant rate
+    and constant minimum relative distance. A \( (n_L,n_R,D,\gamma,\alpha) \)-expander is a bipartite graph \( G = (L\cup R,E) \) such that \( |L| = n_L \), \( |R| = n_R \) and every vertex of \( L \) has degree \( D \) such that for any set \( S\subset L \) of size \( |S| \leq \gamma n_L \), 
+    \begin{align*}
+        |N(S)| \geq \alpha |S|
+    \end{align*}
+    
+    In the above, \( N(S) \subset R \) are the neighbors of vertices of \( S \). One can generate the above family of bipartite expanders using ideas similar to Problem 1. We use the following theorem without proving it.
+
+    \textbf{Theorem.} For any \( \epsilon > 0 \) and \( m\leq n \) there exists \( \gamma > 0 \) and \( D\geq 1 \) such that a \( (n,m,D,\gamma,D(1-\epsilon)) \)-expander exists. Additionally, \( D = \Theta(\log(n_L/n_R)/\epsilon) \) and \( \gamma n_L = \Theta(\epsilon n_R/D) \).
+    
+    Now, we describe how to construct the matrix \( M \). We start with a \( (n_L,n_R, D,\gamma, D(1-\epsilon)) \)-expander for \( n_L = n \), \( n_R = n-m \). For our calculations it is enough to let \( n = 2m \). We name the vertices of \( L \), \( \{1,2,\ldots,n\} \);  so each bit of a codeword corresponds to a vertex in \( L \). We let \( M\in\{0,1\}^{(n-m)\times n} \)  be the Tutte matrix corresponding to this graph, i.e., \( M_{i,j} = 1 \) if and only if the \( i \)-th vertex in \( R \) is connected to the \( j \)-th vertex in \( L \).  Observe that by construction this code has rate 1/2. Next, we see that \( \delta \) is bounded away from 0.
+
+    \begin{enumerate}[label=(\alph*),nolistsep]
+        \item[(c)] For a set \( S \subset L \), let \( U(S) \) be the set of unique neighbors of \( S \), i.e., each vertex in \( U(S) \) is connected to exactly one vertex of \( S \). Show that for any \( S\subset L \) such that \( |S| \leq \gamma n \), 
+            \begin{align*}
+                |U(S)| \geq D(1-2 \epsilon) |S|
+            \end{align*}
+            
+        \item[(d)] Show that if \( \epsilon\leq 1/2 \) the minimum relative distance of \( C \) is at least \( \gamma n \).
+    \end{enumerate}
+The decoding algorithm is simple to describe but we will not describe it here.
+\end{problem}
+
+\begin{solution}[Solution]
+\begin{enumerate}[label=(\alph*)]
+    \item Since \( C \) is a linear code, there is a matrix \( M\in \{0,1\}^{(n-m)\times n} \) such that \( My = 0 \) if and only if \( y \) is a codeword.
+
+        We require that for all \( x,y\in\{0,1\}^m \) that \( Ax\neq Ay \) and \( MAx = MAy = 0 \).
+        
+        The first condition means that \( A \) must injective.
+        The second requires that the range of \( A \) be contained in the kernel of \( M \). 
+        
+        If \( A \) is injective, it must have rank \( m \). However, \( \rank(\ker(M)) \leq m \) so we also have \( \rank(\ker(M)) = m \). Therefore, we must pick \( A \) so that \( \range(A) = \ker(M) \).
+    \item 
+        By taking \( c_2 = 0 \) it is obvious that \( \min_{c^1,c^2} \snorm{c^1-c^2}_1 \leq \min_c \norm{c}_1 \).
+        
+        Suppose \( c^1,c^2 \) attain the minimum hamming distance. Since \( c^1 \) and \( c^2 \) are codewords, \( Mc^1 = Mc^2 = 0 \). But then \( M(c^1-c^2) = 0 \). Therefore \( \min_c \norm{c}_1 \leq \min_{c^1,c^2} \snorm{c^1-c^2}_1  \).
+
+        This proves \( \min_{c^1,c^2} \snorm{c^1-c^2}_1 = \min_c \norm{c}_1 \).
+
+    \item Fix some \( S\subset L \) satisfying \( |S| \leq \gamma n \). Then, by the theorem,
+        \begin{align*}
+            |N(S)| \geq D(1-\epsilon) |S|
+        \end{align*}
+        
+\end{enumerate}
+\end{solution}
+\end{document}

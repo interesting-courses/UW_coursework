@@ -1,0 +1,117 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""
+Created on Fri Oct  5 23:54:49 2018
+
+@author: tyler
+"""
+
+import numpy as np
+
+#%%
+def preprocess_E(E_in):
+    '''
+    returns : renaming of edges in E so that every edge is unqiue. 
+              vertex equivalence classes
+              permutation to sort edges by second vertex
+              permutation to undo above sort
+    '''
+    E = np.copy(E_in)
+    E = E[np.argsort(100*E[:,0]+E[:,1])]
+    
+    V = np.unique(E)
+    supernodes = -1*np.ones((np.size(V),np.size(V)),dtype='int16')
+    supernodes[:,0] = V
+    sn_sizes = np.ones(np.size(V),dtype='int16')
+    
+    v = np.max(V)+1
+    
+    i = 0
+    e = [-1,-1]
+    while i < len(E):
+        e_ = e
+        e = E[i]
+        if np.all(e == e_):            
+            # add new vertex to equivalence classes
+            for j in np.nonzero(sn_sizes)[0]:
+                if e[1] in supernodes[j]:
+                    supernodes[j,sn_sizes[j]] = v
+                    sn_sizes[j] += 1
+            e = E[i-1]
+            E[i,1] =  v
+            v += 1
+        i += 1
+
+    right_sort = np.argsort(E[:,1])
+        
+    print("number of duplicate edges:", v - np.max(V) - 1)
+    
+    supernodes_big = -1*np.ones((np.size(V),v-1))
+    supernodes_big[:np.size(V),:np.size(V)] = supernodes
+    
+    return E,supernodes_big,sn_sizes,right_sort
+
+
+#%%
+def karger(E,supernodes,sn_sizes,right_sort):
+    size_E = np.shape(E)[0]
+    size_V = np.shape(supernodes)[0]
+    
+    # True if edge is not a loop
+    not_loop_Q = np.ones(size_E,dtype='bool')
+
+    for j in range(size_V-2):
+        print('iteration:', j)
+        # pick random edge
+        e = E[np.where(np.cumsum(not_loop_Q) > np.random.randint(np.sum(not_loop_Q)))[0][0]]
+        
+        #find edge endopoint vertices
+        for k in np.searchsorted(sn_sizes)[0]:
+            if e[0] in supernodes[k]:
+                i0 = k
+                break
+            
+        for k in np.nonzero(sn_sizes)[0]:
+            if e[1] in supernodes[k]:
+                i1 = k
+                break
+        
+        # merge vertex equivalence classes
+        supernodes[i0,sn_sizes[i0]:sn_sizes[i0]+sn_sizes[i1]] = supernodes[i1,:sn_sizes[i1]]
+        sn_sizes[i0] += sn_sizes[i1]
+        sn_sizes[i1] = 0
+        
+       
+        # find loops
+        supernodes_list = supernodes[i0,:sn_sizes[i0]]
+   #     print('new supervertex:', supernodes_list)
+        
+        # search for edges with left vertex in new supervertex
+        
+        # WE CAN OPTIMIZE THIS USING BINARY SEARCHING
+        left_ind = np.where(np.sum([E[:,0]==i for i in supernodes_list],axis=0))[0]
+        for i in left_ind:
+            if np.in1d(E[i,1], supernodes_list)[0]:
+                not_loop_Q[i] = False
+        
+        # search for edges with right vertex in new supervertex
+        right_ind = np.where(np.sum([E[right_sort,1]==i for i in supernodes_list],axis=0))[0]
+        for i in right_ind:
+            if np.in1d(E[right_sort[i],0], supernodes_list)[0]:
+                not_loop_Q[right_sort[i]] = False
+         
+    nz_ind = np.nonzero(sn_sizes)[0]
+    return [supernodes[nz_ind[i],:sn_sizes[nz_ind[i]]] for i in [0,1]],sum(not_loop_Q)
+                  
+#%%
+E_raw = np.loadtxt("b3.in",dtype='int16')
+
+#%%
+E,supernodes,sn_sizes,right_sort = preprocess_E(E_raw)    
+
+#%%
+karger(E,np.copy(supernodes),np.copy(sn_sizes),right_sort)
+
+#%%
+
+E[np.any(E==30,axis=1)]

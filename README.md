@@ -10,6 +10,7 @@ In order to compile the LaTeX files you will need to download the `TeX_headers` 
 ### Repository Contents
 Course | Date Taken | Uploaded | Corrected 
 -|-|-|-
+CSE 521   | Autumn 2018 | yes | no
 AMATH 514 | Winter 2018 | yes | no
 AMATH 561 | Autumn 2017 | yes | yes (except ch1/2) 
 AMATH 562 | Winter 2018 | yes | yes (except ch6,ch10)
@@ -19,7 +20,7 @@ AMATH 584 | Autumn 2017 | yes | yes
 AMATH 585 | Winter 2018 | yes | yes
 AMATH 586 | Spring 2018 | yes (except midterm) | yes
  
-1. I have no intention of updating the reports for this calss. However, my python examples and code are in working condition. Note that my tensorflow was a GPU version, so its possible that some stuff may not work properly. However, most of the code is just numpy/scipy. 
+1. I don't plant to update the reports for this class. However, my python examples and code are in working condition. Note that my tensorflow was a GPU version, so its possible that some stuff may not work properly. However, most of the code is just numpy/scipy. 
 
 ### Note on Academic Integrity
 Copying solutions from any source is not only detrimental to your own learning but is plagiarism. Don't do this. If you do end up looking up a solution for an assignment, cite your source.

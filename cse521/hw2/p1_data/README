@@ -1,0 +1,3 @@
+j*.out are approximate jaccard distances (to 0.1 multiplicative error except for j4.in to .25 additive error)
+
+j*.check are exact jaccard distances

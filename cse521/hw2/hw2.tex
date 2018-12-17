@@ -1,0 +1,418 @@
+\documentclass[10pt]{article}
+\usepackage[T1]{fontenc}
+
+% Document Details
+\newcommand{\CLASS}{CSE 521}
+\newcommand{\assigmentnum}{Problem Set 2}
+
+\usepackage[margin = 1.5in]{geometry}
+\input{../../TeX_headers/title.tex} % Title Styling
+\input{../../TeX_headers/styling.tex} % General Styling
+\input{../../TeX_headers/code.tex} % Code Display Setup
+\input{../../TeX_headers/math.tex} % Math shortcuts
+\input{../../TeX_headers/proof.tex} % Proof shortcuts
+\input{../../TeX_headers/problem.tex} % Problem Environment
+
+\rhead{\sffamily Tyler Chen \textbf{\thepage}}
+
+
+\newcommand{\dist}{\operatorname{dist}}
+\newcommand{\sgn}{\operatorname{sgn}}
+
+\usepackage{placeins}
+
+
+\begin{document}
+\maketitle
+
+\begin{problem}[Problem 1]
+Suppose we have a universe \( U \) of elements. For \( A,B\subset U \), the Jaccard distance of \( A,B \) is defined as,
+\begin{align*}
+    J(A,B) = \frac{|A\cap B|}{|A\cup B|}
+\end{align*}
+
+This definition is used practice to calculate a notion of similarity of documents, webpages, etc. For
+    example, suppose \( U \) is the set of English words, and any set \( A \) represents a document considered as a bag of words. Note that for any two \( A,B\subset U \), \( 0\leq J(A,B) \leq 1 \). If \( J(A,B) \) is close to 1, then we say \( A\approx B \).
+    \begin{enumerate}[label=(\alph*),nolistsep]
+        \item Let \( h:U\to[0,1] \) where for each \( i \in U \), \( h(i) \) is chosen uniformly and independently at random. For a set \( S \subset U \), let \( h_S := \min_{i\in S} h(i) \). Show that,
+            \begin{align*}
+                \PP[h_A = h_B ] = J(A,B)
+            \end{align*}
+        \item Now, suppose we have sets \( A_1, A_2, \ldots, A_n \), we can use the above idea to output the Jaccard similarity of all pairs of sets. In the input files {\tt j1.in}, {\tt j2.in}, {\tt j3.in}, {\tt j4.in} you are given the description of \( n \) sets. The first line of the the input contains \( n \) followed by \( |U| \). The elements in each set are a subset of \( \{1, \ldots , |U|\} \). In the next \( n \) lines, each line has the list of numbers in one of the sets. For all \(  1 \leq i, j \leq n \), in the \( n(i - 1) + j \) line of the output you should write the Jaccard similarity of the \( i \)-th and \( j \)-th set within \( 1 \pm 0.1 \) multiplicative error, except for {\tt j4.in} for which it is enough to get an write down the Jaccard similairity within \( 1 \pm 0.5\). The input file {\tt j4.in} has only 10 percent of the grade.
+
+            Below you can see a sample input and output files. Upload your code together with all output files
+to Canvas. You will receive full grade of each test case as long as you get 90 percent of the numbers
+
+\begin{lstlisting}
+    j0.in       j0.out
+    3 6         0.21
+    1 6 4       0.49
+    3 2 6       0.2
+    1 2 4
+\end{lstlisting}
+
+
+Note that the correct Jaccard distances are 0.2, 0.5, 0.2 but it is enough to estimate the distance within \( 1 \pm 0.1 \) multiplicative error, so you may output 0.21 instead of the correct distance of 0.2.
+Note that the naive algorithm would take \( \cO(n^2|U|) \) to calculate all pairwise similarities.
+    \end{enumerate}
+\end{problem}
+
+
+\begin{solution}[Solution]
+\begin{enumerate}[label=(\alph*)]
+    \item Fix \( A,B \subset U \) and let \( i^* =   \operatorname{argmin}_{i\in A\cup B} h(i) \). Note that \( h(i^*) \) has measure zero in \( [0,1] \).
+        The \( h(i) \) are all independently chosen uniformly from \( [0,1] \) so \(\PP[ h(i) = h(i^*) ] = \bOne[i=i^*] \) (note that we have assumed that \( U \) is countable).
+        
+        This means \( h_A = h_B \) if and only if \( i^* \) is in \( A\cap B \).
+        
+        Every points in \( A\cup B \) has equal probability of being the argmin, so the probability that the argmin over the union is contained in the intersection is \( J(A,B) \).
+
+    \item
+
+    We import the data using numpy.
+        \lstinputlisting[linerange=\#<start:import>-\#<end:import>]{p1_data/jaccard.py}
+    In the input data the sets have the same length so it is easy to store all the sets as a rectangular array. We note that there are some duplicate entries.
+    
+    We first implement an exact algorithm using the {\tt set} class in Python. The {\tt set} class allows us to compute intersections very quickly. 
+
+        \lstinputlisting[linerange=\#<start:exact>-\#<end:exact>]{p1_data/jaccard.py}
+
+    Importing the data from {\tt j4.in} and building the sets takes about 2 min, and computing the exact distances for all pairs of sets takes about 3 min.
+
+        We now implement an approximate distance calculator based on the result in (a). In particular, we construct \( L \) independent hash functions \( \{h^i\}_{i=1}^{L} \), and then hash each set in the data files. For any two sets \( A \) and \( B \) we compare \( h^i(A) \) and \( h^i(B) \), and compute what percent of the hash functions agree for a given set.
+
+        \lstinputlisting[linerange={\#<start:make_hash>-\#<end:make_hash>,\#<start:comp_hash>-\#<end:comp_hash>}]{p1_data/jaccard.py}
+
+        The problem with such an approach is that there are some set \( A \) and \( B \) such that \( J(A,B) \) is very small but nonzero. Therefore, to even see a collision between some \( h^i(A) \) and \( h^i(B) \) for some \( i \), we need \( L \) to be very large (i.e. \( L > 1/ J(A,B) \)). This is not tractable in the case of {\tt j4.in} since computing a hash function requires first generating \( |\cap_i A_i| \) random numbers (about 20 million), and then computing the min over each set. This takes more than half a second, so to compute thousands of hash functions is not reasonable.
+
+        \begin{figure}[H]\centering
+            \foreach \i in {1,2,3,4}{
+            \begin{subfigure}{.45\textwidth}
+                \includegraphics[width=\textwidth]{p1_data/img/error\i.pdf}
+                \caption{{\tt j\i.in}}
+            \end{subfigure}
+            }
+            \caption{actual vs approximate Jaccard distances with 0.1 multiplicative and additive errors highlighted.}
+            \label{error_plot}
+        \end{figure}
+        \begin{figure}[H]\centering
+            \foreach \i in {1,2,3,4}{
+            \begin{subfigure}{.45\textwidth}
+                \includegraphics[width=\textwidth]{p1_data/img/error_hist\i.pdf}
+                \caption{{\tt j\i.in}}
+            \end{subfigure}
+            }
+            \caption{relative error counts with 0.1 multiplicative error highlighted.}
+            \label{error_hist}
+        \end{figure}
+        
+        Figure~\ref{error_plot} shows the actual and approximate Jaccard distances over all pairs of sets. The red highlighted regions are 0.1 multiplicative and additive errors. 
+
+        Figure~\ref{error_hist} shows a histogram of the relative errors of the Jacard distances. The red highlighted regions are 0.1 multiplicative errors.
+
+
+        We see that for the first three data files we are within 0.1 multiplicative error. 
+        
+        For the {\tt j4.in} we are definitely not in this range. 
+        Note that the number of hash functions \( L \) must increase with the universe size in order to be able to compute the decreasing Jaccard distances. This would not have necessarily been the case if the Jaccard distances between the sets did not decrease.
+        Since all of the Jaccard distances are small we are trivially within a small additive error of the actual distances.
+
+
+\end{enumerate}
+\end{solution}
+
+\FloatBarrier
+\begin{problem}[Problem 2]
+In this problem we design an LSH for points in \( \RR^d \), with the \( \ell_1 \) distance, i.e.,
+\begin{align*}
+    d(p,q) = \sum_{i}^{} |p_i-q_i|
+\end{align*}
+\begin{enumerate}[label=(\alph*),nolistsep]
+    \item Let \( a,b \) be arbitrary real numbers. Fix \( w>0 \) and let \( s\in[0,w) \) be chosen uniformly at random. Show that,
+        \begin{align*}
+            \PP \left[ \left\lfloor \frac{a-s}{w} \right\rfloor = \left\lfloor \frac{b-s}{w}  \right\rfloor \right] = \max \left\{ 0, 1 - \frac{|a-b|}{w}  \right\}
+        \end{align*}
+    Recall that for any real number \( c \), \( \lfloor c \rfloor \) is the largest integer which is at most \( c \).
+    
+        \textbf{Hint:} Start with the case where \( a=0 \).
+    
+    \item Define a class of has functions as follows: Fix \( w \) larger than diameter of the space. Each hash function is defined via a choice of \( d \) independently selected random real numbers \( s_1,,s_2,\ldots, s_d \), each uniform in \( [0,w) \). The hash function associated with this random set of choices is,
+        \begin{align*}
+            h(x_1,x_2,\ldots, x_d) = \left( \left\lfloor \frac{x_1-s_1}{w}  \right\rfloor, \left\lfloor \frac{x_2-s_2}{w}  \right\rfloor, \ldots, \left\lfloor \frac{x_d-s_d}{w}  \right\rfloor  \right)
+        \end{align*}
+        
+        Let \( a_i = |p_i-q_i| \). What is the probability that \( h(p) = h(q) \) in terms of the \( a_i \) values? For what values of \(  p_1 \) and \( p_2 \) is this family of functions \( (r,c\cdot r, p_1,p_2) \)-sensitive? Do your calculations assuming that \( 1-x \) is well approximated by \( e^{-x} \).
+\end{enumerate}
+\end{problem}
+
+\begin{solution}[Solution]
+\begin{enumerate}[label=(\alph*)]
+    \item Pick \( A \) and \( B \) arbitrarily and fix \( w > 0 \). Let \( S \) be a uniform random variable on \( [0,w) \). Now define,
+        \begin{align*}
+            a = A/w, 
+            && b = B/w,
+            && s = S/w
+        \end{align*}
+        Note that \( \hat{s} \) is a uniform random variable on \( [0,1) \). 
+        
+        Therefore, it is sufficient to show,
+        \begin{align*}
+            \PP[ \lfloor a-s \rfloor = \lfloor b-s \rfloor] = \max\{0,1-|a-b|\}, && s\sim \cU([0,1))
+        \end{align*}
+
+        WLOG assume \( a \leq b \). Suppose \( |a-b| \geq 1 \). Then \( \lfloor a-s \rfloor \neq \lfloor b-s \rfloor \) for any \( s \). This is demonstrated in Figure~\ref{c1}.
+
+        Now, suppose \( |a-b| < 1 \). Then \( \lfloor a-s \rfloor \neq \lfloor b-s \rfloor \) if and only if \( s \in (a-\lfloor a \rfloor , b-\lfloor b \rfloor ) \). The three cases are shown in Figures~\ref{c2},\ref{c3},\ref{c4}.
+
+        \input{2a_tikz.tex}
+
+        Now note that since \( |a-b| < 1 \), \( \lfloor a \rfloor = \lfloor b \rfloor \). Therefore the interval \( (a-\lfloor a \rfloor , b - \lfloor b \rfloor ) \) has length exactly \( |a-b| \). We choose \( s \) in this interval with probability \( |a-b| / (1-0) = |a-b| \). 
+        
+        This proves,
+        \begin{align*}
+            \PP \left[ \left\lfloor \frac{A-S}{w} \right\rfloor = \left\lfloor \frac{B-S}{w}  \right\rfloor \right] = \max \left\{ 0, 1 - \frac{|A-B|}{w}  \right\}
+        \end{align*}
+        
+        %Scaling the \( s,a,b \) used in this proof by \( w \) proves the statement 2(a) as written.
+
+    \item 
+        The event \( h(p_i) = h(q_i) \) is independent of the event \( h(p_j) = h(q_j) \) for \( i\neq j \) since the \( s_i \) are independent.
+        Moreover, since \( w \) is larger than the diameter of the space, \( |p_i-q_i| < w \) so that \( 1-a_i/w  > 0 \). Therefore, 
+        \begin{align*}
+            \PP[h(p) = h(q)]
+            = \PP \left[ \forall i : h(p_i) = h(q_i) \right]
+            = \prod_{i=1}^{d} \PP \left[ h(p_i) = h(q_i) \right]
+            = \prod_{i=1}^{d} (1-a_i/w)
+        \end{align*}
+        
+        We now make the assumption that \( 1-a_i/w \approx e^{-a_i/w} \) so that,
+        \begin{align*}
+            \PP[h(p) = h(q)] 
+            = \prod_{i=1}^{d} (1-a_i/w)
+            \approx \exp \left( -\sum_{i=1}^{d} \frac{a_i}{w} \right)
+            \approx \exp \left( -\frac{d(p,q)}{w} \right)
+        \end{align*}
+        where we have used the definition of \( a_i \) to write \( d(p,q) = \sum_{i}^{}a_i \).
+
+        If \( d(p,q) \leq r \) then,
+        \begin{align*}
+            \PP[h(p) = h(q)] \geq e^{-r/w} 
+        \end{align*}
+        
+        Similarly, if \( d(p,q) \geq c\cdot r \) then,
+        \begin{align*}
+            \PP[h(p) = h(q)] \leq e^{-cr/w} 
+        \end{align*}
+        
+        Therefore this family of has functions is \( (r,c\cdot r,p_1,p_2) \)-sensitive for,
+        \begin{align*}
+            p_1 = e^{-r/w}, && p_2 = e^{-cr/w}
+        \end{align*}
+
+        Note that \( e^{-x} = 1-x+x^2/2! + \cO(x^3) \) so \( e^{-x} \geq 1-x \). Therefore our value of \( p_1 \) is actually lower than it should be. 
+        
+
+\iffalse
+        \begin{align*}
+            \PP[h(p) = h(q)]
+            = \prod_{i=1}^{d} (1-a_i/w)
+            = 1 - \sum_{i=1}^{d} \frac{a_i}{w} + \sum_{i=1}^{d} \sum_{j=i+1}^{d} \frac{a_ia_j}{w^2} + \cdots 
+        \end{align*}
+\fi 
+
+
+\end{enumerate}
+\end{solution}
+
+
+\begin{problem}[Problem 3]
+Let \( u,v\in\RR^d \) and \( g\in \RR^d \) be a random Gaussian vector, i.e., for each \( 1\leq i\leq d \), \( g_i\sim \cN(0,1) \).
+\begin{enumerate}[label=(\alph*),nolistsep]
+    \item What is the expected value of \( \ip{g,u} \)?
+    \item What is the expected value of \( \ip{g,u}\cdot\ip{g,v} \)?
+    \item What is the expected value of \( |\ip{g,u}| \)? You can use the p.d.f.of a \( \cN(0,1) \) is \( \frac{1}{\sqrt{2\pi}} e^{-x^2/2} \).
+    \item Consider the following hash function: \( h_g(u) = \sgn(\ip{g,u}) \), where \( \sgn \) is the sign function, i.e., \( \sgn(a) = 1 \) if \( a\geq 0 \) and \( \sgn(a) = -1 \) otherwise. Show that for a Gaussian random vector \( g \) and any two vectors \( u,v \), \( \PP[h_g(u) = h_g(v)] = 1-\frac{\theta(u,v)}{\pi} \) where \( \theta(p,q) \) is the angle between the vectors \( p \) and \( q \).
+    \item Let \( P\subseteq \RR^d \) and consider the following discrete distance function: \( \dist(p,q) = \frac{\theta(p,q)}{\pi} \). For what values of \( p_1 \) and \( p_2 \) is this family of functions \( (r,c\cdot r,p_1,p_2) \)-sensitive? You can do your calculations assuming that \( 1-x \) is well approximated by \( e^{-x} \).
+\end{enumerate}
+\end{problem}
+
+\begin{solution}[Solution]
+\begin{enumerate}[label=(\alph*)]
+    \item We take \( \ip{\cdot,\cdot} \) to be the Euclidean inner product. Then,
+        \begin{align*}
+            \EE[\ip{g,u}] 
+            =\EE \left[ \sum_{i=1}^{d} u_i g_i  \right]
+            =\sum_{i=1}^{d} u_i\EE[ g_i ]
+            = 0
+        \end{align*}
+        
+    \item Note that the entries of \( g \) are independent so that \( \EE[g_ig_j] = \EE[g_i]\EE[g_j] = 0 \) if \( i\neq j \). Note further that \( \EE[g_i^2] = \VV[g_i] + \EE[g_i]^2 = 1 \). Therefore,
+        \begin{align*}
+            \EE[\ip{g,u}\cdot\ip{g,v}] 
+            &=\EE \left[ \left( \sum_{i=1}^{d} u_i g_i \right) \left( \sum_{j=1}^{d} v_jg_j \right) \right]
+            %\\&=\EE \left[ \sum_{i=1}^{d} \sum_{j=1}^{d} u_iv_i g_ig_j \right] 
+            \\&=\EE \left[ \sum_{i=1}^{d} \sum_{\substack{j=1 \\j\neq i}}^{d} u_iv_i g_ig_j  + \sum_{i=1}^{d} u_iv_i g_i^2\right] 
+            \\&=\sum_{i=1}^{d} \sum_{\substack{j=1 \\j\neq i}}^{d} u_iv_i \EE[g_ig_j ] + \sum_{i=1}^{d} u_iv_i \EE[g_i^2 ] 
+            \\&= 0 + \sum_{i=1}^{d} u_iv_i 
+            \\&= \ip{u,v}
+        \end{align*}
+       
+    \item From (a) and (b) we know that \( \ip{g,u} \) has mean 0 and variance \( \EE[\ip{g,u}^2]-\EE[\ip{g,u}]^2 = \ip{u,u} = \norm{u}^2 \). Moreover, by construction \( \ip{g,u} \) is the sum of normal random variables and therefore is a normal random variable. That is, \( \ip{g,u} \sim \cN(0,\norm{u}^2)  \).
+        
+        Let \( X\sim \cN(0,\sigma^2) \). Then \( X \) has density function,
+        \begin{align*}
+            \phi(z) = \frac{1}{\sqrt{2\pi \sigma^2}} \exp \left( \frac{-z^2}{2\sigma^2} \right)
+        \end{align*}
+
+        We find the density function \( \psi \) of \( |X| \). First, observe,
+        \begin{align*}
+            \PP[ |X| \leq x] = \PP[-x \leq X \leq x] 
+            = \int_{-x}^{x} \phi(z) \d z 
+        \end{align*}
+        
+        Therefore, the density function is,
+        \begin{align*}
+            \psi(x) = \dd{}{x} \PP[|X|\leq x] 
+            = \dd{}{x} \int_{-x}^{x} \phi(z)\d z
+            = \phi(x) + \phi(-x) 
+            = 2\phi(x)
+        \end{align*}
+        
+        Finally using standard facts about the Gaussian integral,
+        \begin{align*}
+            \EE[|X|] = \int_{0}^{\infty} z\psi(z)\d z
+            = \frac{2}{\sqrt{2\pi\sigma^2}} \int_{0}^{\infty} \exp \left( \frac{-z^2}{2\sigma^2} \right)
+            = \sqrt{\frac{2\sigma^2}{\pi}}
+        \end{align*}
+        
+        
+        Therefore,
+        \begin{align*}
+            \EE[|\ip{g,u}|] = \sqrt{\frac{2 \norm{u}^2}{\pi}}
+            = \sqrt{\frac{2}{\pi}} \norm{u}
+        \end{align*}
+        
+    \item Fix \( u,v \) and let \( g \) be a Gaussian random vector.
+
+        Let \( \cH \) be the unique hyperplane containing \( u \) and \( v \). Let \( \cH_u = \{x\in\cH : \ip{x,u} \geq 0 \} \) and let \( \cH_v = \{x\in\cH : \ip{x,v} \geq 0\} \).
+
+        Then for any \( x\in \cH \), \( h_u(x) = h_v(x) \) if and only if \( x\in \cH_u\cap \cH_v \) or \( x\not\in \cH_u\cup \cH_v  \). This is illustrated in Figure~\ref{hyperplane}.
+        \begin{figure}[ht]\centering
+        \iffalse
+        \begin{tikzpicture}
+            \fill[fill=blue!20] (-2,-1) -- (4,-1) -- (6,3) -- (0,3) -- cycle;
+            \fill[fill=red!50, opacity=0.25] (-1.5,0) -- (4.5,0) -- (6,3) -- (0,3) -- cycle;
+            \fill[fill=green!50, opacity=0.25] (-1.25,.5) -- (2.5,-1) -- (4,-1) -- (6,3) -- (0,3) -- cycle;
+            \draw[->] (0,0) -- (3,1.2) node[above] {\(u\)};
+            \draw[->] (0,0) -- (1,2) node[above] {\(v\)};
+            %\draw[] (-.2,0) -- (-.1,.2) -- (.1,.2);
+            \draw[dashed] (-1.5,0) -- (4.5,0);
+            \draw[dashed] (-1.25,.5) -- (2.5,-1);
+        \end{tikzpicture}
+        \fi
+        \begin{tikzpicture}
+            \fill[fill=blue!20] (-3,-3) -- (3,-3) -- (3,3) -- (-3,3) -- cycle;
+            \fill[fill=red!50, opacity=0.4] (-1.5,3) -- (3,3) -- (3,-3) -- (1.5,-3)  -- cycle;
+            \fill[pattern=dots, opacity=0.25] (-3,0) -- (3,0) -- (3,3) -- (-3,3) -- cycle;
+            \draw[->,line width=1pt] (0,0) -- (2,1) node[above] {\(u\)};
+            \draw[->,line width=1pt] (0,0) -- (0,2) node[above] {\(v\)};
+            %\draw[] (-.2,0) -- (-.1,.2) -- (.1,.2);
+            \draw[dashed] (-3,0) -- (3,0);
+            \draw[dashed] (-1.5,3) -- (1.5,-3);
+        \end{tikzpicture}
+            \caption{Hyperplane defined by \( u \) and \( v \). \( \cH_u \) is the dotted region, and \( \cH_v \) is the red region.}
+            \label{hyperplane}
+        \end{figure}
+
+        Let \( \hat{g} \) be the orthogonal projection of \( g \) onto \( \cH \). Note that \( \ip{g,x} = \ip{\hat{g},x} \) for all \( x\in\cH \) since \( x \) is orthogonal to everything outside of the hyperplane.
+
+        By the rotational invariance of Gaussian random vectors, the angle \( \hat{g} \) makes with any fixed vector in \( \cH \) is uniformly distributed on \( [0,2\pi) \).
+
+        From Figure~\ref{hyperplane} it is clear that the chance of \( \hat{g} \) landing in \( \cH_u\cup\cH_v \) is \( (\pi - \theta)/2\pi \) and the chance of \( \hat{g} \) landing in \( (\cH_u\cap\cH_v)^c \) is also \( (\pi-\theta)/2 \). 
+
+        Therefore, the chance of \( \hat{g} \) landing in \( \cH_u\cap\cH_v \) or \( (\cH_u\cup\cH_v)^c \) is \( 1-\theta/\pi \). That is,
+        \begin{align*}
+            \PP[h_g(u) = h_g(v)] = 1-\frac{\theta(u,v)}{\pi} 
+        \end{align*}
+        
+
+        \iffalse
+        To show this more rigorously, we let \( \phi(x) \) denote the angle from \( u \) to \( x \) in the clockwise direction (relative to a fixed normal vector of the hyperplane). Then \( \cH_u = \{x\in\cH : \phi(x) \in [-\pi/2,\pi/2] \} \) and \( \cH_v = \{x\in\cH : \phi(x) \in [\phi(v)-\pi/2,\phi(v)+\pi/2 ] \} \).
+
+        Therefore,
+        \begin{align*}
+            \cH_u\cap\cH_v = \{x\in\cH : \phi(x) \in [\phi(v) - \pi/2 , \pi/2 \] \} 
+        \end{align*}
+        \fi
+
+    \item 
+        If \( \theta(u,v)/\pi = \dist(u,v) \leq r \) then,
+        \begin{align*}
+            \PP[ h_g(u) = h_g(v) ] = 1 - \dist(u,v) \geq 1 - r
+        \end{align*}
+
+        Similarly, if \( \theta(u,v)/\pi = \dist(u,v)\geq c\cdot r \) then,
+        \begin{align*}
+            \PP[ h_g(u) = h_g(v) ] = 1 - \dist(u,v) \leq 1 - cr
+        \end{align*}
+        
+        Therefore this family of has functions is \( (r,c\cdot r,p_1,p_2) \)-sensitive for,
+        \begin{align*}
+            p_1 = 1 - r , && p_2 = 1 - cr
+        \end{align*}
+
+\end{enumerate}
+\end{solution}
+
+
+\begin{problem}[Problem 4]
+    Describe an example (i.e., an appropriate set of points in \(\RR^n\)) that shows that the Johnson-Lindenstrauss dimension reduction method, the linear transformation obtained by projecting on Gaussian vectors scaled properly, does not preserve \( \ell_1 \) distances within even factor 2.
+\end{problem}
+
+\begin{solution}[Solution]
+    Define \( G\in\RR^{k\times n} \) as, 
+\begin{align*}
+    G = \frac{1}{k} \sqrt{\frac{\pi}{2}} \left[\begin{array}{c}
+    -\: g^1 \: - \\
+    -\: g^2 \: - \\
+    \vdots \\
+    -\: g^k \: - \\
+    \end{array}\right]
+\end{align*}
+
+Now note that for any vector \( x \),
+\begin{align*}
+    Gx = \frac{1}{k} \sqrt{\frac{\pi}{2}} \left[\begin{array}{c} \ip{g^1,x} \\ \ip{g^2,x} \\ \vdots \\ \ip{g^k,x}\end{array}\right]
+\end{align*}
+
+    Therefore, since \( \EE[|\ip{g^i,x}|] = \sqrt{2/\pi} \norm{x}_2 \),
+\begin{align*}
+    \EE \left[\norm{Gx}_1\right] 
+%    =  \EE\left[\frac{1}{k} \sqrt{\frac{\pi}{2}} \sum_{i=1}^{k} |\ip{g^i,x}| \right] 
+    = \frac{1}{k} \sqrt{\frac{\pi}{2}} \sum_{i=1}^{k} \EE\left[\left|\ip{g^i,x}\right|\right]
+    = \frac{1}{k} \sqrt{\frac{\pi}{i}} \sum_{i=1}^{k} \sqrt{\frac{2}{\pi}}\norm{x}_2
+    = \norm{x}_2
+\end{align*}
+    
+It is then clear that \( G \) (or any scalar multiple of \( G \)) will not preserve the relative \( \ell_1 \) norms of vectors they act on. This means that they will not preserve distances, since the norm of a vector is the distance to zero.
+
+For example, consider \( u\in\RR^n \), and \( v\in\RR^n \) defined as,
+\begin{align*}
+    u = \left[\begin{array}{c}
+    1  \\ 0 \\ \vdots \\ 0 \end{array}\right]
+    ,&&
+    v = \frac{1}{n} \left[\begin{array}{c}1\\1 \\\vdots \\ 1\end{array}\right]
+\end{align*}
+
+    Then \( \norm{u}_1 = \norm{v}_1 = 1 \) but \( \norm{u}_2 = 1 \) while \( \norm{v}_2 = \sqrt{n} \) so whatever constant we put in front of \( G \) to preserve the norm of \( u \) will not preserve the norm of \( v \). 
+    
+    Therefore, if we preserve (in expectation) the \( \ell_1 \) distance from \( u \) to \( 0 \), we cannot preserve (in expectation) the \( \ell_1 \) distance from \( v \) to 0.
+
+
+
+
+
+\end{solution}
+
+
+\end{document}
