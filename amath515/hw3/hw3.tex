@@ -1,0 +1,611 @@
+\documentclass[10pt]{article}
+\usepackage[T1]{fontenc}
+
+% Document Details
+\newcommand{\CLASS}{AMATH 515}
+\newcommand{\assigmentnum}{Problem Set 3}
+
+\usepackage[margin = 1.5in]{geometry}
+\input{../../import/title.tex} % Title Styling
+\input{../../import/styling.tex} % General Styling
+\input{../../import/code.tex} % Code Display Setup
+\input{../../import/math.tex} % Math shortcuts
+\input{../../import/proof.tex} % Proof shortcuts
+\input{../../import/problem.tex} % Problem Environment
+
+\rhead{\sffamily Tyler Chen \textbf{\thepage}}
+
+\let\savedprob=\problem%
+\def\problem[#1]{\pagebreak\phantomsection\addcontentsline{toc}{subsection}{#1}\savedprob[#1]\label{#1}\setcounter{page}{1}}
+
+\newcommand{\sgn}{\operatorname{sgn}}
+\newcommand{\rank}{\operatorname{rank}}
+\newcommand{\range}{\operatorname{range}}
+\newcommand{\prox}{\operatorname{prox}}
+\DeclareMathOperator*{\proj}{\operatorname{proj}}
+
+\usepackage{placeins}
+
+
+\begin{document}
+\maketitle
+
+
+\begin{problem}[Problem 1]
+Compute the conjugates of the following functions.  
+\begin{enumerate}[label=(\alph*),nolistsep]
+\item \( f(x) = \delta_{\mathbb{B}_{\infty}}(x) \).
+\item \( f(x) = \delta_{\mathbb{B}_{2}}(x) \).
+\item \( f(x) = \exp(x) \).
+\item \( f(x) =  \log(1+\exp(x)) \)
+\item \( f(x) = x\log(x) \)
+\end{enumerate}
+\end{problem}
+
+\begin{solution}[Solution]
+Recall that for a function \( f:E\to\RR \), the Fenchel conjugate \( f^*:E\to\RR \) is defined as,
+\begin{align*}
+    f^*(y) = \sup_{x\in E}\{ \ip{y,x} - f(x)\}
+\end{align*}
+
+Note that if \( E=\RR \) then the \( x \) attaining the supremum,
+\begin{align*}
+    \sup_{x\in \RR} \{ yx - f(x) \}
+\end{align*}
+will also satisfy,
+\begin{align*}
+    0 = \dd{}{x} \left( yx - f(x) \right)
+     = y - f'(x) 
+\end{align*}
+
+\begin{enumerate}[label=(\alph*)]
+    \item 
+        By definition,
+        \begin{align*}
+            f^*(y) = \sup_{x\in\RR} \{ \ip{y,x} - \delta_{\bB_{\infty}}(x) \}
+            = \sup_{x\in\bB_{\infty}} \ip{y,x} 
+        \end{align*}
+
+        It is obvious that we should pick \( x_i = \sign(y_i) \). Therefore,
+        \begin{align*}
+            f^*(y) = \| y \|_1
+        \end{align*}
+        
+        
+    \item By definition,
+        \begin{align*}
+            f^*(y) = \sup_{x\in\RR} \{ \ip{y,x} - \delta_{\bB_2}(x) \}
+            = \sup_{x\in\bB_2} \ip{y,x}
+        \end{align*}
+        
+        By the geometric interpretation of the inner product and the Euclidian norm ball, it is obvious that we should pick \( x = y/\| y \|_2 \) so that,
+        \begin{align*}
+            f^*(y) = \| y \|_2
+        \end{align*}
+        
+
+    \item We have,
+        \begin{align*}
+            f^*(y) = \sup_{x\in E}\{xy - e^x\}
+            = y \log(y) - y
+        \end{align*}
+        where we have solved,
+        \begin{align*}
+            0 = \nabla \left[ xy - e^x \right]
+            = y - e^{x}
+        \end{align*}
+        to obtain,
+        \begin{align*}
+            x = \log(y)
+        \end{align*}
+        
+    \item We have,
+        \begin{align*}
+            f^*(y) = \sup_{x\in E} \{ xy - \log(1+\exp(x)) \} 
+            = y \log \left( \frac{y}{1-y} \right) - \log\left(\frac{1}{1-y} \right)
+        \end{align*}
+        where we have solved,
+        \begin{align*}
+            0 = \nabla \left[ xy-\log(1+\exp(x)) \right]
+            = y - \frac{\exp(x)}{1+\exp(x)}
+        \end{align*}
+        to obtain,
+        \begin{align*}
+            x = \log \left( \frac{y}{1-y} \right)
+        \end{align*}
+        
+    \item We have,
+        \begin{align*}
+            f^*(y) = \sup_{x\in\RR} \{ xy - x\log x \}
+            = y \exp(y-1) - \exp(y-1) (y-1)
+            = \exp(y-1)
+        \end{align*}
+        where we have solved,
+        \begin{align*}
+            0 = \nabla \left[ xy - x\log(x) \right]
+            = y - (1+\log(x))
+        \end{align*}
+        to obtain,
+        \begin{align*}
+            x = \exp(y-1)
+        \end{align*}
+        
+        
+
+
+
+\end{enumerate}
+\end{solution}
+
+\begin{problem}[Problem 2]
+Let \( g \) be any convex function; \( f \) is formed using \( g \).
+Compute \( f^* \) in terms of \( g^* \).  
+\begin{enumerate}[label=(\alph*),nolistsep]
+\item \( f(x) = \lambda g(x) \).
+\item \( f(x) = g(x-a) + \langle x, b \rangle \).
+\item \( f(x) = \inf_z \left\{g(x,z)\right\} \). 
+\item \( f(x) = \inf_z \left\{\frac{1}{2}\|x-z\|^2 + g(z)\right\} \)
+\end{enumerate}
+\end{problem}
+
+\begin{solution}[Solution]
+    Note that we do not explicitly write the domain over which the maximizations and minimizations occur. We note that occasionally this domain will be shifted based when variables are substituted or shifted. However, we leave this implicit in our solutions.
+\begin{enumerate}[label=(\alph*)]
+    \item Note that we must have \( \lambda \geq 0 \) so that \( \lambda g \) is convex. Assume further that \( \lambda>0 \) so that the problem is nontrivial.
+        In this case,
+        \begin{align*}
+            f^*(y) 
+            &= \sup_{x} \{ \ip{y,x} - \lambda g(x) \}
+            \\&= \sup_{x} \{ \lambda ( \ip{y/\lambda,x} - g(x)) \}
+            \\& = \lambda \sup_{x} \{ \ip{y/\lambda,x} - g(x) \}
+            \\&= \lambda g^*(y/\lambda)
+        \end{align*}
+       
+    \item By definition,
+        \begin{align*}
+            f^*(y) 
+            &= \sup_{x} \{ \ip{y,x} - g(x-a) - \ip{x,b} \}
+            \\&= \sup_{x} \{ \ip{y-b,x} - g(x-a) \}
+            \\&= \sup_{x} \{ \ip{y-b,x+a} - g(x) \}
+            \\&= \sup_{x} \{ \ip{y-b,x} + \ip{y-b,a} - g(x) \}
+            \\&= \ip{y-b,a} +  \sup_{x} \{ \ip{y-b} - g(x) \}
+            \\&= \ip{y-b,a} + g^*(y-b)
+        \end{align*}
+        
+    \item
+        Note that,
+        \begin{align*}
+            g^*(y,u) &= \sup_{[x,z]} \{ \ip{[y,u],[x,z]} - g(x,z) \}
+            = \sup_{x,z} \{ \ip{y,x} + \ip{u,z} - g(x,z) \}
+        \end{align*}
+
+        Therefore,        
+        \begin{align*}
+            f^*(y) 
+            &= \sup_{x} \left\{ \ip{y,x} - \inf_z\{g(x,z)\} \right\}
+            \\&= \sup_{x} \left\{ \sup_z\{ \ip{y,x} - g(x,z) \} \right\}
+            \\&= \sup_{x,z} \{ \ip{y,x} - g(x,z) \}
+            \\&= g^*(y,0)
+        \end{align*}
+        
+    \item
+        By (c) we know that,
+        \begin{align*}
+            f^*(y) = G^*(y,0) 
+            ,&& G(x,z) = \frac{1}{2} \| x-z \|^2 + g(z)
+        \end{align*}
+
+        We now compute,
+        \begin{align*}
+            G^*(y,u) &= \sup_{[x,z]} \left\{ \ip{[y,u],[x,z]} - \frac{1}{2} \| x-z \|^2 - g(z)  \right\} 
+            \\&= \sup_{x,z} \left\{ \ip{y,x} + \ip{u,z} - \frac{1}{2} \| x-z \|^2 - g(z)  \right\}
+            \\&= \sup_{x,z} \left\{ \ip{y,x-z} - \frac{1}{2} \| x-z \|^2 + \ip{u+y,z} - g(z) \right\}
+        \end{align*}
+        
+
+        We now define \( w = x-z \) and note that \( w \) is still free from \( z \) so that,
+        \begin{align*}
+            G^*(y,u) &= \sup_{w,z} \left\{ \ip{y,w} - \frac{1}{2} \| w \|^2 + \ip{u+y,z} - g(z) \right\} 
+            \\&= \sup_w \left\{ \ip{y,w} - \frac{1}{2} \| w \|^2 \right\} 
+            + \sup_z \left\{ \ip{u+y,z} - g(z) \right\}
+            \\&= \frac{1}{2} \| y \|^2 + g^*(u+y)
+        \end{align*}
+
+        Therefore,
+        \begin{align*}
+            G^*(y,0) = \frac{1}{2} \| y \|^2 + g^*(y)
+        \end{align*}
+       
+\end{enumerate}
+\end{solution}
+
+
+\begin{problem}[Problem 3]
+Moreau Identities.
+\begin{enumerate}[label=(\alph*),nolistsep]
+\item  Derive the Moreau Identity: 
+\begin{align*}
+    \prox_{f}(z) + \prox_{f^*}(z) = z. 
+\end{align*}
+You may find the `Fenchel flip' useful. 
+\item Use either of the Moreau identities and 
+1a, 1b to check your formulas for 
+\begin{align*}
+    \prox_{\|\cdot\|_1}, \quad \prox_{\|\cdot\|_2}
+\end{align*}
+from last week's homework. 
+\end{enumerate}
+\end{problem}
+
+\begin{solution}[Solution]
+Recall that when \( f \) is closed, proper, and convex,
+\begin{align*}
+    z\in \partial f(x)
+    \Longleftrightarrow
+    x\in \partial f^*(z)
+\end{align*}
+
+\begin{enumerate}[label=(\alph*)]
+    \item 
+        Fix \( z \) and assume \( f \) is closed, proper, and convex. By definition,
+        \begin{align*}
+            \prox_f(z) &= \arg\min_{x_1} \left( \frac{1}{2} \| x_1 - z \|^2 + f(x_1) \right)
+            \\\prox_{f^*}(z) &= \arg\min_{x_2} \left( \frac{1}{2} \| x_2 - z \|^2 + f^*(x_2) \right)
+        \end{align*}
+
+        Since the proximal operator is a well defined function, \( x_1 = \prox_f(z) \) is the \emph{unique} point so that,
+        \begin{align*}
+            0 \in \partial \left( \frac{1}{2} \| x_1-z \|^2 + f(x_1) \right)
+            = x_1 - z + \partial f(x_1)
+        \end{align*}
+        
+        Similarly, \( x_2 = \prox_{f^*}(z) \) is the \emph{unique} point so that,
+        \begin{align*}
+            0 \in \partial \left( \frac{1}{2} \| x_2-z \|^2 + f^*(x_2) \right)
+            = x_2 - z + \partial f^*(x_2)
+        \end{align*}
+
+        Equivalently, \( x_1 = \prox_f(z) \) and \( x_2 = \prox_{f^*}(z) \) are the unique points so that,
+        \begin{align*}
+            z-x_1 \in \partial f(x_1)
+            , &&
+            z-x_2 \in \partial f^*(x_2)
+        \end{align*}
+        
+        Now, using the Frenchel flip we find that \( x_1 = \prox_f(z) \) is the unique points so that,%and \( x_2 = \prox_{f^*}(z) \) are the unique points so that,
+        \begin{align*}
+            x_1 \in \partial f^*(z-x_1)
+%            , &&
+%            x_2 \in \partial f(z-x_2)
+        \end{align*}
+
+        Writing \( x_3 = z-x_1 \) we have that \( x_3 \) is the unique points so that,
+        \begin{align*}
+            z-x_3 \in \partial f^*(x_3)
+        \end{align*}
+        
+        Therefore \( x_3 = x_2 = z-x_2 \) so that,
+        \begin{align*}
+            z = x_1 + x_2 = \prox_f(z) + \prox_{f^*}(z)
+        \end{align*}
+        
+    \item 
+        Suppose \( f = \norm{\cdot}_1 \). Then \( f^* = \delta_{\bB_{\infty}} \). We have previously derived,
+        \begin{align*}
+            \prox_f(z) = \begin{cases}
+                z_i + 1, & z_i < -1 \\ 
+                0, & z_i \in [-1,1] \\
+                z_i - 1, & z_i > 1
+            \end{cases}
+        \end{align*}
+              
+        Note that when computing \( \prox_{f^*} \) we must keep \( x \in \bB_\infty \) so \( x_i \in [-1,1] \). Moreover, we want \( x_i \) as near to \( z_i \) as possible. Therefore,
+        \begin{align*}
+            \prox_{f^*}(z) &= \arg\min_x \left( \frac{1}{2} \norm{x-z}^2 + \delta_{\bB_\infty}(x) \right)
+            = \begin{cases}
+                -1, &z_i < 1 \\
+                z_i, & z_i \in [-1,1] \\
+                1, & z_i > 1
+            \end{cases}
+        \end{align*}
+        The identity is clearly satisfied. \qed
+        
+        Now, suppose \( f = \norm{\cdot}_2 \). Then \( f^* = \delta_{\bB_2} \). We have previously derived,
+        \begin{align*}
+            \prox_f(z) = 
+            \begin{cases}
+                \left( 1 - \frac{1}{\norm{z}} \right) z, & \| z \| \geq 1 \\
+                0 & \| z \| < 1
+            \end{cases}
+        \end{align*}
+
+        Observe that when computing \( \prox_{f^*} \) we must keep \( x\in\bB_\infty \). It is obviously best to pick \( x \) in the direction of \( z \) with magnitude to cancel as much of \( z \) as possible. Therefore,
+        \begin{align*}
+            \prox_{f^*}(z) = \arg\min_x \left( \frac{1}{2} \norm{x-z}^2 + \delta_{\bB_2}(x) \right)
+            = 
+            \begin{cases}
+                \frac{z}{\norm{z}}, & \| z \| \geq 1 \\
+                z & \| z \| < 1
+            \end{cases}
+        \end{align*}
+        The identity is again clearly satisfied. \qed
+
+\end{enumerate}
+
+
+\end{solution}
+
+
+\begin{problem}[Problem 4]
+Duals of regularized GLM. Consider the Generalized Linear Model family: 
+\begin{align*}
+    \min_{x} \sum_{i=1}^n g(\langle a_i, x\rangle) - b^TAx + R(x),
+\end{align*}
+Where \( g \) is convex and \( R \) is any regularizer. 
+\begin{enumerate}[label=(\alph*),nolistsep]
+\item Write down the general dual obtained from the perturbation 
+\begin{align*}
+    p(u) = \min_{x} \sum_{i=1}^n g(\langle a_i, x\rangle + u_i) - b^TAx + R(x).
+\end{align*}
+\item Specify your formula to Ridge-regularized logistic regression: 
+\begin{align*}
+    \min_x \sum_{i=1}^n \log(1+\exp(\langle a_i, x \rangle))  - b^TAx  + \frac{\lambda}{2}\|x\|^2. 
+\end{align*}
+\item Specify your formula to 1-norm regularized Poisson regression: 
+\begin{align*}
+    \min_x \sum_{i=1}^n \exp(\langle a_i, x \rangle) - b^TAx +  \lambda\|x\|_1. 
+\end{align*}
+\end{enumerate}
+\end{problem}
+
+\begin{solution}[Solution]
+\begin{enumerate}[label=(\alph*)]
+    \item
+
+        For convenience define,
+        \begin{align*}
+            \varphi(x,u) = h(\tilde{b}-\tilde{A}x+u) + \ip{\tilde{c},x} + k(x) %\sum_{i=1}^{n} g(\ip{a_i,x}+u_i) - b^TAx + R(x)
+        \end{align*}
+        where,
+        \begin{align*}
+            h(z) = \sum_{i=1}^{n}g(z_i)
+            ,&&
+            \tilde{A} = -A
+            ,&&
+            \tilde{b} = 0
+            ,&&
+            \tilde{c} = -A^Tb
+            ,&&
+            k(x) = R(x)
+        \end{align*}
+
+        Then,
+        \begin{align*}
+            \varphi^*(z,v) &= k^*(z+\tilde{A}^Tv-\tilde{c}) + h^*(v) - \ip{v,\tilde{b}}
+            \\&= k^*(z-A^Tv+A^Tb) + h^*(v) - \ip{v,0}
+            \\&= k^*(z-A^T(v-b)) + h^*(v)
+        \end{align*}
+        
+        By the definition of convex conjugate we have,
+        \begin{align*}
+            h^*(v) = \sup_{z} \left\{ \ip{v,z} - h(z) \right\}
+            = \sup_{z_i} \left\{ \sum_{i=1}^{n} v_iz_i - g(z_i) \right\}
+            = \sum_{i=1}^{n} g^*(v_i)
+        \end{align*}
+        
+
+        Moreover, the dual problem is,
+        \begin{align*}
+             \sup_v \{ - p^*(v) \}
+             &= \sup_v \left\{ - \varphi(0,v) \right\}
+             =\sup_v \left\{ -\sum_{i=1}^{n}g^*(v_i) - R^*(A^T(b-v)) \right\}
+        \end{align*}
+        
+    \item Here \( g(z) = \log(1+\exp(z)) \) and \( R(x) = \frac{\lambda}{2}\| x \|^2 \).
+        Therefore,
+        \begin{align*}
+            h^*(v) = \sup_{x} \left\{ \ip{v,x} - \sum_{i=1}^{n} \log(1+\exp(x_i)) \right\}
+        \end{align*}
+        
+        Taking the gradient to be zero we find,
+        \begin{align*}
+            0 = \nabla \left[ \ip{v,x} - \sum_{i=1}^{n} \log(1+\exp(x_i)) \right]
+            = v - \frac{\exp(x)}{1+\exp(x)}
+        \end{align*}
+
+        Now, solving for \( x \), we have,
+        \begin{align*}
+            x = \log \left( \frac{v}{1-v} \right)
+        \end{align*}
+        
+        Thus,
+        \begin{align*}
+            h^*(v) = \ip{v,\log \left( \frac{v}{1-v} \right)} - \sum_{i=1}^{n} \log \left( \frac{1}{1-v_i} \right)
+        \end{align*}
+        
+        
+
+        Similarly,
+        \begin{align*}
+            k^*(w) = \sup_{x} \left\{ \ip{w,x} - \frac{\lambda}{2}\| x\|^2 \right\}
+            = \frac{1}{\lambda}\frac{ \| w \|^2}{2} 
+        \end{align*}
+       
+        Therefore, the dual problem is,
+        \begin{align*}
+            \sup_v \left\{ 
+            - \ip{v,\log \left( \frac{v}{1-v} \right)} + \sum_{i=1}^{n} \log \left( \frac{1}{1-v_i} \right) 
+            - \frac{1}{\lambda} \frac{\| A^T(b-v) \|^2}{2}\right\}
+        \end{align*}
+        
+        
+    \item Here \( g(z) = \exp(z) \) and \( R(x) = \lambda\| x \|_1 \). Therefore,
+        \begin{align*}
+            h^*(v)
+            = 
+            \sup_x \left\{ \ip{v,x} - \sum_{i=1}^{n} \exp(\ip{a_i,x}) \right\}
+        \end{align*}
+        
+        Taking the gradient to be zero we find,
+        \begin{align*}
+            0 = \nabla \left[ \ip{v,x} - \sum_{i=1}^{n} \exp(x_i) \right]
+            = v - \exp(x)
+        \end{align*}
+        
+        Now, solving for \( x \) we have,
+        \begin{align*}
+            x = \log(v)
+        \end{align*}
+        
+        Thus,
+        \begin{align*}
+            h^*(v) = \ip{v,\log(v)} - \sum_{i=1}^{n} v_i
+        \end{align*}
+        
+        Similarly,
+        \begin{align*}
+            k^*(w) = \sup_x \left\{ \ip{w,x} - \lambda \| x \|_1 \right\}
+            = \delta_{\lambda \bB_\infty}(w)
+        \end{align*}
+
+        Therefore, the dual problem is,
+        \begin{align*}
+            \sup_v \left\{ 
+            - \ip{v,\log(v)} + \sum_{i=1}^{n} v_i
+            - \delta_{\lambda \bB_{\infty}}(A^T(v-b))
+            \right\}
+        \end{align*}
+        
+
+\end{enumerate}
+\end{solution}
+
+\begin{problem}[Problem 5]
+In this problem you will write a routine to project onto the capped simplex. 
+
+The Capped Simplex \( \Delta_k \) is defined as follows: 
+\begin{align*}
+    \Delta_k := \left\{x: 1^Tx = k, \quad 0 \leq x_i \leq 1 \quad \forall i. \right\}
+\end{align*}
+This is the intersection of the \( k \)-simplex with the unit box. 
+
+The projection problem is given by 
+\begin{align*}
+    \proj_{\Delta_k}(z) = \arg\min_{x \in \Delta_k} \frac{1}{2}\|x-z\|^2.
+\end{align*}
+\begin{enumerate}[label=(\alph*),nolistsep]
+\item Derive the (1-dimensional) dual problem by focusing on the \( 1^Tx = k \) constraint. 
+\item Implement a routine to solve this dual. It's a scalar root finding problem, 
+so you can use the root-finding algorithm provided in the code.  
+\item Using the dual solution, write down a closed form formula for the projection.  
+Use this formula, along with your dual solver, to implement the projection. You can use the unit test 
+provided to check if your code id working correctly. 
+
+\end{enumerate}
+\end{problem}
+
+\begin{solution}[Solution]
+\begin{enumerate}[label=(\alph*)]
+    \item Note that we can write,
+        \begin{align*}
+            \proj_{\Delta_k}(z) &= \arg\min_{x\in\Delta_k} \left( \frac{1}{2} \| x-z \|^2 \right)
+            \\&= \left\{ x\in \Delta_k : \frac{1}{2} \| x-z \|^2 = \min_{x\in\Delta_k} \frac{1}{2} \| x-z \|^2 \right\}
+            \\&=  \bigg\{ x < \infty : \max_{\lambda} \left(\frac{1}{2} \| x-z \|^2 + \lambda(1^Tx-k) \right) 
+            \\&\hspace{7em}= \max_{\lambda}\min_{x\in[0,1]^n} \left(\frac{1}{2} \| x-z \|^2 + \lambda(1^Tx-k) \right) \bigg\}
+        \end{align*}
+        
+        As such, we focus on the dual problem,
+        \begin{align*}
+            \max_{\lambda} \min_{x\in[0,1]^n} \left( \frac{1}{2} \| x-z \|^2 + \lambda(1^Tx-k) \right)
+        \end{align*}
+        
+
+        Define,
+        \begin{align*}
+            [f(x)](\lambda) = \frac{1}{2} \| x-z \|^2 + \lambda(1^Tx-k)
+        \end{align*}
+        
+        We note that the minimum of \( f \) over \( \RR^n \) (for a fixed \( \lambda \)) occurs at the solution to,
+        \begin{align*}
+            0 = \nabla \left( \frac{1}{2} \| x-z \|^2 + \lambda(1^Tx-k) \right)
+            = (x-z) + \lambda \cdot 1
+        \end{align*}
+
+        That is, at \( x = z - \lambda\cdot 1 \).
+
+        However, since we must constrain \( x \) to be in the unit box, this will not be the minimizer of the constrained problem. Since \( \frac{1}{2} \| x-z \|^2 + \lambda(1^Tx-k) \) is a quadratic with all the coefficients of the quadratic terms are equal (so that the level curves are circles), we can find the constraint minimizer by projecting to the unit box. That is,
+        \begin{align*}
+            x_{\text{opt}} = \max(\min(z-\lambda\cdot 1,1),0)
+            = \begin{cases}
+                1, & z_i> \lambda+1 \\
+                z_i - \lambda, & z_i \in[\lambda,\lambda+1] \\
+                0, & z_i< \lambda
+            \end{cases}
+        \end{align*}
+        
+        Plugging this in to \( f \) we find,
+        \begin{align*}
+            [f(x_{\text{opt}})](\lambda) &= 
+            -\lambda k + \sum_{i}^{} ((x_{\text{opt}})_i - z_i)^2 + \lambda x_i
+            \\&=
+            -\lambda k + \sum_{i}^{}
+            \begin{cases}
+                \frac{1}{2}(1-z_i)^2 + \lambda, & z_i > \lambda+1 \\
+                \frac{1}{2} \lambda^2 + \lambda (z_i-\lambda) , & z_i \in [\lambda,\lambda+1] \\
+                \frac{1}{2}(z_i)^2 , & z_i < \lambda
+            \end{cases}
+        \end{align*}
+        
+        For convenience define,
+        \begin{align*}
+            f_i(\lambda) = 
+             \begin{cases}
+                \frac{1}{2}(1-z_i)^2 + \lambda, & \lambda < z_i-1 \\
+                 \frac{1}{2} \lambda^2 + \lambda (z_i-\lambda) , & \lambda \geq z_i-1, \lambda\leq z_i \\
+                \frac{1}{2} z_i^2 , & \lambda > z_i
+            \end{cases}
+        \end{align*}
+        
+        Then clearly,
+        \begin{align*}
+            f_i'(\lambda) = 
+             \begin{cases}
+                1, & \lambda < z_i-1 \\
+                z_i - \lambda, & \lambda \geq z_i-1, \lambda\leq z_i \\
+                0 , & \lambda > z_i
+            \end{cases}
+        \end{align*}
+
+        This is obviously continuous in \( \lambda \) so that \( f_i(\lambda) \) is smooth. Therefore, \( [f(x_\text{opt})](\lambda) \) is a smooth function of \( \lambda \).
+        
+
+    \item 
+        To solve the dual problem \( \min_{\lambda} [f(x_{\text{opt}})](\lambda) \) we set the derivative to zero and solve for \( \lambda \). That is solve,
+        \begin{align*}
+            0 = [f(x_{\text{opt}})]'(\lambda)
+            = -k + \sum_{i}^{} \begin{cases}
+                1, & \lambda < z_i-1 \\
+                z_i-\lambda, & \lambda \geq z_i-1, \lambda\leq z_i \\
+                0, & \lambda > z_i
+            \end{cases}
+        \end{align*}
+
+        We will use bisection to do this. This means we need to find \( \lambda_1 \) such that \( f'(\lambda_1) \geq 0 \) and \( \lambda_2 \) such that \( f'(\lambda_2) \leq 0 \). In particular, since \( 0\leq k\leq n \) we can pick \( \lambda_1 < \min_i(z_i)-1 \) and \( \lambda_2 > \max_i(z_i) \).
+
+    \item To find the solution \( x \) we return to the expression,
+        \begin{align*}
+             x_{\text{opt}} = \max(\min(z-\lambda\cdot 1,1),0)
+            = \begin{cases}
+                1, & z_i> \lambda+1 \\
+                z_i - \lambda, & z_i \in[\lambda,\lambda+1] \\
+                0, & z_i< \lambda
+            \end{cases}
+        \end{align*}
+
+        Note that \( f_i'(\lambda) = x_\text{opt}(\lambda) = \max(\min(z-\lambda,1),0) \) so that we can conveniently implement these functions using {\tt np.clip}.
+        
+\end{enumerate}
+
+\end{solution}
+
+\end{document}
