@@ -10,7 +10,7 @@ In order to compile the LaTeX files you will need to download the `TeX_headers` 
 
 ### Repository Contents
 Course | Instructor | Date Taken | Uploaded | Corrected 
--|-|-|-
+-|-|-|-|-
 CSE 521   | Oveis Gharan | Autumn 2018 | yes | no
 AMATH 514 | Rothvoss     | Winter 2018 | yes | no
 AMATH 515 | Aravkin      | Winter 2019 | yes | no
